@@ -150,7 +150,7 @@ const Category = () => {
             <p className={''}>{Connected ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}</p>
             </div>
             <div className={'flex-1'}>
-              <Input />
+              <Input balance placeholder="Enter Amount" />
             </div>
             </section>
           <section className={'vote-modal-action flex justify-end mt-8'}>
