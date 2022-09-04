@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
 import { useTopic } from 'hooks/useArena';
@@ -6,6 +6,9 @@ import { useWeb3React } from '@web3-react/core';
 import { injected } from '../connectors';
 import { useParams } from 'react-router-dom';
 import { shortenAddress } from 'utils/index';
+import Modal from "components/modal/index";
+import Input from "components/basic/input";
+import { Transition } from '@headlessui/react'
 
 // todo we need to find a way to use our color variables (tailwind) to set primary and secondary color of duoton icons
 const style = {
@@ -18,6 +21,8 @@ const style = {
 const Category = () => {
   const { active, account, activate } = useWeb3React();
 
+  const Connected = false
+
   async function connect() {
     try {
       await activate(injected);
@@ -26,7 +31,29 @@ const Category = () => {
     }
   }
 
+  const [open, setOpen] = useState(false)
+
+  function openModal() {
+    setOpen(true)
+  }
+
+  function closeModal() {
+    setOpen(false)
+  }
+
+  const [songSelected, setSongSelected] = useState(false)
+
+  function openAction() {
+    setSongSelected(true)
+  }
+
+  function closeAction() {
+    setSongSelected(false)
+  }
+
+
   const renderConnector = () => {
+
     return active ? (
       <p data-testid="wallet-connect">Wallet Connected {shortenAddress(account)}</p>
     ) : (
@@ -80,6 +107,69 @@ const Category = () => {
 
   return (
     <div className={'px-24 py-24'}>
+
+      <Modal className={'!max-w-2xl relative overflow-hidden'} title={'Select the song you want to vote for (12 songs nominated)'} closeModal={closeModal} open={open}>
+        <main className={'flex flex-wrap gap-6'}>
+          {/* todo #alimahdiyar we need to have selected state when a song being selected in modal */}
+          {choices.map((song) => {
+            return (
+            <div
+              onClick={openAction}
+            key={song.id}
+            className={'w-64 h-24 bg-cover relative'}
+            data-testid={`category-list-item-${song.id}`}
+            >
+          {/* todo #alimahdiyar img below must be an iframe link to youtube video*/}
+            <img
+            alt="choice"
+            src={'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'}
+            className={'rounded-xl w-full h-full'}
+            />
+            <div className={'px-2 pt-1 absolute inset-0'}>
+            <p className={'font-bold text-xl'}>{song.description}</p>
+
+            </div>
+            </div>
+            );
+            })}
+        </main>
+        <Transition
+          as={Fragment}
+          show={songSelected}
+          enter="transform ease-in-out transition duration-[400ms]"
+          enterFrom="opacity-0 translate-y-32"
+          enterTo="opacity-100 translate-y-0"
+          leave="transform duration-500 transition ease-in-out"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0 translate-y-32 "
+        >
+        <footer className={'px-4 py-2 absolute left-0 right-0 bottom-0 bg-white border-gray border-t py-4 px-2'}>
+          <section className={'flex'} >
+            <div className={'flex-1'}>
+            <p className={''}><span>The Great King Snail</span> selected</p>
+            <p className={''}>{Connected ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}</p>
+            </div>
+            <div className={'flex-1'}>
+              <Input />
+            </div>
+            </section>
+          <section className={'vote-modal-action flex justify-end mt-8'}>
+            <button onClick={closeAction} className={'btn-primary-inverted btn-large mr-2'}>Go back</button>
+            {active ? (
+              <button data-testid="wallet-connect" className={'btn-primary btn-large w-56'} onClick={connect}>
+                Cast <span className={'font-bold'}>245</span> SONG
+              </button>
+            ) : (
+            <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={connect}>
+              Connect Wallet
+            </button>
+            )}
+          </section>
+        {/* footer action */}
+        </footer>
+        </Transition>
+      </Modal>
+
       <div>{renderConnector()}</div>
       <header className={'bg-gradient-light w-full h-48 rounded-3xl flex p-6 mb-12'}>
         <div>
@@ -97,7 +187,7 @@ const Category = () => {
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
         </section>
         <aside className={'w-68'}>
-          <button className={'btn-primary btn-large w-full'}>Vote for a Song!</button>
+          <button onClick={openModal} className={'btn-primary btn-large w-full'}>Vote for a Song!</button>
           <section>
             <div className={'time-left'}></div>
             <div className={'info-summery'}></div>
