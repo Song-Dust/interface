@@ -18,6 +18,8 @@ module.exports = {
         label: '#565656',
         black: '#353535',
         chips: '#5EBAB0',
+        gray: '#BFBFBF',
+        'light-gray': '#EBECEF',
         'dark-gray': '#757575',
         'blue-gray-light': '#E9EFF6',
         'primary-light': '#FFE9EE',
