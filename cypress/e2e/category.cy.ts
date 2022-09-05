@@ -1,9 +1,10 @@
 import RoutePath, { getRoute, RouteParam } from '../../src/routes';
-import { ArenaHandler } from '../utils/ethbridge/abihandlers/Arena';
+import { ArenaHandler } from '../utils/abihandlers/Arena';
 import { SupportedChainId } from '../../src/constants/chains';
 import { ARENA_ADDRESS, MULTICALL2_ADDRESS } from '../../src/constants/addresses';
-import { BaseMulticallHandler } from '../utils/ethbridge/abihandlers/Multicall';
+import { BaseMulticallHandler } from '../utils/metamocks/abihandlers/multicall';
 import { IPFS_SERVER_URL, songMeta } from '../utils/data';
+import MULTICALL2_ABI from '../../src/abis/MULTICALL2.json';
 
 describe('Category', () => {
   it('loads songs', () => {
@@ -24,9 +25,9 @@ describe('Category', () => {
       },
     );
     const topicId = 0;
-    cy.setupWeb3Bridge();
+    cy.setupMetamocks();
     cy.setAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], new ArenaHandler());
-    cy.setAbiHandler(MULTICALL2_ADDRESS[SupportedChainId.GOERLI], new BaseMulticallHandler());
+    cy.setAbiHandler(MULTICALL2_ADDRESS[SupportedChainId.GOERLI], new BaseMulticallHandler(MULTICALL2_ABI));
 
     cy.visit(
       getRoute(RoutePath.CATEGORY, {

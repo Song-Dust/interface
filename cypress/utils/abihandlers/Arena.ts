@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber/lib.esm';
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
 
-import { AbiHandler } from '../AbiHandler';
-import { CustomizedBridgeContext } from '../CustomizedBridge';
-import { choices } from '../../data';
+import { AbiHandler } from '../metamocks/abiHandler';
+import { CustomizedBridgeContext } from '../metamocks';
+import { choices } from '../data';
 
 function isTheSameAddress(address1: string, address2: string) {
   return address1.toLowerCase() === address2.toLowerCase();

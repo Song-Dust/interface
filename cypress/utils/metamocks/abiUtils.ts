@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { BigNumber } from '@ethersproject/bignumber/lib.esm';
-import { BytesLike } from '@ethersproject/bytes';
+import { BytesLike, hexStripZeros } from '@ethersproject/bytes';
 
 const InputDataDecoder = require('ethereum-input-data-decoder');
 
@@ -23,4 +23,8 @@ export type DecodedCall = {
 export function decodeEthCall(abi: any, input: any): DecodedCall {
   const decoder = new InputDataDecoder(abi);
   return decoder.decodeData(input);
+}
+
+export function formatChainId(chainId: string) {
+  return hexStripZeros(BigNumber.from(chainId).toHexString());
 }

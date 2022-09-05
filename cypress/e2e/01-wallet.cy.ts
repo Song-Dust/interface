@@ -2,7 +2,7 @@ import { TEST_ADDRESS_NEVER_USE_SHORTENED } from '../utils/data';
 
 describe('Wallet', () => {
   beforeEach(() => {
-    cy.setupWeb3Bridge();
+    cy.setupMetamocks();
   });
 
   it('eager connects wallet', () => {

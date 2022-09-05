@@ -5,22 +5,21 @@
 // ***********************************************
 
 import { Wallet } from '@ethersproject/wallet';
-import { JsonRpcProvider } from '@ethersproject/providers';
-import { formatChainId } from '../../../src/utils';
 
-import { SAMPLE_ERROR_MESSAGE, TEST_ADDRESS_NEVER_USE, TEST_PRIVATE_KEY } from '../data';
 import { BigNumber } from '@ethersproject/bignumber';
 import {
   fakeBlockByNumberResponse,
   fakeTransactionByHashResponse,
   fakeTransactionReceipt,
   latestBlock,
-} from '../fake_tx_data';
-import { NETWORK_URLS, SupportedChainId } from '../../../src/constants/chains';
-import { keccak256 } from './abiutils';
+} from './fakeTxData';
+import { SupportedChainId } from '../../../src/constants/chains';
+import { formatChainId, keccak256 } from './abiUtils';
 import { Eip1193Bridge } from '@ethersproject/experimental';
 import { GENERIC_ERROR_CODE, GENERIC_ERROR_CODE_2, USER_DENIED_REQUEST_ERROR_CODE } from '../../../src/utils/web3';
-import { AbiHandler } from './AbiHandler';
+import { AbiHandler } from './abiHandler';
+
+export const SAMPLE_ERROR_MESSAGE = 'An error occurred';
 
 function isTheSameAddress(address1: string, address2: string) {
   return address1.toLowerCase() === address2.toLowerCase();
@@ -68,16 +67,18 @@ export enum TransactionStatus {
   FAILED = 'failed',
 }
 
+export const METAMOCKS_TEST_PRIVATE_KEY = '0xe580410d7c37d26c6ad1a837bbae46bc27f9066a466fb3a66e770523b4666d19';
+export const METAMOCKS_TEST_ADDRESS_NEVER_USE = new Wallet(METAMOCKS_TEST_PRIVATE_KEY).address;
 const insufficientFundTransactionError = {
   code: GENERIC_ERROR_CODE_2,
-  message: `err: insufficient funds for gas * price + value: address ${TEST_ADDRESS_NEVER_USE} have 2000 want 10000000000000000000000000 (supplied gas 14995852)`,
+  message: `err: insufficient funds for gas * price + value: address ${METAMOCKS_TEST_ADDRESS_NEVER_USE} have 2000 want 10000000000000000000000000 (supplied gas 14995852)`,
 };
 const insufficientFundGasEstimateError = {
   code: GENERIC_ERROR_CODE,
   message: 'Internal JSON-RPC error.',
   data: {
     code: GENERIC_ERROR_CODE_2,
-    message: `insufficient funds for transfer: address ${TEST_ADDRESS_NEVER_USE}`,
+    message: `insufficient funds for transfer: address ${METAMOCKS_TEST_ADDRESS_NEVER_USE}`,
   },
 };
 const userDeniedTransactionError = {
@@ -91,7 +92,7 @@ function enumKeys<O extends object, K extends keyof O = keyof O>(obj: O): K[] {
   return Object.keys(obj).filter((k) => Number.isNaN(+k)) as K[];
 }
 
-export class CustomizedBridge extends Eip1193Bridge {
+export class MetaMocks extends Eip1193Bridge {
   context = new CustomizedBridgeContext();
 
   eventListeners = {
@@ -181,7 +182,7 @@ export class CustomizedBridge extends Eip1193Bridge {
     }
 
     if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
-      setResult([TEST_ADDRESS_NEVER_USE]);
+      setResult([METAMOCKS_TEST_ADDRESS_NEVER_USE]);
     }
     if (method === 'wallet_switchEthereumChain') {
       this.switchEthereumChainSpy(params[0].chainId);
@@ -304,12 +305,4 @@ export class CustomizedBridge extends Eip1193Bridge {
       }
     }
   }
-}
-
-const defaultChainId = SupportedChainId.GOERLI;
-export const provider = new JsonRpcProvider(NETWORK_URLS[defaultChainId], defaultChainId);
-export const signer = new Wallet(TEST_PRIVATE_KEY, provider);
-
-export function getCustomizedBridge() {
-  return new CustomizedBridge(signer, provider);
 }

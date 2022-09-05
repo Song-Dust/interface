@@ -1,10 +1,16 @@
-import { decodeEthCall, encodeEthResult } from './abiutils';
-import { CustomizedBridgeContext } from './CustomizedBridge';
+import { decodeEthCall, encodeEthResult } from './abiUtils';
+import { CustomizedBridgeContext } from './index';
 
 export class AbiHandler {
-  abi = {};
+  abi: any[] = [];
 
   methods: { [name: string]: (...args: any[]) => any } = {};
+
+  constructor(abi: any) {
+    if (abi) {
+      this.abi = abi;
+    }
+  }
 
   async handleCall(context: CustomizedBridgeContext, data: string, setResult?: (arg0: string) => void) {
     const decoded = decodeEthCall(this.abi, data);

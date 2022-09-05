@@ -5,8 +5,7 @@
 // ***********************************************
 
 /* eslint-disable no-undef */
-
-import { getCustomizedBridge } from '../utils/ethbridge/CustomizedBridge';
+import './metamocks';
 
 Cypress.Commands.add('shouldBeCalled', (alias, timesCalled) => {
   expect(
@@ -27,20 +26,6 @@ Cypress.on('window:before:load', (win) => {
 
   win.navigator.clipboard.__proto__.writeText = (text) => (copyText = text);
   win.navigator.clipboard.__proto__.readText = () => copyText;
-});
-
-Cypress.Commands.add('setupWeb3Bridge', () => {
-  const web3Bridge = getCustomizedBridge()
-  cy.wrap(web3Bridge).as('web3Bridge')
-  cy.on('window:before:load', (win) => {
-    win.ethereum = web3Bridge;
-  });
-});
-
-Cypress.Commands.add('setAbiHandler', (address, abiHandler) => {
-  cy.get('@web3Bridge').then(web3Bridge => {
-    web3Bridge.setHandler(address, abiHandler)
-  });
 });
 
 beforeEach(() => {
