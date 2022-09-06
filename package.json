@@ -1,7 +1,6 @@
 {
   "name": "attention-streams",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@attentionstreams/contracts": "0.0.7",
     "@emotion/react": "^11.9.3",
@@ -82,6 +81,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "ethereum-input-data-decoder": "^0.4.2",
+    "metamocks": "0.5.1",
     "node-sass": "^7.0.1",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",

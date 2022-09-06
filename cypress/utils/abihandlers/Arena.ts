@@ -1,8 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber/lib.esm';
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
 
-import { AbiHandler } from '../metamocks/abiHandler';
-import { CustomizedBridgeContext } from '../metamocks';
+import { AbiHandler, MetamocksContext } from 'metamocks';
 import { choices } from '../data';
 
 function isTheSameAddress(address1: string, address2: string) {
@@ -10,17 +9,19 @@ function isTheSameAddress(address1: string, address2: string) {
 }
 
 export class ArenaHandler extends AbiHandler {
-  abi = ArenaJson.abi;
-
   methods = {
-    async nextChoiceId(context: CustomizedBridgeContext, decodedInput: [BigNumber]) {
+    async nextChoiceId(context: MetamocksContext, decodedInput: [BigNumber]) {
       const [topicId] = decodedInput;
       return [Object.values(choices[topicId.toNumber()]).length];
     },
 
-    async topicChoices(context: CustomizedBridgeContext, decodedInput: [BigNumber, BigNumber]) {
+    async topicChoices(context: MetamocksContext, decodedInput: [BigNumber, BigNumber]) {
       const [topicId, choiceId] = decodedInput;
       return [Object.values(choices[topicId.toNumber()][choiceId.toNumber()])];
     },
   };
+
+  constructor() {
+    super(ArenaJson.abi);
+  }
 }

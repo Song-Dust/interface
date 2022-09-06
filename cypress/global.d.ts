@@ -1,4 +1,4 @@
-import { AbiHandler } from './utils/metamocks/abiHandler';
+import { AbiHandler } from 'metamocks/abiHandler';
 
 declare global {
   namespace Cypress {
