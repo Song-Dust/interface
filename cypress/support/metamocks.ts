@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { FALLBACK_CHAIN_ID, NETWORK_URLS } from '../../src/constants/chains';
 import { Wallet } from '@ethersproject/wallet';
 import MetaMocks from 'metamocks';
+import { FALLBACK_CHAIN_ID, NETWORK_URLS } from '../../src/constants/chains';
 import { TEST_PRIVATE_KEY } from '../utils/data';
 
 Cypress.Commands.add('setupMetamocks', () => {

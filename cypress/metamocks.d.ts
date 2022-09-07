@@ -1,4 +1,10 @@
-import { AbiHandler } from 'metamocks/abiHandler';
+import { AbiHandler } from 'metamocks';
+
+export interface EthereumProvider {
+  on?: (...args: any[]) => void;
+  removeListener?: (...args: any[]) => void;
+  autoRefreshOnNetworkChange?: boolean;
+}
 
 declare global {
   namespace Cypress {
@@ -10,6 +16,10 @@ declare global {
       setupMetamocks(): void;
 
       setAbiHandler(address: string, handler: AbiHandler): void;
+    }
+
+    interface Window {
+      ethereum?: EthereumProvider;
     }
   }
 }

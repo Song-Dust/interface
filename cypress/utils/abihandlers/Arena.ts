@@ -4,10 +4,6 @@ import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Aren
 import { AbiHandler, MetamocksContext } from 'metamocks';
 import { choices } from '../data';
 
-function isTheSameAddress(address1: string, address2: string) {
-  return address1.toLowerCase() === address2.toLowerCase();
-}
-
 export class ArenaHandler extends AbiHandler {
   methods = {
     async nextChoiceId(context: MetamocksContext, decodedInput: [BigNumber]) {
