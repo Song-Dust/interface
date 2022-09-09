@@ -4,7 +4,9 @@ import { SupportedChainId } from '../../src/constants/chains';
 import { ARENA_ADDRESS, MULTICALL2_ADDRESS } from '../../src/constants/addresses';
 import { MulticallAbiHandler } from 'metamocks';
 import { IPFS_SERVER_URL, songMeta } from '../utils/data';
-import MULTICALL2_ABI from '../../src/abis/MULTICALL2.json';
+import Multicall2Json from '@attentionstreams/contracts/artifacts/contracts/main/multicall.sol/Multicall2.json';
+
+const { abi: Multicall2ABI } = Multicall2Json;
 
 describe('Category', () => {
   it('loads songs', () => {
@@ -27,7 +29,7 @@ describe('Category', () => {
     const topicId = 0;
     cy.setupMetamocks();
     cy.setAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], new ArenaHandler());
-    cy.setAbiHandler(MULTICALL2_ADDRESS[SupportedChainId.GOERLI], new MulticallAbiHandler(MULTICALL2_ABI));
+    cy.setAbiHandler(MULTICALL2_ADDRESS[SupportedChainId.GOERLI], new MulticallAbiHandler(Multicall2ABI));
 
     cy.visit(
       getRoute(RoutePath.CATEGORY, {

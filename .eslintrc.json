@@ -11,6 +11,7 @@
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "jsx-a11y/anchor-is-valid": "off"
   }
 }

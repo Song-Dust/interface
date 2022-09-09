@@ -7,10 +7,14 @@ import { AddressMap, ARENA_ADDRESS, MULTICALL2_ADDRESS, ZERO_ADDRESS } from 'con
 import { useMemo } from 'react';
 import { Arena } from 'types/contracts/Arena';
 import useWeb3React from 'hooks/useWeb3';
-import MULTICALL2_ABI from 'abis/MULTICALL2.json';
+import Multicall2Json from '@attentionstreams/contracts/artifacts/contracts/main/multicall.sol/Multicall2.json';
+import ERC20_ABI from 'abis/erc20.json';
 import { Providers } from 'constants/providers';
+import { Erc20 } from 'abis/types';
+import { Multicall2 } from 'types/contracts';
 
 const { abi: ArenaABI } = ArenaJson;
+const { abi: Multicall2ABI } = Multicall2Json;
 
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | AddressMap | undefined,
@@ -70,5 +74,9 @@ export function useArenaContract() {
 export function useMulticall2Contract() {
   const { chainId } = useWeb3React();
   const address = useMemo(() => (chainId ? MULTICALL2_ADDRESS[chainId] : undefined), [chainId]);
-  return useContract(address, MULTICALL2_ABI);
+  return useContract<Multicall2>(address, Multicall2ABI);
+}
+
+export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
+  return useContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible);
 }
