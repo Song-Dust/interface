@@ -46,10 +46,8 @@ const Category = () => {
 
   const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
   const selectedSong = useMemo(() => {
-    if (selectedSongId !== null) {
-      return choices.find((c) => c.id === selectedSongId)!;
-    }
-    return null;
+    if (selectedSongId === null) return null;
+    return choices.find((c) => c.id === selectedSongId)!;
   }, [choices, selectedSongId]);
 
   function openAction(id: number) {
