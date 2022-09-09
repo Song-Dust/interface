@@ -3,6 +3,7 @@ cypress/screenshots/
 
 .idea
 
+/src/abis/types
 /src/types/contracts
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.

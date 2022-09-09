@@ -3,39 +3,41 @@ import { Contract } from '@ethersproject/contracts';
 import { AddressZero } from '@ethersproject/constants';
 import { Web3Provider } from '@ethersproject/providers';
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
-import { AddressMap, ARENA_ADDRESS, MULTICALL2_ADDRESS, ZERO_ADDRESS } from 'constants/addresses';
+import MulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json';
+
+import { ARENA_ADDRESS, MULTICALL2_ADDRESS } from 'constants/addresses';
 import { useMemo } from 'react';
 import { Arena } from 'types/contracts/Arena';
-import useWeb3React from 'hooks/useWeb3';
-import Multicall2Json from '@attentionstreams/contracts/artifacts/contracts/main/multicall.sol/Multicall2.json';
+import { useWeb3React } from '@web3-react/core';
 import ERC20_ABI from 'abis/erc20.json';
 import { Providers } from 'constants/providers';
 import { Erc20 } from 'abis/types';
-import { Multicall2 } from 'types/contracts';
+import { UniswapInterfaceMulticall } from '../abis/types/uniswap';
 
 const { abi: ArenaABI } = ArenaJson;
-const { abi: Multicall2ABI } = Multicall2Json;
+const { abi: MulticallABI } = MulticallJson;
 
+// returns null on errors
 export function useContract<T extends Contract = Contract>(
-  addressOrAddressMap: string | AddressMap | undefined,
+  addressOrAddressMap: string | { [chainId: number]: string } | undefined,
   ABI: any,
   withSignerIfPossible = true,
 ): T | null {
-  const { library, account, chainId } = useWeb3React();
+  const { provider, account, chainId } = useWeb3React();
 
   return useMemo(() => {
-    if (!addressOrAddressMap || !ABI || !library || !chainId) return null;
+    if (!addressOrAddressMap || !ABI || !provider || !chainId) return null;
     let address: string | undefined;
     if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap;
     else address = addressOrAddressMap[chainId];
-    if (!address || address === ZERO_ADDRESS) return null;
+    if (!address) return null;
     try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined);
+      return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined);
     } catch (error) {
       console.error('Failed to get contract', error);
       return null;
     }
-  }, [addressOrAddressMap, ABI, library, chainId, withSignerIfPossible, account]) as T;
+  }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as T;
 }
 
 export function getProviderOrSigner(library: any, account?: string): any {
@@ -74,7 +76,7 @@ export function useArenaContract() {
 export function useMulticall2Contract() {
   const { chainId } = useWeb3React();
   const address = useMemo(() => (chainId ? MULTICALL2_ADDRESS[chainId] : undefined), [chainId]);
-  return useContract<Multicall2>(address, Multicall2ABI);
+  return useContract<UniswapInterfaceMulticall>(address, MulticallABI);
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {

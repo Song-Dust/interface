@@ -9,7 +9,7 @@ export const ARENA_ADDRESS: AddressMap = {
 };
 
 export const MULTICALL2_ADDRESS: AddressMap = {
-  [SupportedChainId.GOERLI]: '0xbD8f7a4ADb8dd775Bb8F0746C2A2E177110E00F8',
+  [SupportedChainId.GOERLI]: '0x85D395e783E1e5735B7bd66136D45Df194648EfB',
 };
 
 export const SONG_ADDRESS: AddressMap = {

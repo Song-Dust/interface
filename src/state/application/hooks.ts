@@ -1,48 +1,92 @@
+import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc';
 import { useCallback, useMemo } from 'react';
-import { AppState, useAppDispatch, useAppSelector } from 'state';
+import { useAppDispatch, useAppSelector } from 'state/hooks';
 
-import useWeb3React from 'hooks/useWeb3';
-import { addPopup, removePopup, setOpenModal } from './actions';
-import { ApplicationModal, Popup, PopupContent, PopupList } from './reducer';
-import { L2_REMOVE_AFTER_MS, REMOVE_AFTER_MS } from 'constants/popup';
+import { AppState } from '../index';
+import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './reducer';
 
-export function useBlockNumber(): number | undefined {
-  const { chainId } = useWeb3React();
-  return useAppSelector((state: AppState) => state.application.blockNumber[chainId ?? -1]);
-}
-
-export function useModalOpen(modal: ApplicationModal): boolean {
+export function useModalIsOpen(modal: ApplicationModal): boolean {
   const openModal = useAppSelector((state: AppState) => state.application.openModal);
   return openModal === modal;
 }
 
 export function useToggleModal(modal: ApplicationModal): () => void {
-  const open = useModalOpen(modal);
+  const isOpen = useModalIsOpen(modal);
   const dispatch = useAppDispatch();
-  return useCallback(() => dispatch(setOpenModal(open ? null : modal)), [dispatch, modal, open]);
+  return useCallback(() => dispatch(setOpenModal(isOpen ? null : modal)), [dispatch, modal, isOpen]);
 }
 
-export function useWalletModalToggle(): () => void {
+export function useOpenModal(modal: ApplicationModal): () => void {
+  const dispatch = useAppDispatch();
+  return useCallback(() => dispatch(setOpenModal(modal)), [dispatch, modal]);
+}
+
+export function useCloseModal(_modal: ApplicationModal): () => void {
+  const dispatch = useAppDispatch();
+  return useCallback(() => dispatch(setOpenModal(null)), [dispatch]);
+}
+
+export function useToggleWalletModal(): () => void {
   return useToggleModal(ApplicationModal.WALLET);
 }
 
-export function useNetworkModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.NETWORK);
+export function useToggleWalletDropdown(): () => void {
+  return useToggleModal(ApplicationModal.WALLET_DROPDOWN);
 }
 
+export function useToggleSettingsMenu(): () => void {
+  return useToggleModal(ApplicationModal.SETTINGS);
+}
+
+export function useShowClaimPopup(): boolean {
+  return useModalIsOpen(ApplicationModal.CLAIM_POPUP);
+}
+
+export function useToggleShowClaimPopup(): () => void {
+  return useToggleModal(ApplicationModal.CLAIM_POPUP);
+}
+
+export function useToggleSelfClaimModal(): () => void {
+  return useToggleModal(ApplicationModal.SELF_CLAIM);
+}
+
+export function useToggleDelegateModal(): () => void {
+  return useToggleModal(ApplicationModal.DELEGATE);
+}
+
+export function useToggleVoteModal(): () => void {
+  return useToggleModal(ApplicationModal.VOTE);
+}
+
+export function useToggleQueueModal(): () => void {
+  return useToggleModal(ApplicationModal.QUEUE);
+}
+
+export function useToggleExecuteModal(): () => void {
+  return useToggleModal(ApplicationModal.EXECUTE);
+}
+
+export function useTogglePrivacyPolicy(): () => void {
+  return useToggleModal(ApplicationModal.PRIVACY_POLICY);
+}
+
+export function useToggleFeatureFlags(): () => void {
+  return useToggleModal(ApplicationModal.FEATURE_FLAGS);
+}
+
+// returns a function that allows adding a popup
 export function useAddPopup(): (content: PopupContent, key?: string, removeAfterMs?: number) => void {
   const dispatch = useAppDispatch();
-  const { chainId } = useWeb3React();
 
   return useCallback(
     (content: PopupContent, key?: string, removeAfterMs?: number) => {
-      const ms = removeAfterMs ?? chainId === 1 ? REMOVE_AFTER_MS : L2_REMOVE_AFTER_MS;
-      dispatch(addPopup({ content, key, removeAfterMs: ms }));
+      dispatch(addPopup({ content, key, removeAfterMs: removeAfterMs ?? DEFAULT_TXN_DISMISS_MS }));
     },
-    [dispatch, chainId],
+    [dispatch],
   );
 }
 
+// returns a function that allows removing a popup via its key
 export function useRemovePopup(): (key: string) => void {
   const dispatch = useAppDispatch();
   return useCallback(
@@ -53,9 +97,8 @@ export function useRemovePopup(): (key: string) => void {
   );
 }
 
-export function useActivePopups(): PopupList {
-  const list = useAppSelector((state: AppState) => {
-    return state.application.popupList;
-  });
-  return useMemo(() => list.filter((item: Popup) => item.show), [list]);
+// get the list of active popups
+export function useActivePopups(): AppState['application']['popupList'] {
+  const list = useAppSelector((state: AppState) => state.application.popupList);
+  return useMemo(() => list.filter((item: any) => item.show), [list]);
 }

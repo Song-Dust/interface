@@ -22,7 +22,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [SupportedChainId.MAINNET];
 /**
  * All the chain IDs that are running the Ethereum protocol.
  */
-export const L1_CHAIN_IDS = [SupportedChainId.MAINNET, SupportedChainId.RINKEBY] as const;
+export const L1_CHAIN_IDS = [SupportedChainId.MAINNET, SupportedChainId.RINKEBY, SupportedChainId.GOERLI] as const;
 
 export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number];
 
@@ -31,3 +31,7 @@ export const FALLBACK_CHAIN_ID = SupportedChainId.GOERLI;
 export const NETWORK_URLS: { [chainId: number]: string } = {
   [SupportedChainId.GOERLI]: 'https://rpc.goerli.mudit.blog/',
 };
+
+export const L2_CHAIN_IDS: readonly SupportedChainId[] = [] as const;
+
+export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number];

@@ -1,19 +1,24 @@
-import { useArenaContract } from 'hooks/useContracts';
+import { Interface } from '@ethersproject/abi';
+import { useArenaContract } from 'hooks/useContract';
 import { useEffect, useMemo, useState } from 'react';
-import { useSingleContractMultipleData, useSingleContractMultipleMethods } from 'state/multicall/hooks';
+import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
 import { TopicStruct } from '../types/contracts/Arena';
 import { BigNumber } from 'ethers';
 import { Choice, SongMeta } from '../types';
 import axios from 'axios';
+import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
+
+const { abi: ArenaABI } = ArenaJson;
+const arenaInterface = new Interface(ArenaABI);
 
 export function useArena() {
   const arenaContract = useArenaContract();
 
   const nextTopicIdCall = useMemo(() => {
-    return [{ methodName: 'nextTopicId', callInputs: [] }];
+    return [arenaInterface.encodeFunctionData('nextTopicId', [])];
   }, []);
 
-  const [nextTopicIdResult] = useSingleContractMultipleMethods(arenaContract, nextTopicIdCall);
+  const [nextTopicIdResult] = useSingleContractWithCallData(arenaContract, nextTopicIdCall);
   const nextTopicId: BigNumber | null = nextTopicIdResult?.result?.[0];
 
   const getTopicsCallInputs = useMemo(() => {
@@ -49,12 +54,11 @@ export function useArena() {
 
 export function useTopic(topicId: number) {
   const arenaContract = useArenaContract();
-
   const nextChoiceIdCall = useMemo(() => {
-    return [{ methodName: 'nextChoiceId', callInputs: [topicId] }];
+    return [arenaInterface.encodeFunctionData('nextChoiceId', [topicId])];
   }, [topicId]);
 
-  const [nextChoiceIdResult] = useSingleContractMultipleMethods(arenaContract, nextChoiceIdCall);
+  const [nextChoiceIdResult] = useSingleContractWithCallData(arenaContract, nextChoiceIdCall);
 
   const nextChoiceId: BigNumber | null = nextChoiceIdResult?.result?.[0];
 

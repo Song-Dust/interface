@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
 import { useTopic } from 'hooks/useArena';
 import { useWeb3React } from '@web3-react/core';
-import { injected } from '../connectors';
 import { useParams } from 'react-router-dom';
 import { shortenAddress } from 'utils/index';
 import Modal from 'components/modal/index';
 import Input from 'components/basic/input';
 import { Transition } from '@headlessui/react';
+import { Connector } from '@web3-react/types';
+import { injectedConnection } from '../connection';
 
 // todo we need to find a way to use our color variables (tailwind) to set primary and secondary color of duoton icons
 const style = {
@@ -19,17 +20,17 @@ const style = {
 } as React.CSSProperties;
 
 const Category = () => {
-  const { active, account, activate } = useWeb3React();
+  const { chainId, account } = useWeb3React();
+  const active = useMemo(() => !!chainId, [chainId]);
 
-  const Connected = false;
-
-  async function connect() {
+  const connect = () => {
+    const connector = injectedConnection.connector;
     try {
-      await activate(injected);
-    } catch (ex) {
-      console.log(ex);
+      connector.activate();
+    } catch (error: any) {
+      console.debug(`web3-react connection error: ${error}`);
     }
-  }
+  };
 
   const [open, setOpen] = useState(false);
 
@@ -161,7 +162,7 @@ const Category = () => {
                   <span>{selectedSong?.description}</span> selected
                 </p>
                 <p className={''}>
-                  {Connected ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}
+                  {active ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}
                 </p>
               </div>
               <div className={'flex-1'}>
@@ -219,3 +220,7 @@ const Category = () => {
 };
 
 export default Category; /* Rectangle 18 */
+
+function useCallback(arg0: (connector: Connector) => Promise<void>, arg1: any[]) {
+  throw new Error('Function not implemented.');
+}
