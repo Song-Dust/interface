@@ -86,7 +86,7 @@ function useCallsData(
         }),
       );
     };
-  }, [chainId, dispatch, blocksPerFetch, serializedCallKeys]);
+  }, [chainId, dispatch, blocksPerFetch, serializedCallKeys, blocksPerFetchValue]);
 
   return useMemo(
     () =>
