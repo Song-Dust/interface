@@ -1,12 +1,9 @@
 import RoutePath, { getRoute, RouteParam } from '../../src/routes';
 import { ArenaHandler } from '../utils/abihandlers/Arena';
 import { SupportedChainId } from '../../src/constants/chains';
-import { ARENA_ADDRESS, MULTICALL2_ADDRESS } from '../../src/constants/addresses';
-import { MulticallAbiHandler } from 'metamocks';
+import { ARENA_ADDRESS, MULTICALL_ADDRESS } from '../../src/constants/addresses';
 import { IPFS_SERVER_URL, songMeta } from '../utils/data';
-import Multicall2Json from '@attentionstreams/contracts/artifacts/contracts/main/multicall.sol/Multicall2.json';
-
-const { abi: Multicall2ABI } = Multicall2Json;
+import MulticallUniswapAbiHandler from '../utils/abihandlers/MulticallUniswapInterface';
 
 describe('Category', () => {
   it('loads songs', () => {
@@ -29,13 +26,15 @@ describe('Category', () => {
     const topicId = 0;
     cy.setupMetamocks();
     cy.setAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], new ArenaHandler());
-    cy.setAbiHandler(MULTICALL2_ADDRESS[SupportedChainId.GOERLI], new MulticallAbiHandler(Multicall2ABI));
+    cy.setAbiHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], new MulticallUniswapAbiHandler());
 
     cy.visit(
       getRoute(RoutePath.CATEGORY, {
         [RouteParam.CATEGORY_ID]: String(topicId),
       }),
     );
+    cy.get('[data-testid=wallet-connect]').click();
+    cy.get('[data-testid=wallet-connect]').click();
     cy.get('[data-testid=category-list-item-0]').should('exist');
     cy.get('[data-testid=category-list-item-1]').should('exist');
     cy.get('[data-testid=category-list-item-0-meta]').should('not.exist');

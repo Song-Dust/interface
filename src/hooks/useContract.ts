@@ -5,7 +5,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
 import MulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json';
 
-import { ARENA_ADDRESS, MULTICALL2_ADDRESS } from 'constants/addresses';
+import { ARENA_ADDRESS, MULTICALL_ADDRESS } from 'constants/addresses';
 import { useMemo } from 'react';
 import { Arena } from 'types/contracts/Arena';
 import { useWeb3React } from '@web3-react/core';
@@ -73,10 +73,8 @@ export function useArenaContract() {
   return useContract<Arena>(ARENA_ADDRESS, ArenaABI, true);
 }
 
-export function useMulticall2Contract() {
-  const { chainId } = useWeb3React();
-  const address = useMemo(() => (chainId ? MULTICALL2_ADDRESS[chainId] : undefined), [chainId]);
-  return useContract<UniswapInterfaceMulticall>(address, MulticallABI);
+export function useInterfaceMulticall() {
+  return useContract<UniswapInterfaceMulticall>(MULTICALL_ADDRESS, MulticallABI, false) as UniswapInterfaceMulticall;
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
