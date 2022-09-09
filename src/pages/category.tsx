@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
 import { useTopic } from 'hooks/useArena';
@@ -8,8 +8,10 @@ import { shortenAddress } from 'utils/index';
 import Modal from 'components/modal/index';
 import Input from 'components/basic/input';
 import { Transition } from '@headlessui/react';
-import { Connector } from '@web3-react/types';
 import { injectedConnection } from '../connection';
+import { updateSelectedWallet } from 'state/user/reducer';
+import { getConnection } from 'connection/utils';
+import { useAppDispatch } from 'state/hooks';
 
 // todo we need to find a way to use our color variables (tailwind) to set primary and secondary color of duoton icons
 const style = {
@@ -20,17 +22,20 @@ const style = {
 } as React.CSSProperties;
 
 const Category = () => {
+  const dispatch = useAppDispatch();
   const { chainId, account } = useWeb3React();
   const active = useMemo(() => !!chainId, [chainId]);
 
-  const connect = () => {
+  const tryActivation = useCallback(async () => {
     const connector = injectedConnection.connector;
+    const connectionType = getConnection(connector).type;
     try {
-      connector.activate();
+      await connector.activate();
+      dispatch(updateSelectedWallet({ wallet: connectionType }));
     } catch (error: any) {
       console.debug(`web3-react connection error: ${error}`);
     }
-  };
+  }, [dispatch]);
 
   const [open, setOpen] = useState(false);
 
@@ -63,7 +68,7 @@ const Category = () => {
     return active ? (
       <p data-testid="wallet-connect">Wallet Connected {shortenAddress(account)}</p>
     ) : (
-      <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={connect}>
+      <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={tryActivation}>
         Connect Wallet
       </button>
     );
@@ -174,11 +179,11 @@ const Category = () => {
                 Go back
               </button>
               {active ? (
-                <button data-testid="wallet-connect" className={'btn-primary btn-large w-56'} onClick={connect}>
+                <button data-testid="wallet-connect" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
                   Cast <span className={'font-bold'}>245</span> SONG
                 </button>
               ) : (
-                <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={connect}>
+                <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={tryActivation}>
                   Connect Wallet
                 </button>
               )}
@@ -220,7 +225,3 @@ const Category = () => {
 };
 
 export default Category; /* Rectangle 18 */
-
-function useCallback(arg0: (connector: Connector) => Promise<void>, arg1: any[]) {
-  throw new Error('Function not implemented.');
-}
