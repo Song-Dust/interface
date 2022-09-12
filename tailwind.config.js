@@ -20,6 +20,7 @@ module.exports = {
         chips: '#5EBAB0',
         gray: '#BFBFBF',
         'light-gray': '#EBECEF',
+        'light-gray-2': '#EDF2F3',
         'dark-gray': '#757575',
         'blue-gray-light': '#E9EFF6',
         'primary-light': '#FFE9EE',
