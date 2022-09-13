@@ -7,6 +7,8 @@ import { useWeb3React } from '@web3-react/core';
 import useWalletActivation from 'hooks/useWalletActivation';
 import { useParams } from 'react-router-dom';
 import { useTopic } from 'hooks/useArena';
+import { SONG } from 'constants/tokens';
+import { useTokenBalance } from 'hooks/useCurrencyBalance';
 
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();
@@ -31,6 +33,9 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   function closeAction() {
     setSelectedSongId(null);
   }
+
+  const songBalance = useTokenBalance(account ?? undefined, chainId ? SONG[chainId] : undefined);
+  const [voteAmount, setVoteAmount] = useState('');
 
   function modalContent() {
     return (
@@ -78,7 +83,12 @@ const VoteSongModal = (props: ModalPropsInterface) => {
                 </p>
               </div>
               <div className={'flex-1'}>
-                <Input balance={'302 SONG'} placeholder="Enter Amount" />
+                <Input
+                  currencyBalance={songBalance}
+                  placeholder="Enter Amount"
+                  value={voteAmount}
+                  onUserInput={setVoteAmount}
+                />
               </div>
             </section>
             <section className={'vote-modal-action flex justify-end mt-8'}>
