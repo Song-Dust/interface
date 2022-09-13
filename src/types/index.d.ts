@@ -15,3 +15,17 @@ export type Choice = ChoiceStruct & {
   meta?: SongMeta | null;
   id: number;
 };
+
+export enum TransactionStatus {
+  SUCCESS,
+  PENDING,
+}
+
+export type Transaction = {
+  status: TransactionStatus;
+  type: string;
+  message: string;
+  amount: string;
+  tokenSymbol: string;
+  amountTo: string;
+};

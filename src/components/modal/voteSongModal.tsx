@@ -1,21 +1,15 @@
-import React, {Fragment, useCallback, useMemo, useState} from 'react'
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
 // import PropTypes from 'prop-types';
+import { Transition } from '@headlessui/react';
+import Modal from 'components/modal/index';
+import Input from 'components/basic/input';
+import { useWeb3React } from '@web3-react/core';
+import { injectedConnection } from '../../connection';
+import { getConnection } from '../../connection/utils';
+import { updateSelectedWallet } from 'state/user/reducer';
+import { useAppDispatch } from 'state/hooks';
 
-import { Dialog, Transition } from '@headlessui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/pro-solid-svg-icons'
-import Modal from "components/modal/index";
-import Input from "components/basic/input";
-import {useWeb3React} from "@web3-react/core";
-import {injectedConnection} from "../../connection";
-import {getConnection} from "../../connection/utils";
-import {updateSelectedWallet} from "state/user/reducer";
-import {useAppDispatch} from "state/hooks";
-
-
-
-
-const VoteSongModal = (props: { balance: any; placeholder: any; choices: any; }) => {
+const VoteSongModal = (props: { balance: any; placeholder: any; choices: any }) => {
   const dispatch = useAppDispatch();
   const { chainId, account } = useWeb3React();
   const active = useMemo(() => !!chainId, [chainId]);
@@ -31,7 +25,7 @@ const VoteSongModal = (props: { balance: any; placeholder: any; choices: any; })
     }
   }, [dispatch]);
 
-  const { balance, placeholder, choices } = props
+  const { balance, placeholder, choices } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -47,9 +41,8 @@ const VoteSongModal = (props: { balance: any; placeholder: any; choices: any; })
   const selectedSong = useMemo(() => {
     if (selectedSongId === null) return null;
     // eslint-disable-next-line react/prop-types
-    return choices.find((c: { id: number; }) => c.id === selectedSongId)!;
+    return choices.find((c: { id: number }) => c.id === selectedSongId)!;
   }, [choices, selectedSongId]);
-
 
   function openAction(id: React.Key | null | undefined) {
     // @ts-ignore
@@ -60,42 +53,47 @@ const VoteSongModal = (props: { balance: any; placeholder: any; choices: any; })
     setSelectedSongId(null);
   }
 
-
   // const { disabled, className, icon, balance } = props
   // eslint-disable-next-line react/prop-types
-
 
   return (
     <>
       <Modal
         className={'!max-w-2xl relative overflow-hidden'}
-        {/* eslint-disable-next-line react/prop-types */...props}
+        {
+          /* eslint-disable-next-line react/prop-types */ ...props
+        }
         title={`Select the song you want to vote for (${choices.length} songs nominated)`}
         closeModal={closeModal}
         open={open}
       >
         <main className={'flex flex-wrap gap-6'}>
           {/* todo #alimahdiyar we need to have selected state when a song being selected in modal */}
-          {choices.map((song: { id: React.Key | null | undefined; description: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined; }) => {
-            return (
-              <div
-                onClick={() => openAction(song.id)}
-                key={song.id}
-                className={'w-64 h-24 bg-cover relative'}
-                data-testid={`category-list-item-${song.id}`}
-              >
-                {/* todo #alimahdiyar img below must be an iframe link to youtube video*/}
-                <img
-                  alt="choice"
-                  src={'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'}
-                  className={'rounded-xl w-full h-full'}
-                />
-                <div className={'px-2 pt-1 absolute inset-0'}>
-                  <p className={'font-bold text-xl'}>{song.description}</p>
+          {choices.map(
+            (song: {
+              id: React.Key | null | undefined;
+              description: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
+            }) => {
+              return (
+                <div
+                  onClick={() => openAction(song.id)}
+                  key={song.id}
+                  className={'w-64 h-24 bg-cover relative'}
+                  data-testid={`category-list-item-${song.id}`}
+                >
+                  {/* todo #alimahdiyar img below must be an iframe link to youtube video*/}
+                  <img
+                    alt="choice"
+                    src={'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'}
+                    className={'rounded-xl w-full h-full'}
+                  />
+                  <div className={'px-2 pt-1 absolute inset-0'}>
+                    <p className={'font-bold text-xl'}>{song.description}</p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            },
+          )}
         </main>
         <Transition
           as={Fragment}
@@ -118,7 +116,7 @@ const VoteSongModal = (props: { balance: any; placeholder: any; choices: any; })
                 </p>
               </div>
               <div className={'flex-1'}>
-                <Input balance placeholder="Enter Amount" />
+                <Input balance={'302 SONG'} placeholder="Enter Amount" />
               </div>
             </section>
             <section className={'vote-modal-action flex justify-end mt-8'}>
@@ -140,7 +138,7 @@ const VoteSongModal = (props: { balance: any; placeholder: any; choices: any; })
         </Transition>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default VoteSongModal
+export default VoteSongModal;

@@ -1,25 +1,19 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, PropsWithChildren } from 'react';
 
-import { Dialog, Transition } from '@headlessui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/pro-solid-svg-icons'
+import { Dialog, Transition } from '@headlessui/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/pro-solid-svg-icons';
 
-// interface ModalProps {
-//   children?: React.ReactNode,
-//     title?: String,
-//     open: Boolean,
-//     closeModal(): null
-// }
+export interface ModalPropsInterface extends React.HTMLAttributes<HTMLElement> {
+  open: boolean;
 
-const Modal = (props) => {
-  const {
-    // eslint-disable-next-line react/prop-types
-    open, closeModal,children,className,title,
-    // search,
-    // placeholderSearch,
-    // padding,
-    // handleSearch,
-  } = props
+  closeModal(): void;
+}
+
+export type ModalProps = PropsWithChildren<ModalPropsInterface>;
+
+const Modal = (props: ModalProps) => {
+  const { open, closeModal, children, className, title } = props;
 
   return (
     <>
@@ -48,7 +42,9 @@ const Modal = (props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className={`${className} max-w-md w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`} >
+                <Dialog.Panel
+                  className={`${className} max-w-md w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
+                >
                   <Dialog.Title as="h3" className="relative text-lg font-medium leading-6 text-gray-900 mb-8">
                     {title ? title : ''}
                     <div onClick={closeModal} className={'absolute -right-1 -top-2 p-2 cursor-pointer'}>
@@ -63,9 +59,8 @@ const Modal = (props) => {
           </div>
         </Dialog>
       </Transition>
-
     </>
-  )
-}
+  );
+};
 
-export default Modal
+export default Modal;

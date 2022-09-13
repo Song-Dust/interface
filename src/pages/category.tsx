@@ -1,11 +1,11 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHexagonVerticalNft, faCircleInfo } from '@fortawesome/pro-duotone-svg-icons';
+import { faCircleInfo, faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
 import { useTopic } from 'hooks/useArena';
 import { useWeb3React } from '@web3-react/core';
 import { useParams } from 'react-router-dom';
 import { shortenAddress } from 'utils/index';
-import Modal from 'components/modal/index';
+import Modal from 'components/modal';
 import Input from 'components/basic/input';
 import { Transition } from '@headlessui/react';
 import { injectedConnection } from '../connection';
@@ -191,7 +191,7 @@ const Category = () => {
                 </p>
               </div>
               <div className={'flex-1'}>
-                <Input balance placeholder="Enter Amount" />
+                <Input balance={'302 SONG'} placeholder="Enter Amount" />
               </div>
             </section>
             <section className={'vote-modal-action flex justify-end mt-8'}>
@@ -222,7 +222,6 @@ const Category = () => {
         open={AddSongModal}
       >
         <main className={'flex flex-wrap gap-6'}>
-
           {choices.map((song) => {
             return (
               <div
@@ -268,12 +267,11 @@ const Category = () => {
                 <p className={''}>
                   <span>{selectedSong?.description}</span> selected
                 </p>
-                {active && <p className={''}>
-                  You need to Connect your wallet for adding a song
-                </p>}
-                <p>Submit fee: <span className={'font-semibold'}>24.25 SONG</span></p>
+                {active && <p className={''}>You need to Connect your wallet for adding a song</p>}
+                <p>
+                  Submit fee: <span className={'font-semibold'}>24.25 SONG</span>
+                </p>
               </div>
-
             </section>
             <section className={'vote-modal-action flex justify-end mt-8'}>
               <button onClick={closeAction} className={'btn-primary-inverted btn-large mr-2'}>
@@ -294,7 +292,6 @@ const Category = () => {
         </Transition>
       </Modal>
 
-
       <Modal
         className={'relative overflow-hidden'}
         title={`What do you want to add?`}
@@ -305,7 +302,6 @@ const Category = () => {
           <button>new category</button>
           <button onClick={openAddSongModal}>new Song-a-day song</button>
         </main>
-
       </Modal>
 
       <div>{renderConnector()}</div>

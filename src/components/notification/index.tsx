@@ -1,24 +1,35 @@
-import { Transition } from '@headlessui/react'
-import { Fragment, useEffect } from 'react'
+import { Transition } from '@headlessui/react';
+import React, { Fragment, PropsWithChildren, useEffect } from 'react';
 // import { useTimeoutFn } from 'react-use'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faCircleXmark } from '@fortawesome/pro-solid-svg-icons'
-import { TransactionStatus } from '../../constants/transactionStatus'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck, faCircleXmark } from '@fortawesome/pro-solid-svg-icons';
+import { Transaction, TransactionStatus } from '../../types';
 
-const Notification = (props) => {
-  const { className, open, duration, closeNotif, tx, linkMessage, linkHref } = props
+export interface NotificationPropsInterface extends React.HTMLAttributes<HTMLElement> {
+  open: boolean;
+  duration: number;
+  linkMessage: string;
+  linkHref: string;
+  tx: Transaction;
+
+  closeNotif(): void;
+}
+
+export type NotificationProps = PropsWithChildren<NotificationPropsInterface>;
+
+const Notification = (props: NotificationProps) => {
+  const { className, open, duration, closeNotif, tx, linkMessage, linkHref } = props;
   // let [resetIsShowing] = useTimeoutFn(() => setIsShowing(true), 500)
 
-  const closeNotification = () => {
-    return setTimeout(() => {
-      closeNotif()
-    }, duration)
-  }
+  const closeNotification = () =>
+    setTimeout(() => {
+      closeNotif();
+    }, duration);
 
   useEffect(() => {
-    const timer = closeNotification(duration)
-    return () => clearTimeout(timer)
-  }, [open])
+    const timer = closeNotification();
+    return () => clearTimeout(timer);
+  }, [closeNotification, open]);
 
   return (
     <div className={`${className}`}>
@@ -69,7 +80,7 @@ const Notification = (props) => {
         </div>
       </Transition>
     </div>
-  )
-}
+  );
+};
 
-export default Notification
+export default Notification;
