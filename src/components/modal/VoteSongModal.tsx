@@ -9,10 +9,11 @@ import { useParams } from 'react-router-dom';
 import { useTopic } from 'hooks/useArena';
 import { SONG } from 'constants/tokens';
 import { useTokenBalance } from 'hooks/useCurrencyBalance';
+import { formatBalance } from 'utils/numbers';
 
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();
-  const active = useMemo(() => !!chainId, [chainId]);
+  const active = useMemo(() => !!account, [account]);
   const { open, closeModal } = props;
   const { tryActivation } = useWalletActivation();
 
@@ -97,7 +98,8 @@ const VoteSongModal = (props: ModalPropsInterface) => {
               </button>
               {active ? (
                 <button data-testid="wallet-connect" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
-                  Cast <span className={'font-bold'}>245</span> SONG
+                  Cast <span className={'font-bold'}>{formatBalance(voteAmount || 0, 3)}</span>{' '}
+                  {songBalance?.currency.symbol || 'SONG'}
                 </button>
               ) : (
                 <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={tryActivation}>
