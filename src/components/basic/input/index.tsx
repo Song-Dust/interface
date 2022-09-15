@@ -23,6 +23,7 @@ const Input = (props: InputProps) => {
         <div className={'input-icon'}></div>
         {/*todo remove focus on input*/}
         <input
+          type="number"
           placeholder={placeholder}
           className={'focus:outline-0'}
           onChange={(e) => onUserInput(e.target.value)}
