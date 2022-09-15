@@ -6,5 +6,5 @@ import { SupportedChainId } from './chains';
 export const RPC_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.MAINNET]: '',
   [SupportedChainId.RINKEBY]: '',
-  [SupportedChainId.GOERLI]: 'https://rpc.goerli.mudit.blog/',
+  [SupportedChainId.GOERLI]: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
 };
