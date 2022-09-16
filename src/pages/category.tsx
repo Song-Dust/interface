@@ -23,8 +23,8 @@ const style = {
 
 const Category = () => {
   const dispatch = useAppDispatch();
-  const { chainId, account } = useWeb3React();
-  const active = useMemo(() => !!chainId, [chainId]);
+  const { account } = useWeb3React();
+  const active = useMemo(() => !!account, [account]);
 
   const tryActivation = useCallback(async () => {
     const connector = injectedConnection.connector;
