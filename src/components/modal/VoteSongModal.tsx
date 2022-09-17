@@ -11,6 +11,8 @@ import { SONG } from 'constants/tokens';
 import { useTokenBalance } from 'hooks/useCurrencyBalance';
 import { formatBalance } from 'utils/numbers';
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount';
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback';
+import { ARENA_ADDRESS } from 'constants/addresses';
 
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();
@@ -42,30 +44,65 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     () => tryParseCurrencyAmount(voteAmount, songBalance?.currency ?? undefined),
     [songBalance?.currency, voteAmount],
   );
+
   const insufficientBalance = useMemo(
     () => songBalance && parsedAmount && songBalance.lessThan(parsedAmount),
     [parsedAmount, songBalance],
   );
 
+  const [approvalSong, approveSongCallback] = useApproveCallback(
+    parsedAmount,
+    chainId ? ARENA_ADDRESS[chainId] : undefined,
+  );
+
+  const songSymbol = songBalance?.currency.symbol || 'SONG';
+
   function renderButton() {
     if (!active) {
       return (
-        <button data-testid="cast-vote" className={'btn-primary btn-large'} onClick={tryActivation}>
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large'} onClick={tryActivation}>
           Connect Wallet
+        </button>
+      );
+    }
+    if (!Number(voteAmount)) {
+      return (
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+          Enter Amount
         </button>
       );
     }
     if (insufficientBalance) {
       return (
-        <button data-testid="cast-vote" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
-          Insufficient {songBalance?.currency.symbol} balance
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+          Insufficient {songSymbol} balance
+        </button>
+      );
+    }
+    if (approvalSong === ApprovalState.NOT_APPROVED) {
+      return (
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'} onClick={approveSongCallback}>
+          Approve {songSymbol}
+        </button>
+      );
+    }
+    if (approvalSong === ApprovalState.PENDING) {
+      return (
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+          Waiting for Approve...
+        </button>
+      );
+    }
+    if (approvalSong === ApprovalState.UNKNOWN) {
+      return (
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+          Loading Approval State...
         </button>
       );
     }
     return (
-      <button data-testid="cast-vote" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
-        Cast <span className={'font-bold'}>{formatBalance(voteAmount || 0, 3)}</span>{' '}
-        {songBalance?.currency.symbol || 'SONG'}
+      <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
+        Cast <span className={'font-bold'}>{formatBalance(voteAmount, 3)}</span> {songSymbol}
       </button>
     );
   }
