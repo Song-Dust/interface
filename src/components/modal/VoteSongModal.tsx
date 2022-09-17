@@ -10,6 +10,7 @@ import { useTopic } from 'hooks/useArena';
 import { SONG } from 'constants/tokens';
 import { useTokenBalance } from 'hooks/useCurrencyBalance';
 import { formatBalance } from 'utils/numbers';
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount';
 
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();
@@ -37,6 +38,37 @@ const VoteSongModal = (props: ModalPropsInterface) => {
 
   const songBalance = useTokenBalance(account ?? undefined, chainId ? SONG[chainId] : undefined);
   const [voteAmount, setVoteAmount] = useState('');
+  const parsedAmount = useMemo(
+    () => tryParseCurrencyAmount(voteAmount, songBalance?.currency ?? undefined),
+    [songBalance?.currency, voteAmount],
+  );
+  const insufficientBalance = useMemo(
+    () => songBalance && parsedAmount && songBalance.lessThan(parsedAmount),
+    [parsedAmount, songBalance],
+  );
+
+  function renderButton() {
+    if (!active) {
+      return (
+        <button data-testid="cast-vote" className={'btn-primary btn-large'} onClick={tryActivation}>
+          Connect Wallet
+        </button>
+      );
+    }
+    if (insufficientBalance) {
+      return (
+        <button data-testid="cast-vote" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
+          Insufficient {songBalance?.currency.symbol} balance
+        </button>
+      );
+    }
+    return (
+      <button data-testid="cast-vote" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
+        Cast <span className={'font-bold'}>{formatBalance(voteAmount || 0, 3)}</span>{' '}
+        {songBalance?.currency.symbol || 'SONG'}
+      </button>
+    );
+  }
 
   function modalContent() {
     return (
@@ -96,16 +128,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
               <button onClick={closeAction} className={'btn-primary-inverted btn-large mr-2'}>
                 Go back
               </button>
-              {active ? (
-                <button data-testid="wallet-connect" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
-                  Cast <span className={'font-bold'}>{formatBalance(voteAmount || 0, 3)}</span>{' '}
-                  {songBalance?.currency.symbol || 'SONG'}
-                </button>
-              ) : (
-                <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={tryActivation}>
-                  Connect Wallet
-                </button>
-              )}
+              {renderButton()}
             </section>
             {/* footer action */}
           </footer>
