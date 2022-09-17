@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 // import PropTypes from 'prop-types';
 import { Transition } from '@headlessui/react';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
@@ -13,6 +13,7 @@ import { formatBalance } from 'utils/numbers';
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount';
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback';
 import { ARENA_ADDRESS } from 'constants/addresses';
+import { useVoteCallback } from 'hooks/arena/useVoteCallback';
 
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();
@@ -55,7 +56,37 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     chainId ? ARENA_ADDRESS[chainId] : undefined,
   );
 
+  const { callback: voteCallback } = useVoteCallback(
+    Number(topicId),
+    Number(selectedSongId),
+    parsedAmount?.quotient.toString() || '0',
+  );
+  const [loading, setLoading] = useState(false);
+
   const songSymbol = songBalance?.currency.symbol || 'SONG';
+
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const handleVote = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      await voteCallback?.();
+    } catch (e) {
+      console.log('buy failed');
+      console.log(e);
+    }
+    if (mounted.current) {
+      setLoading(false);
+    }
+  };
 
   function renderButton() {
     if (!active) {
@@ -100,8 +131,15 @@ const VoteSongModal = (props: ModalPropsInterface) => {
         </button>
       );
     }
+    if (loading) {
+      return (
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+          Sending Transaction...
+        </button>
+      );
+    }
     return (
-      <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'} onClick={tryActivation}>
+      <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'} onClick={handleVote}>
         Cast <span className={'font-bold'}>{formatBalance(voteAmount, 3)}</span> {songSymbol}
       </button>
     );
