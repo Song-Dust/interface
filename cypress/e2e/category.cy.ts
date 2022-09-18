@@ -1,8 +1,9 @@
-import { ARENA_ADDRESS, MULTICALL_ADDRESS } from '../../src/constants/addresses';
+import { ARENA_ADDRESS, MULTICALL_ADDRESS, SONG_ADDRESS } from '../../src/constants/addresses';
 import { SupportedChainId } from '../../src/constants/chains';
 import RoutePath, { getRoute, RouteParam } from '../../src/routes';
 import { ArenaHandler } from '../utils/abihandlers/Arena';
 import MulticallUniswapAbiHandler from '../utils/abihandlers/MulticallUniswapInterface';
+import SongAbiHandler from '../utils/abihandlers/Song';
 import { IPFS_SERVER_URL, songMeta } from '../utils/data';
 
 describe('Category', () => {
@@ -26,6 +27,7 @@ describe('Category', () => {
     const topicId = 0;
     cy.setupMetamocks();
     cy.setAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], new ArenaHandler());
+    cy.setAbiHandler(SONG_ADDRESS[SupportedChainId.GOERLI], new SongAbiHandler());
     cy.setAbiHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], new MulticallUniswapAbiHandler());
 
     cy.visit(
