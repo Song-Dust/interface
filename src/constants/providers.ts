@@ -1,7 +1,8 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 
-import { NETWORK_URLS, SupportedChainId } from './chains';
+import { SupportedChainId } from './chains';
+import { RPC_URLS } from 'constants/networks';
 
 export const Providers: { [chainId: number]: JsonRpcProvider } = {
-  [SupportedChainId.GOERLI]: new JsonRpcProvider(NETWORK_URLS[SupportedChainId.GOERLI]),
+  [SupportedChainId.GOERLI]: new JsonRpcProvider(RPC_URLS[SupportedChainId.GOERLI]),
 };
