@@ -57,6 +57,9 @@ const Modal = (props: ModalProps) => {
               </Transition.Child>
             </div>
           </div>
+          {/* this button is for fixing a warning */}
+          {/* https://github.com/tailwindlabs/headlessui/issues/265#issuecomment-851067026 */}
+          <button className="opacity-0 absolute bottom-0"></button>
         </Dialog>
       </Transition>
     </>

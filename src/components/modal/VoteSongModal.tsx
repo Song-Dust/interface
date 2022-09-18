@@ -215,12 +215,8 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   return (
     <Modal
       className={'!max-w-2xl relative overflow-hidden'}
-      {
-        /* eslint-disable-next-line react/prop-types */ ...props
-      }
+      {...props}
       title={`Select the song you want to vote for (${choices.length} songs nominated)`}
-      closeModal={closeModal}
-      open={open}
     >
       {loaded ? modalContent() : <div>loading</div>}
     </Modal>
