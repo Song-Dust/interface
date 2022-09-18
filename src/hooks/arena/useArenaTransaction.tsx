@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
-// eslint-disable-next-line no-restricted-imports
 import { calculateGasMargin } from 'utils/calculateGasMargin';
 import isZero from 'utils/isZero';
 

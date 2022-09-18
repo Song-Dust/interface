@@ -18,7 +18,6 @@ import { useVoteCallback } from 'hooks/arena/useVoteCallback';
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();
   const active = useMemo(() => !!account, [account]);
-  const { open, closeModal } = props;
   const { tryActivation } = useWalletActivation();
 
   const { id: topicId } = useParams();
@@ -27,7 +26,6 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
   const selectedSong = useMemo(() => {
     if (selectedSongId === null) return null;
-    // eslint-disable-next-line react/prop-types
     return choices.find((c: { id: number }) => c.id === selectedSongId)!;
   }, [choices, selectedSongId]);
 
