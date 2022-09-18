@@ -7,13 +7,6 @@
 /* eslint-disable no-undef */
 import './metamocks';
 
-Cypress.Commands.add('shouldBeCalled', (alias, timesCalled) => {
-  expect(
-    cy.state('requests').filter((call) => call.alias === alias),
-    `${alias} should have been called ${timesCalled} times`,
-  ).to.have.length(timesCalled);
-});
-
 // https://github.com/cypress-io/cypress/issues/2752#issuecomment-1039285381
 Cypress.on('window:before:load', (win) => {
   let copyText;
@@ -28,14 +21,15 @@ Cypress.on('window:before:load', (win) => {
   win.navigator.clipboard.__proto__.readText = () => copyText;
 });
 
-// beforeEach(() => {
-//   cy.on('window:before:load', (win) => {
-//     cy.spy(win.console, 'error').as('spyWinConsoleError');
-//     cy.spy(win.console, 'warn').as('spyWinConsoleWarn');
-//   });
-// });
-//
-// afterEach(() => {
-//   cy.get('@spyWinConsoleError').should('have.callCount', 0);
-//   cy.get('@spyWinConsoleWarn').should('have.callCount', 0);
-// });
+beforeEach(() => {
+  cy.on('window:before:load', (win) => {
+    cy.spy(win.console, 'error').as('spyWinConsoleError');
+    cy.spy(win.console, 'warn').as('spyWinConsoleWarn');
+  });
+});
+
+afterEach(() => {
+  // TODO: fix Updater component error and change this to 0
+  cy.get('@spyWinConsoleError').its('callCount').should('lessThan', 2);
+  cy.get('@spyWinConsoleWarn').should('have.callCount', 0);
+});

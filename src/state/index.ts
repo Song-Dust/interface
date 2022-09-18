@@ -20,7 +20,10 @@ const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: true }).concat(save({ states: PERSISTED_KEYS, debounce: 1000 })),
-  preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: isTestEnv() }),
+  preloadedState: load({
+    states: PERSISTED_KEYS,
+    disableWarnings: isTestEnv() || process.env.REACT_APP_IS_CYPRESS === 'true',
+  }),
 });
 
 store.dispatch(updateVersion());
