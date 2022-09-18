@@ -1,20 +1,42 @@
-// ***********************************************************
-// This example support/e2e.ts is processed and
-// loaded automatically before your test files.
-//
-// This is a great place to put global configuration and
-// behavior that modifies Cypress.
-//
-// You can change the location of this file or turn off
-// automatically serving support files with the
-// 'supportFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/configuration
-// ***********************************************************
+import './metamocks';
 
-// Import commands.js using ES2015 syntax:
-import './commands'
+// https://github.com/cypress-io/cypress/issues/2752#issuecomment-1039285381
+Cypress.on('window:before:load', (win) => {
+  let copyText: string;
+  const readText = () =>
+    new Promise<string>((resolve, _reject) => {
+      resolve(copyText);
+    });
+  const writeText = (text: string) =>
+    new Promise<void>((resolve, _reject) => {
+      copyText = text;
+      resolve();
+    });
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+  const clipboardObj = {
+    ...win.navigator.clipboard,
+    __proto__: {
+      readText,
+      writeText,
+    },
+  };
+  if (!win.navigator.clipboard) {
+    win.navigator.clipboard = clipboardObj;
+  }
+
+  win.navigator.clipboard.__proto__.writeText = writeText;
+  win.navigator.clipboard.__proto__.readText = readText;
+});
+
+beforeEach(() => {
+  cy.on('window:before:load', (win) => {
+    cy.spy(win.console, 'error').as('spyWinConsoleError');
+    cy.spy(win.console, 'warn').as('spyWinConsoleWarn');
+  });
+});
+
+afterEach(() => {
+  // TODO: fix Updater component error and change this to 0
+  cy.get('@spyWinConsoleError').its('callCount').should('lessThan', 2);
+  cy.get('@spyWinConsoleWarn').should('have.callCount', 0);
+});
