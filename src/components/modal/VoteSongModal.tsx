@@ -1,19 +1,19 @@
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 // import PropTypes from 'prop-types';
 import { Transition } from '@headlessui/react';
-import Modal, { ModalPropsInterface } from 'components/modal/index';
-import Input from 'components/basic/input';
 import { useWeb3React } from '@web3-react/core';
-import useWalletActivation from 'hooks/useWalletActivation';
-import { useParams } from 'react-router-dom';
-import { useTopic } from 'hooks/useArena';
-import { SONG } from 'constants/tokens';
-import { useTokenBalance } from 'hooks/useCurrencyBalance';
-import { formatBalance } from 'utils/numbers';
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount';
-import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback';
+import Input from 'components/basic/input';
+import Modal, { ModalPropsInterface } from 'components/modal/index';
 import { ARENA_ADDRESS } from 'constants/addresses';
+import { SONG } from 'constants/tokens';
 import { useVoteCallback } from 'hooks/arena/useVoteCallback';
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback';
+import { useTopic } from 'hooks/useArena';
+import { useTokenBalance } from 'hooks/useCurrencyBalance';
+import useWalletActivation from 'hooks/useWalletActivation';
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { formatBalance } from 'utils/numbers';
 
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();

@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
+import { L2_CHAIN_IDS } from 'constants/chains';
 import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from 'constants/misc';
 import LibUpdater from 'lib/hooks/transactions/updater';
+import React, { useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from 'state/hooks';
 
-import { L2_CHAIN_IDS } from 'constants/chains';
 import { useAddPopup } from '../application/hooks';
 import { checkedTransaction, finalizeTransaction } from './reducer';
 import { SerializableTransactionReceipt } from './types';

@@ -1,8 +1,9 @@
-import { createRoot } from 'react-dom/client';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-
 import './index.sass';
+
+import { createRoot } from 'react-dom/client';
+
 import Main from './Main';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false;

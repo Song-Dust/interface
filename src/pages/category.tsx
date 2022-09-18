@@ -1,17 +1,18 @@
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo, faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
-import { useTopic } from 'hooks/useArena';
-import { useWeb3React } from '@web3-react/core';
-import { useParams } from 'react-router-dom';
-import { shortenAddress } from 'utils/index';
-import Modal from 'components/modal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Transition } from '@headlessui/react';
-import { injectedConnection } from '../connection';
-import { updateSelectedWallet } from 'state/user/reducer';
-import { getConnection } from 'connection/utils';
-import { useAppDispatch } from 'state/hooks';
+import { useWeb3React } from '@web3-react/core';
+import Modal from 'components/modal';
 import VoteSongModal from 'components/modal/VoteSongModal';
+import { getConnection } from 'connection/utils';
+import { useTopic } from 'hooks/useArena';
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch } from 'state/hooks';
+import { updateSelectedWallet } from 'state/user/reducer';
+import { shortenAddress } from 'utils/index';
+
+import { injectedConnection } from '../connection';
 
 // todo we need to find a way to use our color variables (tailwind) to set primary and secondary color of duoton icons
 const style = {

@@ -2,6 +2,7 @@ import { SupportedLocale } from 'constants/locales';
 import { useCallback } from 'react';
 import { shallowEqual } from 'react-redux';
 import { useAppDispatch, useAppSelector } from 'state/hooks';
+
 import { updateUserDarkMode, updateUserLocale } from './reducer';
 
 export function useIsDarkMode(): boolean {

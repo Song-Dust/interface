@@ -2,12 +2,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 import multicall from 'lib/state/multicall';
 import { load, save } from 'redux-localstorage-simple';
+import { isTestEnv } from 'utils/env';
 
 import application from './application/reducer';
 import { updateVersion } from './global/actions';
 import transactions from './transactions/reducer';
 import user from './user/reducer';
-import { isTestEnv } from 'utils/env';
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists'];
 

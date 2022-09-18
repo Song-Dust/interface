@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
 import { createMulticall, ListenerOptions } from '@uniswap/redux-multicall';
 import { useWeb3React } from '@web3-react/core';
 import { useInterfaceMulticall } from 'hooks/useContract';
 import useBlockNumber from 'lib/hooks/useBlockNumber';
+import React, { useMemo } from 'react';
 import { combineReducers, createStore } from 'redux';
 
 const multicall = createMulticall();

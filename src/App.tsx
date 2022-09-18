@@ -1,6 +1,7 @@
-import React from 'react';
 import './App.css';
+
 import Category from 'pages/category';
+import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import RoutePath, { getRoute, RouteParam } from './routes';

@@ -5,7 +5,6 @@ import { Erc20Interface } from 'abis/types/Erc20';
 import JSBI from 'jsbi';
 import { useMultipleContractSingleData } from 'lib/hooks/multicall';
 import { useMemo } from 'react';
-
 import { isAddress } from 'utils';
 
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface;

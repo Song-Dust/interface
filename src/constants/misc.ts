@@ -1,5 +1,5 @@
-import { RetryOptions } from 'utils/retry';
 import JSBI from 'jsbi';
+import { RetryOptions } from 'utils/retry';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 

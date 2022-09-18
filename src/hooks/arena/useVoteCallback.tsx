@@ -1,10 +1,10 @@
-import React, { ReactNode, useMemo } from 'react';
+import { BigNumberish } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
+import { useArenaContract } from 'hooks/useContract';
+import React, { ReactNode, useMemo } from 'react';
 
 import useArenaTransaction from './useArenaTransaction';
-import { useArenaContract } from 'hooks/useContract';
-import { BigNumberish } from '@ethersproject/bignumber';
 
 export enum CallbackState {
   INVALID,

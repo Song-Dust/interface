@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core';
+import React, { useCallback } from 'react';
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount';
 import { maxAmountSpend } from 'utils/maxAmountSpend';
 

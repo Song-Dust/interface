@@ -1,7 +1,7 @@
-import { BigNumber } from '@ethersproject/bignumber/lib.esm';
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
-
+import { BigNumber } from '@ethersproject/bignumber/lib.esm';
 import { AbiHandler, MetamocksContext } from 'metamocks';
+
 import { choices } from '../data';
 
 export class ArenaHandler extends AbiHandler {

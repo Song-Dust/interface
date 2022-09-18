@@ -1,10 +1,10 @@
-import React, { ReactNode, useMemo } from 'react';
 import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
 import { Connection } from 'connection';
 import { getConnectionName } from 'connection/utils';
 import useEagerlyConnect from 'hooks/useEagerlyConnect';
 import useOrderedConnections from 'hooks/useOrderedConnections';
+import React, { ReactNode, useMemo } from 'react';
 
 export default function Web3Provider({ children }: { children: ReactNode }) {
   useEagerlyConnect();

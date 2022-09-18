@@ -1,8 +1,9 @@
-import { Transition } from '@headlessui/react';
-import React, { Fragment, PropsWithChildren, useEffect } from 'react';
+import { faCircleCheck, faCircleXmark } from '@fortawesome/pro-solid-svg-icons';
 // import { useTimeoutFn } from 'react-use'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faCircleXmark } from '@fortawesome/pro-solid-svg-icons';
+import { Transition } from '@headlessui/react';
+import React, { Fragment, PropsWithChildren, useEffect } from 'react';
+
 import { Transaction, TransactionStatus } from '../../types';
 
 export interface NotificationPropsInterface extends React.HTMLAttributes<HTMLElement> {

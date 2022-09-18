@@ -1,5 +1,5 @@
-import { AbiHandler, isTheSameAddress, MetamocksContext } from 'metamocks';
 import MulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json';
+import { AbiHandler, isTheSameAddress, MetamocksContext } from 'metamocks';
 
 const { abi: MulticallABI } = MulticallJson;
 

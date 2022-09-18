@@ -1,12 +1,13 @@
-import { Interface } from '@ethersproject/abi';
-import { useArenaContract } from 'hooks/useContract';
-import { useEffect, useMemo, useState } from 'react';
-import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
-import { TopicStruct } from '../types/contracts/Arena';
-import { BigNumber } from '@ethersproject/bignumber';
-import { Choice, SongMeta } from '../types';
-import axios from 'axios';
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
+import { Interface } from '@ethersproject/abi';
+import { BigNumber } from '@ethersproject/bignumber';
+import axios from 'axios';
+import { useArenaContract } from 'hooks/useContract';
+import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
+import { useEffect, useMemo, useState } from 'react';
+
+import { Choice, SongMeta } from '../types';
+import { TopicStruct } from '../types/contracts/Arena';
 
 const { abi: ArenaABI } = ArenaJson;
 const arenaInterface = new Interface(ArenaABI);

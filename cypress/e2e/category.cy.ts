@@ -1,9 +1,9 @@
+import { ARENA_ADDRESS, MULTICALL_ADDRESS } from '../../src/constants/addresses';
+import { SupportedChainId } from '../../src/constants/chains';
 import RoutePath, { getRoute, RouteParam } from '../../src/routes';
 import { ArenaHandler } from '../utils/abihandlers/Arena';
-import { SupportedChainId } from '../../src/constants/chains';
-import { ARENA_ADDRESS, MULTICALL_ADDRESS } from '../../src/constants/addresses';
-import { IPFS_SERVER_URL, songMeta } from '../utils/data';
 import MulticallUniswapAbiHandler from '../utils/abihandlers/MulticallUniswapInterface';
+import { IPFS_SERVER_URL, songMeta } from '../utils/data';
 
 describe('Category', () => {
   it('loads songs', () => {

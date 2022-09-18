@@ -3,8 +3,8 @@ import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { Connector } from '@web3-react/types';
-import { RPC_URLS } from 'constants/networks';
 import { SupportedChainId } from 'constants/chains';
+import { RPC_URLS } from 'constants/networks';
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',

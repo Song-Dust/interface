@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
+import { useAppDispatch } from 'state/hooks';
+import { updateSelectedWallet } from 'state/user/reducer';
+
 import { injectedConnection } from '../connection';
 import { getConnection } from '../connection/utils';
-import { updateSelectedWallet } from 'state/user/reducer';
-import { useAppDispatch } from 'state/hooks';
 
 export default function useWalletActivation() {
   const dispatch = useAppDispatch();

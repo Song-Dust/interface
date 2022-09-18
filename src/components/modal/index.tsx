@@ -1,8 +1,7 @@
-import React, { Fragment, PropsWithChildren } from 'react';
-
-import { Dialog, Transition } from '@headlessui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/pro-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Dialog, Transition } from '@headlessui/react';
+import React, { Fragment, PropsWithChildren } from 'react';
 
 export interface ModalPropsInterface extends React.HTMLAttributes<HTMLElement> {
   open: boolean;
