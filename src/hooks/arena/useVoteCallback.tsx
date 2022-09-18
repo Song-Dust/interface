@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 
 import useArenaTransaction from './useArenaTransaction';
 import { useArenaContract } from 'hooks/useContract';
-import { BigNumberish } from 'ethers';
+import { BigNumberish } from '@ethersproject/bignumber';
 
 export enum CallbackState {
   INVALID,
