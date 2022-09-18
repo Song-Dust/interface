@@ -27,7 +27,7 @@ const Input = (props: InputProps) => {
           placeholder={placeholder}
           className={'focus:outline-0'}
           onChange={(e) => onUserInput(e.target.value)}
-          {...props}
+          value={props.value}
         ></input>
         <div className={'input-token'}></div>
       </div>
