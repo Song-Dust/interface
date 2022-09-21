@@ -252,7 +252,11 @@ const Category = () => {
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
         </section>
         <aside className={'w-68'}>
-          <button onClick={openVoteSongModal} className={'btn-primary btn-large w-full mb-2'}>
+          <button
+            onClick={openVoteSongModal}
+            className={'btn-primary btn-large w-full mb-2'}
+            data-testid="open-vote-modal"
+          >
             Vote for a Song!
           </button>
           <button onClick={openMoreActionModal} className={'btn-primary-inverted btn-large w-full'}>

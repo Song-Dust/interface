@@ -8858,10 +8858,10 @@ merge@2.1.1:
   resolved "https://registry.yarnpkg.com/merge/-/merge-2.1.1.tgz#59ef4bf7e0b3e879186436e8481c06a6c162ca98"
   integrity sha512-jz+Cfrg9GWOZbQAnDQ4hlVnQky+341Yk5ru8bZSe6sIDTCIg8n9i/u7hSQGSVOF3C7lH6mGtqjkiT9G4wFLL0w==
 
-metamocks@0.5.6:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/metamocks/-/metamocks-0.5.6.tgz#5a701df836ff1694b55ed7124ee7be7d3d38cc00"
-  integrity sha512-MJdyIHG9Qqj0Hv6yxqjP3AbHDbNdgoOFOC6N0VHw5Njweaav2ahTJosIcvomYrDUNlsqj5wpQvpAWPO/cnr/Xw==
+metamocks@0.5.7:
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/metamocks/-/metamocks-0.5.7.tgz#6443863d3d1d1425ba369857b7de368388bf76a9"
+  integrity sha512-90BtYlDmWhG1rb5keisAseyK/v2/vegSSueE7Ija7R6KyInWuJd/iQ3sl0qDRYK0rsusgkiUUeH7Tb/HNOOWhw==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/bytes" "^5.7.0"

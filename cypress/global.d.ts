@@ -2,6 +2,10 @@ export {};
 
 declare global {
   namespace Cypress {
+    interface Chainable {
+      connectWallet(): void;
+    }
+
     interface Window {
       navigator: {
         clipboard: {

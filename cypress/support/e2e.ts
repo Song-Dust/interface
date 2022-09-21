@@ -40,3 +40,9 @@ afterEach(() => {
   cy.get('@spyWinConsoleError').its('callCount').should('lessThan', 2);
   cy.get('@spyWinConsoleWarn').should('have.callCount', 0);
 });
+
+Cypress.Commands.add('connectWallet', () => {
+  // TODO: figure out why connect wallet click is needed twice
+  cy.get('[data-testid=wallet-connect]').click();
+  cy.get('[data-testid=wallet-connect]').click();
+});
