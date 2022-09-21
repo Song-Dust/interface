@@ -1,10 +1,10 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
-import MetaMocks from 'metamocks';
 
 import { FALLBACK_CHAIN_ID } from '../../src/constants/chains';
 import { RPC_URLS } from '../../src/constants/networks';
 import { TEST_PRIVATE_KEY } from '../utils/data';
+import MetaMocks from '../utils/metamocks';
 
 Cypress.Commands.add('setupMetamocks', () => {
   const provider = new JsonRpcProvider(RPC_URLS[FALLBACK_CHAIN_ID], FALLBACK_CHAIN_ID);
@@ -16,8 +16,9 @@ Cypress.Commands.add('setupMetamocks', () => {
   });
 });
 
-Cypress.Commands.add('setAbiHandler', (address, abiHandler) => {
-  cy.get('@metamocks').then((metamocks: any) => {
-    metamocks.setHandler(address, abiHandler);
+Cypress.Commands.add('registerHandler', (address, handlerClass) => {
+  cy.get('@metamocks').then((val: any) => {
+    const metamocks = val as MetaMocks;
+    metamocks.registerHandler(address, handlerClass);
   });
 });

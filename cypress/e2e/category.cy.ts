@@ -27,9 +27,9 @@ describe('Category', () => {
       },
     );
     cy.setupMetamocks();
-    cy.setAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], new ArenaHandler());
-    cy.setAbiHandler(SONG_ADDRESS[SupportedChainId.GOERLI], new SongAbiHandler());
-    cy.setAbiHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], new MulticallUniswapAbiHandler());
+    cy.registerHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
+    cy.registerHandler(SONG_ADDRESS[SupportedChainId.GOERLI], SongAbiHandler);
+    cy.registerHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], MulticallUniswapAbiHandler);
     cy.visit(
       getRoute(RoutePath.CATEGORY, {
         [RouteParam.CATEGORY_ID]: String(categoryId),

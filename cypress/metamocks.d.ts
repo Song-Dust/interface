@@ -1,4 +1,4 @@
-import { AbiHandler } from 'metamocks';
+import MetaMocks from './utils/metamocks';
 
 export interface EthereumProvider {
   on?: (...args: any[]) => void;
@@ -9,9 +9,9 @@ export interface EthereumProvider {
 declare global {
   namespace Cypress {
     interface Chainable {
-      setupMetamocks(): void;
+      registerHandler: MetaMocks['registerHandler'];
 
-      setAbiHandler(address: string, handler: AbiHandler): void;
+      setupMetamocks(): void;
     }
 
     interface Window {

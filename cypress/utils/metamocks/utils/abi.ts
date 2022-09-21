@@ -9,7 +9,11 @@ export function keccak256(data: BytesLike): string {
   return ethers.utils.keccak256(data);
 }
 
-export function encodeEthResult(abi: any, funcName: string, result: (BigNumber | string | number)[]) {
+export function encodeEthResult<T extends BaseContract>(
+  abi: any,
+  funcName: string,
+  result: (BigNumber | string | number)[],
+) {
   const iface = new ethers.utils.Interface(abi);
   return iface.encodeFunctionResult(funcName, result);
 }
