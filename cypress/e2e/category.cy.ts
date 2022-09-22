@@ -3,11 +3,13 @@ import { SupportedChainId } from '../../src/constants/chains';
 import RoutePath, { getRoute, RouteParam } from '../../src/routes';
 import { ArenaHandler } from '../utils/abihandlers/Arena';
 import MulticallUniswapAbiHandler from '../utils/abihandlers/MulticallUniswapInterface';
-import SongAbiHandler from '../utils/abihandlers/Song';
+import { SongAbiHandler } from '../utils/abihandlers/Song';
 import { IPFS_SERVER_URL, songMeta } from '../utils/data';
 
 describe('Category', () => {
-  it('loads songs', () => {
+  const categoryId = 0;
+
+  beforeEach(() => {
     cy.intercept(
       {
         url: `${IPFS_SERVER_URL}**`,
@@ -24,22 +26,30 @@ describe('Category', () => {
         body: songMeta,
       },
     );
-    const topicId = 0;
     cy.setupMetamocks();
-    cy.setAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], new ArenaHandler());
-    cy.setAbiHandler(SONG_ADDRESS[SupportedChainId.GOERLI], new SongAbiHandler());
-    cy.setAbiHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], new MulticallUniswapAbiHandler());
-
+    cy.registerHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
+    cy.registerHandler(SONG_ADDRESS[SupportedChainId.GOERLI], SongAbiHandler);
+    cy.registerHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], MulticallUniswapAbiHandler);
     cy.visit(
       getRoute(RoutePath.CATEGORY, {
-        [RouteParam.CATEGORY_ID]: String(topicId),
+        [RouteParam.CATEGORY_ID]: String(categoryId),
       }),
     );
-    cy.get('[data-testid=wallet-connect]').click();
-    cy.get('[data-testid=wallet-connect]').click();
+    cy.connectWallet();
+  });
+
+  it('loads songs', () => {
     cy.get('[data-testid=category-list-item-0]').should('exist');
     cy.get('[data-testid=category-list-item-1]').should('exist');
     cy.get('[data-testid=category-list-item-0-meta]').should('not.exist');
     cy.get('[data-testid=category-list-item-1-meta]').should('exist');
+  });
+
+  it('gets song balance', () => {
+    cy.get('[data-testid=open-vote-modal]').click();
+    cy.get('[data-testid=category-list-item-1-choose]').click();
+    cy.get('[data-testid=cast-vote-btn]').contains('Enter');
+    cy.get('[data-testid=vote-amount-max]').click();
+    cy.get('[data-testid=vote-amount-input]').should('have.value', 0.01);
   });
 });

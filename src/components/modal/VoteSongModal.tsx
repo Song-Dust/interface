@@ -153,7 +153,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
                 onClick={() => openAction(song.id)}
                 key={song.id}
                 className={'w-64 h-24 bg-cover relative'}
-                data-testid={`category-list-item-${song.id}`}
+                data-testid={`category-list-item-${song.id}-choose`}
               >
                 {/* todo #alimahdiyar img below must be an iframe link to youtube video*/}
                 <img
@@ -190,6 +190,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
               </div>
               <div className={'flex-1'}>
                 <Input
+                  testid="vote-amount"
                   currencyBalance={songBalance}
                   placeholder="Enter Amount"
                   value={voteAmount}

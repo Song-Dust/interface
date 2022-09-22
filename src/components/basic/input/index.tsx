@@ -7,6 +7,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   currencyBalance?: CurrencyAmount<Currency> | undefined;
   value: string;
   onUserInput: (value: string) => void;
+  testid?: string;
 }
 
 const Input = (props: InputProps) => {
@@ -16,7 +17,6 @@ const Input = (props: InputProps) => {
   const handleMax = useCallback(() => {
     maxAmountInput && onUserInput(maxAmountInput.toExact());
   }, [maxAmountInput, onUserInput]);
-
   return (
     <>
       <div className={'flex border-light-gray border-2 rounded-xl px-4 h-14'}>
@@ -28,6 +28,7 @@ const Input = (props: InputProps) => {
           className={'focus:outline-0'}
           onChange={(e) => onUserInput(e.target.value)}
           value={props.value}
+          data-testid={props.testid && `${props.testid}-input`}
         ></input>
         <div className={'input-token'}></div>
       </div>
@@ -43,7 +44,11 @@ const Input = (props: InputProps) => {
                   : ''}
               </span>
             </p>
-            <button onClick={handleMax} className={'btn-primary-inverted rounded-md px-2 text-xs font-semibold'}>
+            <button
+              onClick={handleMax}
+              className={'btn-primary-inverted rounded-md px-2 text-xs font-semibold'}
+              data-testid={props.testid && `${props.testid}-max`}
+            >
               Max
             </button>
           </div>

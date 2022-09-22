@@ -1,28 +1,44 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import MulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json';
-import { AbiHandler, isTheSameAddress, MetamocksContext } from 'metamocks';
+import { AbiHandler, AbiHandlerInterface, decodeEthCall, encodeEthResult, isTheSameAddress } from 'metamocks';
+
+import { UniswapInterfaceMulticall } from '../../../src/abis/types/uniswap';
 
 const { abi: MulticallABI } = MulticallJson;
 
-export default class MulticallUniswapAbiHandler extends AbiHandler {
-  methods = {
-    async multicall(context: MetamocksContext, decodedInput: any[]) {
-      const [calls] = decodedInput;
-      const results: any[] = [];
-      for (const call of calls) {
-        const [callAddress, gasEstimated, callInput] = call;
-        for (const contractAddress in context.handlers) {
-          if (isTheSameAddress(contractAddress, callAddress)) {
-            await context.handlers[contractAddress].handleCall(context, callInput, (r: string) =>
-              results.push([true, gasEstimated, r]),
-            );
-          }
+export default class MulticallUniswapAbiHandler
+  extends AbiHandler<UniswapInterfaceMulticall>
+  implements AbiHandlerInterface<UniswapInterfaceMulticall>
+{
+  abi = MulticallABI;
+
+  getCurrentBlockTimestamp(decodedInput: any[]): Promise<[BigNumber]> {
+    throw new Error('Method not implemented.');
+  }
+
+  getEthBalance(decodedInput: any[]): Promise<[BigNumber]> {
+    throw new Error('Method not implemented.');
+  }
+
+  async multicall(decodedInput: any[]) {
+    const [calls] = decodedInput;
+    const results: any[] = [];
+    for (const call of calls) {
+      const [callAddress, gasEstimated, callInput] = call;
+      for (const contractAddress in this.context.handlers) {
+        if (isTheSameAddress(contractAddress, callAddress)) {
+          await this.context.handlers[contractAddress].handleCall(callInput, (r: string) =>
+            results.push([true, gasEstimated, r]),
+          );
         }
       }
-      return [context.getLatestBlock().number, results];
-    },
-  };
+    }
+    return [this.context.getLatestBlock().number, results];
+  }
 
-  constructor() {
-    super(MulticallABI);
+  async handleCall(data: string, setResult?: (result: string) => void) {
+    const decoded = decodeEthCall<UniswapInterfaceMulticall>(this.abi, data);
+    const res: any = await this[decoded.method](decoded.inputs);
+    setResult?.(encodeEthResult(this.abi, decoded.method as string, res));
   }
 }

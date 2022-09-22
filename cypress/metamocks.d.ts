@@ -1,4 +1,4 @@
-import { AbiHandler } from 'metamocks';
+import MetaMocks from 'metamocks';
 
 export interface EthereumProvider {
   on?: (...args: any[]) => void;
@@ -9,13 +9,9 @@ export interface EthereumProvider {
 declare global {
   namespace Cypress {
     interface Chainable {
-      /**
-       * Custom command to select DOM element by data-cy attribute.
-       * @example cy.dataCy('greeting')
-       */
-      setupMetamocks(): void;
+      registerHandler: MetaMocks['registerHandler'];
 
-      setAbiHandler(address: string, handler: AbiHandler): void;
+      setupMetamocks(): void;
     }
 
     interface Window {
