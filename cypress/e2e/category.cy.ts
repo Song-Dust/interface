@@ -51,6 +51,5 @@ describe('Category', () => {
     cy.get('[data-testid=cast-vote-btn]').contains('Enter');
     cy.get('[data-testid=vote-amount-max]').click();
     cy.get('[data-testid=vote-amount-input]').should('have.value', 0.01);
-    cy.get('[data-testid=cast-vote-btn]').contains('Approve');
   });
 });

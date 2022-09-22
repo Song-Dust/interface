@@ -1,4 +1,4 @@
-import MetaMocks from './utils/metamocks';
+import MetaMocks from 'metamocks';
 
 export interface EthereumProvider {
   on?: (...args: any[]) => void;
