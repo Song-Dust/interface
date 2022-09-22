@@ -1,5 +1,4 @@
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { CallOverrides, Overrides } from '@ethersproject/contracts';
+import { BigNumber } from '@ethersproject/bignumber';
 
 import ERC20_ABI from '../../../src/abis/erc20.json';
 import { Erc20 } from '../../../src/abis/types';
@@ -9,52 +8,39 @@ import { AbiHandlerInterface } from '../metamocks/types';
 export class SongAbiHandler extends AbiHandler<Erc20> implements AbiHandlerInterface<Erc20> {
   abi = ERC20_ABI;
 
-  symbol(overrides?: CallOverrides | undefined): Promise<string> {
+  symbol(decodedInput: any[]): Promise<string> {
     throw new Error('Method not implemented.');
   }
 
-  name(overrides?: CallOverrides | undefined): Promise<string> {
+  name(decodedInput: any[]): Promise<string> {
     throw new Error('Method not implemented.');
   }
 
-  approve(
-    _spender: string,
-    _value: BigNumberish,
-    overrides?: (Overrides & { from?: string | Promise<string> | undefined }) | undefined,
-  ): Promise<void> {
+  approve(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  totalSupply(overrides?: CallOverrides | undefined): Promise<BigNumber> {
+  totalSupply(decodedInput: any[]): Promise<BigNumber> {
     throw new Error('Method not implemented.');
   }
 
-  transferFrom(
-    _from: string,
-    _to: string,
-    _value: BigNumberish,
-    overrides?: (Overrides & { from?: string | Promise<string> | undefined }) | undefined,
-  ): Promise<void> {
+  transferFrom(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  decimals(overrides?: CallOverrides | undefined): Promise<number> {
+  decimals(decodedInput: any[]): Promise<number> {
     throw new Error('Method not implemented.');
   }
 
-  balanceOf(_owner: string, overrides?: CallOverrides | undefined): Promise<BigNumber> {
+  balanceOf(decodedInput: any[]): Promise<BigNumber> {
     throw new Error('Method not implemented.');
   }
 
-  transfer(
-    _to: string,
-    _value: BigNumberish,
-    overrides?: (Overrides & { from?: string | Promise<string> | undefined }) | undefined,
-  ): Promise<void> {
+  transfer(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  allowance(_owner: string, _spender: string, overrides?: CallOverrides | undefined): Promise<BigNumber> {
+  allowance(decodedInput: any[]): Promise<BigNumber> {
     throw new Error('Method not implemented.');
   }
 }

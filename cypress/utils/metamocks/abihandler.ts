@@ -15,14 +15,14 @@ export default class AbiHandler<T extends BaseContract> implements AbiHandlerInt
     }
   }
 
-  async handleCall(context: MetamocksContext, data: string, setResult?: (result: string) => void) {
+  async handleCall(data: string, setResult?: (result: string) => void) {
     const decoded = decodeEthCall<T>(this.abi, data);
-    const res: any = await (this as unknown as AbiHandlerInterface<T>)[decoded.method](context, ...decoded.inputs);
+    const res: any = await (this as unknown as AbiHandlerInterface<T>)[decoded.method](decoded.inputs);
     setResult?.(encodeEthResult(this.abi, decoded.method as string, res));
   }
 
-  async handleTransaction(context: MetamocksContext, data: string, setResult: (arg0: string) => void) {
-    await this.handleCall(context, data);
-    setResult(context.getFakeTransactionHash());
+  async handleTransaction(data: string, setResult: (arg0: string) => void) {
+    await this.handleCall(data);
+    setResult(this.context.getFakeTransactionHash());
   }
 }
