@@ -16,9 +16,9 @@ Cypress.Commands.add('setupMetamocks', () => {
   });
 });
 
-Cypress.Commands.add('registerHandler', (...args) => {
+Cypress.Commands.add('registerAbiHandler', (...args) => {
   cy.get('@metamocks').then((val: any) => {
     const metamocks = val as MetaMocks;
-    metamocks.registerHandler(...args);
+    metamocks.registerAbiHandler(...args);
   });
 });

@@ -29,8 +29,8 @@ describe('Category', () => {
       },
     );
     cy.setupMetamocks();
-    cy.registerHandler(SONG_ADDRESS[SupportedChainId.GOERLI], SongAbiHandler);
-    cy.registerHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], MulticallUniswapAbiHandler);
+    cy.registerAbiHandler(SONG_ADDRESS[SupportedChainId.GOERLI], SongAbiHandler);
+    cy.registerAbiHandler(MULTICALL_ADDRESS[SupportedChainId.GOERLI], MulticallUniswapAbiHandler);
   });
 
   function loadSongs() {
@@ -43,7 +43,7 @@ describe('Category', () => {
   }
 
   it('loads songs', () => {
-    cy.registerHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
+    cy.registerAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
     loadSongs();
     cy.get('[data-testid=category-list-item-0]').should('exist');
     cy.get('[data-testid=category-list-item-1]').should('exist');
@@ -65,7 +65,7 @@ describe('Category', () => {
   }
 
   it('gets song balance', () => {
-    cy.registerHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
+    cy.registerAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
     loadSongs();
     selectSongOne();
     useMaxSong();
@@ -77,7 +77,7 @@ describe('Category', () => {
   }
 
   it('approves song', () => {
-    cy.registerHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
+    cy.registerAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
     loadSongs();
     selectSongOne();
     useMaxSong();
@@ -85,7 +85,7 @@ describe('Category', () => {
   });
 
   it('votes for a song', function () {
-    const arenaHandler = this.metamocks!.registerHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
+    const arenaHandler = this.metamocks!.registerAbiHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
     cy.spy(arenaHandler, 'vote');
     loadSongs();
     selectSongOne();
