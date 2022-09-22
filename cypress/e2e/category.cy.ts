@@ -45,7 +45,7 @@ describe('Category', () => {
     cy.get('[data-testid=category-list-item-1-meta]').should('exist');
   });
 
-  it.only('votes for a song', () => {
+  it('gets song balance', () => {
     cy.get('[data-testid=open-vote-modal]').click();
     cy.get('[data-testid=category-list-item-1-choose]').click();
     cy.get('[data-testid=cast-vote-btn]').contains('Enter');
