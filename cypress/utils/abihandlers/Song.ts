@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Zero } from '@ethersproject/constants';
+import { MaxUint256, Zero } from '@ethersproject/constants';
 import { AbiHandler, AbiHandlerInterface } from 'metamocks';
 
 import ERC20_ABI from '../../../src/abis/erc20.json';
@@ -7,13 +7,16 @@ import { Erc20 } from '../../../src/abis/types';
 
 export class SongAbiHandler extends AbiHandler<Erc20> implements AbiHandlerInterface<Erc20> {
   abi = ERC20_ABI;
+  allowedList: string[] = [];
 
   name(decodedInput: any[]): Promise<[string]> {
     throw new Error('Method not implemented.');
   }
 
-  approve(decodedInput: any[]): Promise<[true] | [false]> {
-    throw new Error('Method not implemented.');
+  async approve(decodedInput: any[]): Promise<[true] | [false]> {
+    const [spender, _value] = decodedInput;
+    this.allowedList.push(spender);
+    return [true];
   }
 
   totalSupply(decodedInput: any[]): Promise<[BigNumber]> {
@@ -42,7 +45,7 @@ export class SongAbiHandler extends AbiHandler<Erc20> implements AbiHandlerInter
   }
 
   async allowance(decodedInput: any[]): Promise<[BigNumber]> {
-    const [_owner, _spender] = decodedInput;
-    return [Zero];
+    const [_owner, spender] = decodedInput;
+    return [this.allowedList.includes(spender) ? MaxUint256 : Zero];
   }
 }

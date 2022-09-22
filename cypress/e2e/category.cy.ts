@@ -45,11 +45,26 @@ describe('Category', () => {
     cy.get('[data-testid=category-list-item-1-meta]').should('exist');
   });
 
-  it('gets song balance', () => {
+  function selectSongOne() {
     cy.get('[data-testid=open-vote-modal]').click();
     cy.get('[data-testid=category-list-item-1-choose]').click();
+  }
+
+  function useMaxSong() {
     cy.get('[data-testid=cast-vote-btn]').contains('Enter');
     cy.get('[data-testid=vote-amount-max]').click();
     cy.get('[data-testid=vote-amount-input]').should('have.value', 0.01);
+  }
+
+  it('gets song balance', () => {
+    selectSongOne();
+    useMaxSong();
+  });
+
+  it('approves song', () => {
+    selectSongOne();
+    useMaxSong();
+    cy.get('[data-testid=cast-vote-btn]').contains('Approve').click();
+    cy.get('[data-testid=cast-vote-btn]').contains('Cast');
   });
 });
