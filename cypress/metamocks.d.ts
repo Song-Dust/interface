@@ -9,13 +9,18 @@ export interface EthereumProvider {
 declare global {
   namespace Cypress {
     interface Chainable {
-      registerHandler: MetaMocks['registerHandler'];
+      registerHandler: (...args: Parameters<MetaMocks['registerHandler']>) => void;
 
       setupMetamocks(): void;
     }
 
     interface Window {
       ethereum?: EthereumProvider;
+    }
+  }
+  namespace Mocha {
+    interface Context {
+      metamocks?: MetaMocks;
     }
   }
 }

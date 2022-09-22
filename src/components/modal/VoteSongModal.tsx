@@ -78,7 +78,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     try {
       await voteCallback?.();
     } catch (e) {
-      console.log('buy failed');
+      console.log('vote failed');
       console.log(e);
     }
     if (mounted.current) {

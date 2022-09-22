@@ -4,6 +4,7 @@ import { AbiHandler, AbiHandlerInterface } from 'metamocks';
 
 import ERC20_ABI from '../../../src/abis/erc20.json';
 import { Erc20 } from '../../../src/abis/types';
+import { songBalance } from '../data';
 
 export class SongAbiHandler extends AbiHandler<Erc20> implements AbiHandlerInterface<Erc20> {
   abi = ERC20_ABI;
@@ -33,7 +34,7 @@ export class SongAbiHandler extends AbiHandler<Erc20> implements AbiHandlerInter
 
   async balanceOf(decodedInput: any[]): Promise<[BigNumber]> {
     const [_owner] = decodedInput;
-    return [BigNumber.from(10).pow(16)];
+    return [songBalance];
   }
 
   symbol(decodedInput: any[]): Promise<[string]> {

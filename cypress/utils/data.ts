@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { Wallet } from '@ethersproject/wallet';
 
 import { SongMeta } from '../../src/types';
@@ -58,3 +59,5 @@ export const songMeta: SongMeta = {
   date: 'June 9, 2022',
   opensea: 'somelink',
 };
+
+export const songBalance = BigNumber.from(10).pow(16);
