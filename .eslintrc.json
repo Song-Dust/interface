@@ -7,10 +7,12 @@
     "prettier"
   ],
   "plugins": [
+    "mocha",
     "simple-import-sort",
     "unused-imports"
   ],
   "rules": {
+    "mocha/no-exclusive-tests": "warn",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-namespace": "off",

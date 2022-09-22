@@ -64,7 +64,7 @@ describe('Category', () => {
     cy.get('[data-testid=vote-amount-input]').should('have.value', 0.01);
   }
 
-  it('gets song balance', () => {
+  it.only('gets song balance', () => {
     cy.registerHandler(ARENA_ADDRESS[SupportedChainId.GOERLI], ArenaHandler);
     loadSongs();
     selectSongOne();
