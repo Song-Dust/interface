@@ -50,3 +50,9 @@ export class SongAbiHandler extends AbiHandler<Erc20> implements AbiHandlerInter
     return [this.allowedList.includes(spender) ? MaxUint256 : Zero];
   }
 }
+
+export class SongAbiHandlerAllowAll extends SongAbiHandler {
+  async allowance(decodedInput: any[]): Promise<[BigNumber]> {
+    return [MaxUint256];
+  }
+}

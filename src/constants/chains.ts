@@ -31,3 +31,7 @@ export const FALLBACK_CHAIN_ID = SupportedChainId.GOERLI;
 export const L2_CHAIN_IDS: readonly SupportedChainId[] = [] as const;
 
 export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number];
+
+export function isSupportedChain(chainId: number | null | undefined): chainId is SupportedChainId {
+  return !!chainId && !!SupportedChainId[chainId];
+}

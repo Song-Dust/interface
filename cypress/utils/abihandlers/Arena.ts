@@ -10,11 +10,11 @@ export class ArenaHandler extends AbiHandler<Arena> implements AbiHandlerInterfa
     throw new Error('Method not implemented.');
   }
 
-  addChoice(decodedInput: any[]): Promise<[void]> {
+  addChoice(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  addTopic(decodedInput: any[]): Promise<[void]> {
+  addTopic(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -46,7 +46,7 @@ export class ArenaHandler extends AbiHandler<Arena> implements AbiHandlerInterfa
     throw new Error('Method not implemented.');
   }
 
-  grantRole(decodedInput: any[]): Promise<[void]> {
+  grantRole(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -58,7 +58,7 @@ export class ArenaHandler extends AbiHandler<Arena> implements AbiHandlerInterfa
     throw new Error('Method not implemented.');
   }
 
-  initialize(decodedInput: any[]): Promise<[void]> {
+  initialize(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -87,19 +87,19 @@ export class ArenaHandler extends AbiHandler<Arena> implements AbiHandlerInterfa
     throw new Error('Method not implemented.');
   }
 
-  removeChoice(decodedInput: any[]): Promise<[void]> {
+  removeChoice(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  removeTopic(decodedInput: any[]): Promise<[void]> {
+  removeTopic(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  renounceRole(decodedInput: any[]): Promise<[void]> {
+  renounceRole(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  revokeRole(decodedInput: any[]): Promise<[void]> {
+  revokeRole(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -116,15 +116,13 @@ export class ArenaHandler extends AbiHandler<Arena> implements AbiHandlerInterfa
     throw new Error('Method not implemented.');
   }
 
-  vote(decodedInput: any[]): Promise<[void]> {
-    throw new Error('Method not implemented.');
-  }
+  async vote(decodedInput: any[]): Promise<void> {}
 
   voterPosition(decodedInput: any[]): Promise<any[]> {
     throw new Error('Method not implemented.');
   }
 
-  withdrawPosition(decodedInput: any[]): Promise<[void]> {
+  withdrawPosition(decodedInput: any[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
