@@ -15,9 +15,6 @@ export interface SerializableTransactionReceipt {
  */
 export enum TransactionType {
   APPROVAL = 0,
-  SWAP,
-  CLAIM,
-  DELEGATE,
   VOTE,
 }
 
