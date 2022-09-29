@@ -47,20 +47,6 @@ function FormattedSongAmount({ rawAmount, sigFigs = 6 }: { rawAmount: string; si
 }
 
 function ApprovalSummary({ info }: { info: ApproveTransactionInfo }) {
-  // <p className={'font-semibold'}>{tx.type}</p>
-  // <p className={'text-sm'}>
-  //   {tx.message}
-  //   <br />
-  //   {tx.amount && tx.tokenSymbol && tx.status === TransactionStatus.SUCCESS && (
-  //       <span>
-  //                 Swap{' '}
-  //         <span className={'font-bold'}>
-  //                   {parseFloat(tx.amount)} {tx.tokenSymbol}
-  //                 </span>{' '}
-  //         for <span className={'font-bold'}>{`${parseFloat(tx.amountTo)} MUON`}</span>
-  //               </span>
-  //   )}
-  // </p>
   return (
     <>
       <p className={'font-semibold'}>Approve</p>
