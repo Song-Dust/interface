@@ -34,6 +34,8 @@ export interface ApproveTransactionInfo extends BaseTransactionInfo {
 
 export interface VoteTransactionInfo extends BaseTransactionInfo {
   type: TransactionType.VOTE;
+  rawAmount: string;
+  choiceTitle: string;
 }
 
 export type TransactionInfo = ApproveTransactionInfo | VoteTransactionInfo;

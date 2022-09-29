@@ -38,7 +38,7 @@ export const choices: {
   0: {
     ...Object.assign({}, [
       ...[1, 2, 3, 4, 5, 6].map((i) => ({
-        description: i + ' Song',
+        description: 'The Song ' + i,
         funds: '0x211eEBa0ebe516744614C35572555BdFDD13424d',
         feePercentage: 1000,
         fundingTarget: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',

@@ -40,8 +40,8 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   const songBalance = useTokenBalance(account ?? undefined, chainId ? SONG[chainId] : undefined);
   const [voteAmount, setVoteAmount] = useState('');
   const parsedAmount = useMemo(
-    () => tryParseCurrencyAmount(voteAmount, songBalance?.currency ?? undefined),
-    [songBalance?.currency, voteAmount],
+    () => tryParseCurrencyAmount(voteAmount, chainId && SONG[chainId] ? SONG[chainId] : undefined),
+    [chainId, voteAmount],
   );
 
   const insufficientBalance = useMemo(
@@ -58,6 +58,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     Number(topicId),
     Number(selectedSongId),
     parsedAmount?.quotient.toString() || '0',
+    selectedSong?.description || '',
   );
   const [loading, setLoading] = useState(false);
 

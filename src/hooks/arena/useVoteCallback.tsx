@@ -3,6 +3,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useArenaContract } from 'hooks/useContract';
 import React, { ReactNode, useMemo } from 'react';
+import { TransactionType, VoteTransactionInfo } from 'state/transactions/types';
 
 import useArenaTransaction from './useArenaTransaction';
 
@@ -20,7 +21,8 @@ interface UseCallbackReturns {
 export function useVoteCallback(
   topicId: BigNumberish,
   choiceId: BigNumberish,
-  amount: BigNumberish,
+  amount: string,
+  choiceTitle: string,
 ): UseCallbackReturns {
   const { account, chainId, provider } = useWeb3React();
   const arenaContract = useArenaContract();
@@ -37,7 +39,12 @@ export function useVoteCallback(
     ];
   }, [amount, arenaContract, choiceId, topicId]);
 
-  const { callback } = useArenaTransaction(account, chainId, provider, calls);
+  const info: VoteTransactionInfo = {
+    type: TransactionType.VOTE,
+    rawAmount: amount,
+    choiceTitle,
+  };
+  const { callback } = useArenaTransaction(account, chainId, provider, calls, info);
 
   return useMemo(() => {
     if (!provider || !account || !chainId || !callback) {

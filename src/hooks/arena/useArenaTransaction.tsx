@@ -1,6 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import React, { useMemo } from 'react';
+import { useTransactionAdder } from 'state/transactions/hooks';
+import { TransactionInfo } from 'state/transactions/types';
 import { calculateGasMargin } from 'utils/calculateGasMargin';
 import isZero from 'utils/isZero';
 
@@ -30,13 +32,15 @@ export default function useArenaTransaction(
   chainId: number | undefined,
   provider: JsonRpcProvider | undefined,
   calls: Call[],
+  info: TransactionInfo,
 ): { callback: null | (() => Promise<TransactionResponse>) } {
+  const addTransaction = useTransactionAdder();
   return useMemo(() => {
     if (!provider || !account || !chainId) {
       return { callback: null };
     }
     return {
-      callback: async function onSwap(): Promise<TransactionResponse> {
+      callback: async function onArena(): Promise<TransactionResponse> {
         const estimatedCalls: CallEstimate[] = await Promise.all(
           calls.map((call) => {
             const { address, calldata, value } = call;
@@ -108,6 +112,7 @@ export default function useArenaTransaction(
             ...(value && !isZero(value) ? { value } : {}),
           })
           .then((response) => {
+            addTransaction(response, info);
             return response;
           })
           .catch((error) => {

@@ -1,3 +1,7 @@
+import { Fraction } from '@uniswap/sdk-core';
+import { useWeb3React } from '@web3-react/core';
+import { SONG } from 'constants/tokens';
+import JSBI from 'jsbi';
 import React from 'react';
 
 import {
@@ -7,47 +11,40 @@ import {
   VoteTransactionInfo,
 } from '../../state/transactions/types';
 
-// function formatAmount(amountRaw: string, decimals: number, sigFigs: number): string {
-//   return new Fraction(amountRaw, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))).toSignificant(sigFigs);
-// }
+function formatAmount(amountRaw: string, decimals: number, sigFigs: number): string {
+  return new Fraction(amountRaw, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))).toSignificant(sigFigs);
+}
 
-// function FormattedCurrencyAmount({
-//   rawAmount,
-//   symbol,
-//   decimals,
-//   sigFigs,
-// }: {
-//   rawAmount: string;
-//   symbol: string;
-//   decimals: number;
-//   sigFigs: number;
-// }) {
-//   return (
-//     <>
-//       {formatAmount(rawAmount, decimals, sigFigs)} {symbol}
-//     </>
-//   );
-// }
+function FormattedCurrencyAmount({
+  rawAmount,
+  symbol,
+  decimals,
+  sigFigs,
+}: {
+  rawAmount: string;
+  symbol: string;
+  decimals: number;
+  sigFigs: number;
+}) {
+  return (
+    <>
+      {formatAmount(rawAmount, decimals, sigFigs)} {symbol}
+    </>
+  );
+}
 
-// function FormattedCurrencyAmountManaged({
-//   rawAmount,
-//   currencyId,
-//   sigFigs = 6,
-// }: {
-//   rawAmount: string;
-//   currencyId: string;
-//   sigFigs: number;
-// }) {
-//   const currency = useCurrency(currencyId);
-//   return currency ? (
-//     <FormattedCurrencyAmount
-//       rawAmount={rawAmount}
-//       decimals={currency.decimals}
-//       sigFigs={sigFigs}
-//       symbol={currency.symbol ?? '???'}
-//     />
-//   ) : null;
-// }
+function FormattedSongAmount({ rawAmount, sigFigs = 6 }: { rawAmount: string; sigFigs?: number }) {
+  const { chainId } = useWeb3React();
+  const currency = chainId ? SONG[chainId] : undefined;
+  return currency ? (
+    <FormattedCurrencyAmount
+      rawAmount={rawAmount}
+      decimals={currency.decimals}
+      sigFigs={sigFigs}
+      symbol={currency.symbol ?? '???'}
+    />
+  ) : null;
+}
 
 function ApprovalSummary({ info }: { info: ApproveTransactionInfo }) {
   // <p className={'font-semibold'}>{tx.type}</p>
@@ -73,7 +70,19 @@ function ApprovalSummary({ info }: { info: ApproveTransactionInfo }) {
 }
 
 function VoteSummary({ info }: { info: VoteTransactionInfo }) {
-  return <div></div>;
+  const truncatedChoiceTitle =
+    info.choiceTitle.length > 13 ? info.choiceTitle.substring(0, 10) + '...' : info.choiceTitle;
+  return (
+    <>
+      <span>
+        Vote{' '}
+        <span className={'font-bold'}>
+          <FormattedSongAmount rawAmount={info.rawAmount} sigFigs={3} />
+        </span>{' '}
+        for <span className={'font-bold'}>{truncatedChoiceTitle}</span>
+      </span>
+    </>
+  );
 }
 
 export function TransactionSummary({ info }: { info: TransactionInfo }) {
