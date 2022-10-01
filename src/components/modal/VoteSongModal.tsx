@@ -191,6 +191,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
               </div>
               <div className={'flex-1'}>
                 <Input
+                  type={'number'}
                   testid="vote-amount"
                   currencyBalance={songBalance}
                   placeholder="Enter Amount"

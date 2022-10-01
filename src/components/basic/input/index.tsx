@@ -4,8 +4,7 @@ import { formatCurrencyAmount } from 'utils/formatCurrencyAmount';
 import { maxAmountSpend } from 'utils/maxAmountSpend';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  currencyBalance?: CurrencyAmount<Currency> | undefined;
-  value: string;
+  currencyBalance?: CurrencyAmount<Currency>;
   onUserInput: (value: string) => void;
   testid?: string;
 }
@@ -23,11 +22,11 @@ const Input = (props: InputProps) => {
         <div className={'input-icon'}></div>
         {/*todo remove focus on input*/}
         <input
-          type="number"
+          type={props.type}
           placeholder={placeholder}
           className={'focus:outline-0'}
           onChange={(e) => onUserInput(e.target.value)}
-          value={props.value}
+          value={props.value || ''}
           data-testid={props.testid && `${props.testid}-input`}
         ></input>
         <div className={'input-token'}></div>
