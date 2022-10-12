@@ -6,7 +6,7 @@ import { useArenaContract } from 'hooks/useContract';
 import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Choice, SongMeta } from '../types';
+import { Choice, SongMetadata } from '../types';
 import { TopicStruct } from '../types/contracts/Arena';
 
 const { abi: ArenaABI } = ArenaJson;
@@ -93,8 +93,9 @@ export function useTopic(topicId: number) {
       const loadedChoices: Choice[] = [];
       for (let i = 0; i < choicesRaw.length; i++) {
         axios
-          .get<SongMeta>(choicesRaw[i].metaDataUrl)
+          .get<SongMetadata>(choicesRaw[i].metaDataUrl)
           .then((m) => {
+            console.log({ m });
             loadedChoices.push({
               ...choicesRaw[i],
               meta: m.data,

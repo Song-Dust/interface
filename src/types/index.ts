@@ -2,17 +2,24 @@ import { ChoiceStruct } from './contracts/Arena';
 
 export type SongTag = { subject: string; title: string };
 
-export type SongMeta = {
-  thumbnail: string;
-  title: string;
-  tags: SongTag[];
-  by: string;
-  date: string;
-  opensea: string;
+export type SongMetadata = {
+  name: string;
+  created_by: string;
+  description: string;
+  external_url: string;
+  token_id: string | number;
+  image: string;
+  animation_url: string;
+  youtube_url: string;
+  attributes: {
+    trait_type: string;
+    value: string;
+  }[];
+  Date: string;
 };
 
 export type Choice = ChoiceStruct & {
-  meta?: SongMeta | null;
+  meta?: SongMetadata | null;
   id: number;
 };
 

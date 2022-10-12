@@ -1,16 +1,18 @@
-import { faCircleInfo, faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
+import { faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Transition } from '@headlessui/react';
 import { useWeb3React } from '@web3-react/core';
 import Modal from 'components/modal';
+import AddSongModal from 'components/modal/AddSongModal';
 import VoteSongModal from 'components/modal/VoteSongModal';
+import { SongTags } from 'components/song/SongTags';
 import { getConnection } from 'connection/utils';
+import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import { useTopic } from 'hooks/useArena';
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch } from 'state/hooks';
 import { updateSelectedWallet } from 'state/user/reducer';
-import { shortenAddress } from 'utils/index';
+import { parseTokenURI, shortenAddress } from 'utils/index';
 
 import { injectedConnection } from '../connection';
 
@@ -48,42 +50,28 @@ const Category = () => {
     setOpenVoteSongModalOpen(false);
   }
 
-  const [AddSongModal, setOpenAddSongModal] = useState(false);
+  const [addSongModalOpen, setAddSongModalOpen] = useState(false);
 
   function openAddSongModal() {
-    setOpenAddSongModal(true);
+    setAddSongModalOpen(true);
   }
 
   function closeAddSongModal() {
-    setOpenAddSongModal(false);
+    setAddSongModalOpen(false);
   }
 
-  const [MoreActionModal, setOpenMoreActionModal] = useState(false);
+  const [moreActionModalOpen, setMoreActionModalOpen] = useState(false);
 
   function openMoreActionModal() {
-    setOpenMoreActionModal(true);
+    setMoreActionModalOpen(true);
   }
 
   function closeMoreActionModal() {
-    setOpenMoreActionModal(false);
+    setMoreActionModalOpen(false);
   }
 
   const { id: topicId } = useParams();
   const { choices, loaded } = useTopic(Number(topicId));
-
-  const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
-  const selectedSong = useMemo(() => {
-    if (selectedSongId === null) return null;
-    return choices.find((c) => c.id === selectedSongId)!;
-  }, [choices, selectedSongId]);
-
-  function openAction(id: number) {
-    setSelectedSongId(id);
-  }
-
-  function closeAction() {
-    setSelectedSongId(null);
-  }
 
   const renderConnector = () => {
     return active ? (
@@ -107,27 +95,25 @@ const Category = () => {
             {/* todo img below must be an iframe link to youtube video*/}
             <img
               alt="choice"
-              src={
-                song.meta?.thumbnail ||
-                'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'
-              }
+              src={parseTokenURI(
+                song.meta?.image ||
+                  'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
+              )}
               className={'rounded-xl'}
             />
             <div className={'px-2 pt-1'}>
-              <p className={'font-bold text-xl'}>{song.description}</p>
-              {song.meta?.tags.map((tag, i) => {
-                return (
-                  <span key={i} className={'chips mr-2'}>
-                    {tag.subject}: <span className={'font-semibold'}>{tag.title}</span>
-                  </span>
-                );
-              })}
+              <p className={'font-bold text-xl'}>{song.meta?.name}</p>
+              {song.meta?.attributes && <SongTags attributes={song.meta.attributes} />}
               {song.meta && (
                 <p className={'text-dark-gray mt-4'} data-testid={`category-list-item-${song.id}-meta`}>
-                  Added by <span className={'text-black font-semibold'}>{song.meta?.by}</span> at {song.meta?.date}
+                  Added by <span className={'text-black font-semibold'}>{song.meta?.created_by}</span> at{' '}
+                  {song.meta?.Date}
                 </p>
               )}
-              <a href={song.meta?.opensea || '#'} className={'flex gap-1.5 mt-2'}>
+              <a
+                href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${song.meta?.token_id}`}
+                className={'flex gap-1.5 mt-2'}
+              >
                 <FontAwesomeIcon fontSize={24} icon={faHexagonVerticalNft} style={style} />
                 <span className={'text-primary font-semibold text-under underline'}>View on Opensea</span>
               </a>
@@ -143,91 +129,12 @@ const Category = () => {
   return (
     <div className={'px-24 py-24'}>
       <VoteSongModal closeModal={closeVoteSongModal} open={voteSongModalOpen} />
-
-      {/* todo #alimahdiyar This is Add song Modal, use proper Variables for it. */}
-
-      <Modal
-        className={'!max-w-4xl relative overflow-hidden'}
-        title={`Select the song you want to add to this category`}
-        closeModal={closeAddSongModal}
-        open={AddSongModal}
-      >
-        <main className={'flex flex-wrap gap-6'}>
-          {choices.map((song) => {
-            return (
-              <div
-                onClick={() => openAction(song.id)}
-                key={song.id}
-                className={'rounded-3xl w-64 bg-light-gray-2 p-4'}
-                data-testid={`category-list-item-${song.id}`}
-              >
-                {/* todo img below must be an iframe link to youtube video*/}
-                <img
-                  alt="choice"
-                  src={
-                    song.meta?.thumbnail ||
-                    'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'
-                  }
-                  className={'rounded-xl'}
-                />
-                <div className={'px-2 pt-2'}>
-                  <p className={'font-bold text-xl'}>{song.description}</p>
-
-                  <a href={song.meta?.opensea || '#'} className={'flex gap-1.5 mt-2'}>
-                    <FontAwesomeIcon fontSize={24} icon={faCircleInfo} style={style} />
-                    <span className={'text-primary font-semibold text-under underline'}>More Details</span>
-                  </a>
-                </div>
-              </div>
-            );
-          })}
-        </main>
-        <Transition
-          as={Fragment}
-          show={selectedSongId !== null}
-          enter="transform ease-in-out transition duration-[400ms]"
-          enterFrom="opacity-0 translate-y-32"
-          enterTo="opacity-100 translate-y-0"
-          leave="transform duration-500 transition ease-in-out"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0 translate-y-32 "
-        >
-          <footer className={'px-4 py-2 absolute left-0 right-0 bottom-0 bg-white border-gray border-t py-4 px-2'}>
-            <section className={'flex'}>
-              <div className={'flex-1'}>
-                <p className={''}>
-                  <span>{selectedSong?.description}</span> selected
-                </p>
-                {active && <p className={''}>You need to Connect your wallet for adding a song</p>}
-                <p>
-                  Submit fee: <span className={'font-semibold'}>24.25 SONG</span>
-                </p>
-              </div>
-            </section>
-            <section className={'vote-modal-action flex justify-end mt-8'}>
-              <button onClick={closeAction} className={'btn-primary-inverted btn-large mr-2'}>
-                Go back
-              </button>
-              {active ? (
-                <button data-testid="wallet-connect" className={'btn-primary btn-large w-64'} onClick={tryActivation}>
-                  Add song to category
-                </button>
-              ) : (
-                <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={tryActivation}>
-                  Connect Wallet
-                </button>
-              )}
-            </section>
-            {/* footer action */}
-          </footer>
-        </Transition>
-      </Modal>
-
+      <AddSongModal closeModal={closeAddSongModal} open={addSongModalOpen} />
       <Modal
         className={'relative overflow-hidden'}
         title={`What do you want to add?`}
         closeModal={closeMoreActionModal}
-        open={MoreActionModal}
+        open={moreActionModalOpen}
       >
         <main className={'flex flex-wrap gap-6'}>
           <button>new category</button>

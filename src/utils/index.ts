@@ -43,3 +43,5 @@ export function shortenAddress(address: string | null | undefined) {
 export function formatChainId(chainId: string) {
   return hexStripZeros(BigNumber.from(chainId).toHexString());
 }
+
+export const parseTokenURI = (text: string) => text.replace('ipfs://', 'https://ipfs.io/ipfs/');

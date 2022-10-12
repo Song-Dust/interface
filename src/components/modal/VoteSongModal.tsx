@@ -29,10 +29,6 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     return choices.find((c: { id: number }) => c.id === selectedSongId)!;
   }, [choices, selectedSongId]);
 
-  function openAction(id: number) {
-    setSelectedSongId(id);
-  }
-
   function closeAction() {
     setSelectedSongId(null);
   }
@@ -151,7 +147,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
           {choices.map((song) => {
             return (
               <div
-                onClick={() => openAction(song.id)}
+                onClick={() => setSelectedSongId(song.id)}
                 key={song.id}
                 className={'w-64 h-24 bg-cover relative'}
                 data-testid={`category-list-item-${song.id}-choose`}

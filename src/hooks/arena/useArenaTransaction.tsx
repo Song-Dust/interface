@@ -128,5 +128,5 @@ export default function useArenaTransaction(
           });
       },
     };
-  }, [account, chainId, provider, calls]);
+  }, [provider, account, chainId, calls, addTransaction, info]);
 }

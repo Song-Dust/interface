@@ -15,3 +15,6 @@ export const MULTICALL_ADDRESS: AddressMap = {
 export const SONG_ADDRESS: AddressMap = {
   [SupportedChainId.GOERLI]: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
 };
+
+export const SONGADAY_CONTRACT_ADDRESS =
+  process.env.SONGADAY_CONTRACT_ADDRESS ?? '0x19b703f65aA7E1E775BD06c2aa0D0d08c80f1C45';

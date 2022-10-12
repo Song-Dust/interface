@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Wallet } from '@ethersproject/wallet';
 
-import { SongMeta } from '../../src/types';
+import { SongMetadata } from '../../src/types';
 import { ChoiceStruct, TopicStruct } from '../../src/types/contracts/Arena';
 import { shortenAddress } from '../../src/utils';
 
@@ -48,7 +48,7 @@ export const choices: {
   },
 };
 
-export const songMeta: SongMeta = {
+export const songMeta: SongMetadata = {
   thumbnail: 'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
   title: 'Dark Days and Beautiful',
   tags: [
