@@ -1,22 +1,12 @@
 // import PropTypes from 'prop-types';
-import { faCircleInfo } from '@fortawesome/pro-duotone-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Transition } from '@headlessui/react';
 import { useWeb3React } from '@web3-react/core';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
-import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import SongMiniCard from 'components/song/SongMiniCard';
 import { useTopic } from 'hooks/useArena';
 import useWalletActivation from 'hooks/useWalletActivation';
 import React, { Fragment, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { parseTokenURI } from 'utils/index';
-
-const style = {
-  '--fa-primary-color': '#353535',
-  '--fa-secondary-color': '#EF476F',
-  '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4,
-} as React.CSSProperties;
 
 const AddSongModal = (props: ModalPropsInterface) => {
   const { account } = useWeb3React();
@@ -46,33 +36,7 @@ const AddSongModal = (props: ModalPropsInterface) => {
       <main className={'flex flex-wrap gap-6'}>
         {choices.map((song) => {
           return (
-            <div
-              onClick={() => setSelectedSongId(song.id)}
-              key={song.id}
-              className={'rounded-3xl w-64 bg-light-gray-2 p-4'}
-              data-testid={`category-list-item-${song.id}`}
-            >
-              {/* todo img below must be an iframe link to youtube video*/}
-              <img
-                alt="choice"
-                src={parseTokenURI(
-                  song.meta?.image ||
-                    'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
-                )}
-                className={'rounded-xl'}
-              />
-              <div className={'px-2 pt-2'}>
-                <p className={'font-bold text-xl'}>{song.description}</p>
-
-                <a
-                  href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${song.meta?.token_id}`}
-                  className={'flex gap-1.5 mt-2'}
-                >
-                  <FontAwesomeIcon fontSize={24} icon={faCircleInfo} style={style} />
-                  <span className={'text-primary font-semibold text-under underline'}>More Details</span>
-                </a>
-              </div>
-            </div>
+            <SongMiniCard onClick={() => setSelectedSongId(song.id)} key={song.id} id={song.id} songMeta={song.meta} />
           );
         })}
       </main>
