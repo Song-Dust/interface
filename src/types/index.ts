@@ -2,7 +2,7 @@ import { ChoiceStruct } from './contracts/Arena';
 
 export type SongTag = { subject: string; title: string };
 
-export type SongMetadata = {
+export interface SongMetadata {
   name: string;
   created_by: string;
   description: string;
@@ -10,13 +10,14 @@ export type SongMetadata = {
   token_id: string | number;
   image: string;
   animation_url: string;
+  audio_url: string;
   youtube_url: string;
   attributes: {
     trait_type: string;
     value: string;
   }[];
   Date: string;
-};
+}
 
 export type Choice = ChoiceStruct & {
   meta?: SongMetadata | null;

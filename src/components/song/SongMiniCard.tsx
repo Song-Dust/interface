@@ -19,7 +19,7 @@ export default function SongMiniCard({
   songMeta,
 }: {
   onClick: () => void;
-  id: number;
+  id: string | number;
   songMeta: SongMetadata | null | undefined;
 }) {
   return (

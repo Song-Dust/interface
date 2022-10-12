@@ -49,15 +49,292 @@ export const choices: {
 };
 
 export const songMeta: SongMetadata = {
-  thumbnail: 'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
-  title: 'Dark Days and Beautiful',
-  tags: [
-    { subject: 'Mood', title: 'Confused' },
-    { subject: 'Genre', title: 'Folk' },
+  name: 'Bellatrix',
+  description: 'The merge is coming!',
+  created_by: 'Jonathan Mann',
+  token_id: 4997,
+  image: 'ipfs://bafybeig4anscx7fcgnt6pxa7tngkkyzqt3hzzvl7dgve6b3ixo7mzox74i',
+  animation_url: 'ipfs://bafybeicc4wzslexwckam424pcyn6ne2epgh53jnj2inysqyogtubhkfc3a',
+  audio_url: 'ipfs://bafybeic5yqx6kqtbj5qwvwxetufjilhvkfwuibhup6xvvmshrd4i3s3zaq',
+  external_url: 'https://songaday.world/song/4997',
+  youtube_url: 'https://youtu.be/v-zBVeS1ha8',
+  attributes: [
+    {
+      trait_type: 'Date',
+      value: '2022-09-06',
+    },
+    {
+      trait_type: 'Location',
+      value: 'Hartford, CT Studio 2',
+    },
+    {
+      trait_type: 'Topic',
+      value: 'Ethereum',
+    },
+    {
+      trait_type: 'Instrument',
+      value: 'Piano',
+    },
+    {
+      trait_type: 'Mood',
+      value: 'Excited',
+    },
+    {
+      trait_type: 'Beard',
+      value: 'Beard',
+    },
+    {
+      trait_type: 'Genre',
+      value: 'Soul',
+    },
+    {
+      trait_type: 'Style',
+      value: 'Dark',
+    },
+    {
+      trait_type: 'Length',
+      value: '1:17',
+    },
+    {
+      trait_type: 'Key',
+      value: 'Cm',
+    },
+    {
+      trait_type: 'Tempo',
+      value: '90',
+    },
+    {
+      trait_type: 'Song A Day',
+      value: '4997',
+    },
+    {
+      trait_type: 'Year',
+      value: '2022',
+    },
+    {
+      trait_type: 'Instrument',
+      value: 'Samples',
+    },
+    {
+      trait_type: 'Instrument',
+      value: 'Acoustic Guitar',
+    },
+    {
+      trait_type: 'Instrument',
+      value: 'Synths',
+    },
+    {
+      trait_type: 'Instrument',
+      value: 'Drum Machine',
+    },
+    {
+      trait_type: 'Instrument',
+      value: 'Drums',
+    },
+    {
+      trait_type: 'Style',
+      value: 'Fun',
+    },
+    {
+      trait_type: 'Style',
+      value: 'Dreamy',
+    },
+    {
+      trait_type: 'Style',
+      value: 'Soulful',
+    },
+    {
+      trait_type: 'Style',
+      value: 'Bouncy',
+    },
   ],
-  by: 'jonathan.eth',
-  date: 'June 9, 2022',
-  opensea: 'somelink',
+  Date: '2022-09-06',
+  Location: 'Hartford, CT Studio 2',
+  Topic: 'Ethereum',
+  Instrument: ['Piano', 'Samples', 'Acoustic Guitar', 'Synths', 'Drum Machine', 'Drums'],
+  Mood: 'Excited',
+  Beard: 'Beard',
+  Genre: 'Soul',
+  Style: ['Dark', 'Fun', 'Dreamy', 'Soulful', 'Bouncy'],
+  Length: '1:17',
+  Key: 'Cm',
+  Tempo: '90',
+  'Song A Day': '4997',
+  Year: '2022',
+  objectID: '4997',
+  _highlightResult: {
+    name: {
+      value: 'Bellatrix',
+      matchLevel: 'none',
+      matchedWords: [],
+    },
+    description: {
+      value: 'The merge is coming!',
+      matchLevel: 'none',
+      matchedWords: [],
+    },
+    token_id: {
+      value: '4997',
+      matchLevel: 'none',
+      matchedWords: [],
+    },
+    attributes: [
+      {
+        value: {
+          value: '2022-09-06',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Hartford, CT Studio 2',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Ethereum',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Piano',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Excited',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Beard',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Soul',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Dark',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: '1:17',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Cm',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: '90',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: '4997',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: '2022',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Samples',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Acoustic Guitar',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Synths',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Drum Machine',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Drums',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Fun',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Dreamy',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Soulful',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+      {
+        value: {
+          value: 'Bouncy',
+          matchLevel: 'none',
+          matchedWords: [],
+        },
+      },
+    ],
+  },
 };
 
 export const songBalance = BigNumber.from(10).pow(16);

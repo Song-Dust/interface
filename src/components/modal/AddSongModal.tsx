@@ -1,31 +1,51 @@
 // import PropTypes from 'prop-types';
 import { Transition } from '@headlessui/react';
 import { useWeb3React } from '@web3-react/core';
+import algoliasearch from 'algoliasearch/lite';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import SongMiniCard from 'components/song/SongMiniCard';
-import { useTopic } from 'hooks/useArena';
 import useWalletActivation from 'hooks/useWalletActivation';
 import React, { Fragment, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { InstantSearch, SearchBox, useHits } from 'react-instantsearch-hooks-web';
+
+import { SongMetadata } from '../../types';
 
 const AddSongModal = (props: ModalPropsInterface) => {
   const { account } = useWeb3React();
   const active = useMemo(() => !!account, [account]);
   const { tryActivation } = useWalletActivation();
 
-  const { id: topicId } = useParams();
-  const { choices } = useTopic(Number(topicId));
-
-  const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
-  const selectedSong = useMemo(() => {
-    if (selectedSongId === null) return null;
-    return choices.find((c) => c.id === selectedSongId)!;
-  }, [choices, selectedSongId]);
+  const [selectedSong, setSelectedSong] = useState<SongMetadata | null>(null);
 
   function closeAction() {
-    setSelectedSongId(null);
+    setSelectedSong(null);
   }
 
+  const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || '';
+  const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY || '';
+  const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+  const Stats = () => {
+    const { results } = useHits();
+    return <>Showing {results?.nbHits.toLocaleString() || 0} songs from the catalog</>;
+  };
+
+  const CustomHits = () => {
+    const { hits } = useHits<SongMetadata & Record<string, unknown>>();
+    return (
+      <main className={'flex flex-wrap gap-6'} style={{ maxHeight: '500px', overflowY: 'auto' }}>
+        {hits.map((song) => {
+          return (
+            <SongMiniCard
+              onClick={() => setSelectedSong(song)}
+              key={song.token_id}
+              id={song.token_id}
+              songMeta={song}
+            />
+          );
+        })}
+      </main>
+    );
+  };
   return (
     <Modal
       className={'!max-w-4xl relative overflow-hidden'}
@@ -33,16 +53,16 @@ const AddSongModal = (props: ModalPropsInterface) => {
       closeModal={props.closeModal}
       open={props.open}
     >
-      <main className={'flex flex-wrap gap-6'}>
-        {choices.map((song) => {
-          return (
-            <SongMiniCard onClick={() => setSelectedSongId(song.id)} key={song.id} id={song.id} songMeta={song.meta} />
-          );
-        })}
-      </main>
+      <InstantSearch searchClient={searchClient} indexName="songs" routing>
+        <div style={{ width: '100%' }}>
+          <SearchBox placeholder="Find songs by name, location, instrument and more" />
+          <Stats />
+        </div>
+        <CustomHits />
+      </InstantSearch>
       <Transition
         as={Fragment}
-        show={selectedSongId !== null}
+        show={selectedSong !== null}
         enter="transform ease-in-out transition duration-[400ms]"
         enterFrom="opacity-0 translate-y-32"
         enterTo="opacity-100 translate-y-0"
@@ -54,7 +74,7 @@ const AddSongModal = (props: ModalPropsInterface) => {
           <section className={'flex'}>
             <div className={'flex-1'}>
               <p className={''}>
-                <span>{selectedSong?.description}</span> selected
+                <span>{selectedSong?.name}</span> selected
               </p>
               {active && <p className={''}>You need to Connect your wallet for adding a song</p>}
               <p>
