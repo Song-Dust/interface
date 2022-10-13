@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useRemovePopup } from '../../state/application/hooks';
 import { PopupContent } from '../../state/application/reducer';
@@ -14,7 +14,16 @@ export default function PopupItem({
   popKey: string;
 }) {
   const removePopup = useRemovePopup();
-  const removeThisPopup = useCallback(() => removePopup(popKey), [popKey, removePopup]);
+  const removeThisPopup = useCallback(() => {
+    setShow(false);
+    setTimeout(() => removePopup(popKey), 500);
+  }, [popKey, removePopup]);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setShow(true), 500);
+  }, []);
+
   useEffect(() => {
     if (removeAfterMs === null) return undefined;
 
@@ -32,7 +41,7 @@ export default function PopupItem({
     const {
       txn: { hash },
     } = content;
-    popupContent = <TransactionPopup hash={hash} />;
+    popupContent = <TransactionPopup hash={hash} show={show} />;
   }
 
   return (

@@ -8,7 +8,7 @@ import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink';
 
 import { useTransaction } from '../../state/transactions/hooks';
 
-export default function TransactionPopup({ hash }: { hash: string }) {
+export default function TransactionPopup({ hash, show }: { hash: string; show: boolean }) {
   const { chainId } = useWeb3React();
 
   const tx = useTransaction(hash);
@@ -19,7 +19,7 @@ export default function TransactionPopup({ hash }: { hash: string }) {
   return (
     <Transition
       as={Fragment}
-      show={true}
+      show={show}
       enter="transform ease-in-out transition duration-[400ms]"
       enterFrom="opacity-0 w-0 translate-x-32"
       enterTo="opacity-100 w-full translate-x-0"
