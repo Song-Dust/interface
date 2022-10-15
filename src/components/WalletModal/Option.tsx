@@ -30,7 +30,11 @@ export default function Option({
     };
   }
   return (
-    <div className={'btn-primary-inverted rounded-xl mb-3 py-3 cursor-pointer'} onClick={onClickOption}>
+    <div
+      data-testid="wallet-modal-option"
+      className={'btn-primary-inverted rounded-xl mb-3 py-3 cursor-pointer'}
+      onClick={onClickOption}
+    >
       <div className={'px-5 justify-between items-center w-full flex'}>
         <p>{header}</p>
         <div className={'bg-white rounded-full p-2 shadow-xl flex justify-center items-center'}>

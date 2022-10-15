@@ -50,6 +50,7 @@
     "bignumber.js": "^9.1.0",
     "cids": "^1.0.0",
     "ethers": "^5.6.2",
+    "jest-canvas-mock": "^2.4.0",
     "jsbi": "^3.1.4",
     "ms.macro": "^2.0.0",
     "multicodec": "^3.0.1",

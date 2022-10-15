@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core';
+import { Currency, Token } from '@uniswap/sdk-core';
 import * as connectionUtils from 'connection/utils';
 import { ApplicationModal } from 'state/application/reducer';
 
@@ -27,13 +27,13 @@ jest.mock('.../../state/application/hooks', () => {
   };
 });
 
-jest.mock('hooks/useStablecoinPrice', () => {
-  return {
-    useStablecoinValue: (_currencyAmount: CurrencyAmount<Currency> | undefined | null) => {
-      return;
-    },
-  };
-});
+// jest.mock('hooks/useStablecoinPrice', () => {
+//   return {
+//     useStablecoinValue: (_currencyAmount: CurrencyAmount<Currency> | undefined | null) => {
+//       return;
+//     },
+//   };
+// });
 
 jest.mock('lib/hooks/useCurrencyBalance', () => {
   return {
