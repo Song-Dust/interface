@@ -1,13 +1,17 @@
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core';
 import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { Connector } from '@web3-react/types';
+import { WalletConnect } from '@web3-react/walletconnect';
 import { SupportedChainId } from 'constants/chains';
 import { RPC_URLS } from 'constants/networks';
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
+  COINBASE_WALLET = 'COINBASE_WALLET',
+  WALLET_CONNECT = 'WALLET_CONNECT',
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
 }
@@ -45,4 +49,39 @@ export const gnosisSafeConnection: Connection = {
   connector: web3GnosisSafe,
   hooks: web3GnosisSafeHooks,
   type: ConnectionType.GNOSIS_SAFE,
+};
+
+const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletConnect>(
+  (actions) =>
+    new WalletConnect({
+      actions,
+      options: {
+        rpc: RPC_URLS,
+        qrcode: true,
+      },
+      onError,
+    }),
+);
+export const walletConnectConnection: Connection = {
+  connector: web3WalletConnect,
+  hooks: web3WalletConnectHooks,
+  type: ConnectionType.WALLET_CONNECT,
+};
+
+const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
+  (actions) =>
+    new CoinbaseWallet({
+      actions,
+      options: {
+        url: RPC_URLS[SupportedChainId.MAINNET],
+        appName: 'Dibs',
+      },
+      onError,
+    }),
+);
+
+export const coinbaseWalletConnection: Connection = {
+  connector: web3CoinbaseWallet,
+  hooks: web3CoinbaseWalletHooks,
+  type: ConnectionType.COINBASE_WALLET,
 };

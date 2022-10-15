@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { Erc20__factory } from "./Erc20__factory";
+export { Erc20_bytes32__factory } from "./Erc20_bytes32__factory";

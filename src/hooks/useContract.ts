@@ -6,6 +6,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import MulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json';
 import { useWeb3React } from '@web3-react/core';
 import ERC20_ABI from 'abis/erc20.json';
+import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json';
 import { Erc20 } from 'abis/types';
 import { ARENA_ADDRESS, MULTICALL_ADDRESS } from 'constants/addresses';
 import { Providers } from 'constants/providers';
@@ -79,4 +80,8 @@ export function useInterfaceMulticall() {
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
   return useContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible);
+}
+
+export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible);
 }
