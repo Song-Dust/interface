@@ -321,7 +321,10 @@ const Category = () => {
       </header>
       <main className={'flex'}>
         <section className={'flex-1'}>
-          <header></header>
+          <header>
+            <Input icon={faCircleInfo} placeholder={'Search songs in this category'}></Input>
+            <Input type="button"></Input>
+          </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
         </section>
         <aside className={'w-68'}>

@@ -4,19 +4,27 @@ import React, { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/pro-solid-svg-icons'
+import { faHexagonVerticalNft, faCircleInfo } from '@fortawesome/pro-duotone-svg-icons';
 
-
+const style = {
+  '--fa-primary-color': '#353535',
+  '--fa-secondary-color': '#EF476F',
+  '--fa-primary-opacity': 1,
+  '--fa-secondary-opacity': 0.4,
+}
 
 const Input = (props) => {
 
   // const { disabled, className, icon, balance } = props
   // eslint-disable-next-line react/prop-types
-  const { balance, placeholder } = props
+  const { balance, placeholder, type, icon } = props
 
   return (
     <>
     <div className={'flex border-light-gray border-2 rounded-xl px-4 h-14'}>
-      <div className={'input-icon'}></div>
+      <div className={'input-icon'}>
+        { icon && (<FontAwesomeIcon fontSize={24} icon={icon} style={style} />)}
+      </div>
       {/* todo #mahdiyar needs two way binding, value binded to the input is prop.  */}
       {/*todo remove focus on input*/}
       <input placeholder={placeholder} className={'focus:outline-0'} ></input>
