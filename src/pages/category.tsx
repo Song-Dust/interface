@@ -1,6 +1,7 @@
-import { faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
+import { faCircleInfo,faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useWeb3React } from '@web3-react/core';
+import Input from 'components/basic/input'
 import Modal from 'components/modal';
 import AddSongModal from 'components/modal/AddSongModal';
 import VoteSongModal from 'components/modal/VoteSongModal';
@@ -111,6 +112,7 @@ const Category = () => {
     );
   }
 
+  // @ts-ignore
   return (
     <div className={'px-24 py-24'}>
       <VoteSongModal closeModal={closeVoteSongModal} open={voteSongModalOpen} />
@@ -140,7 +142,10 @@ const Category = () => {
       </header>
       <main className={'flex'}>
         <section className={'flex-1'}>
-          <header></header>
+          <header>
+            <Input icon={faCircleInfo} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
+            {/*<Input type="button"></Input>*/}
+          </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
         </section>
         <aside className={'w-68'}>
