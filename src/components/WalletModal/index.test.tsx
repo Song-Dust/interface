@@ -63,7 +63,7 @@ jest.mock('@web3-react/core', () => {
 });
 
 it('loads Wallet Modal on desktop', async () => {
-  render(<WalletModal closeModal={() => {}} open={true} />);
+  render(<WalletModal />);
   expect(screen.getByText('Install MetaMask')).toBeInTheDocument();
   expect(screen.getByText('Coinbase Wallet')).toBeInTheDocument();
   expect(screen.getByText('WalletConnect')).toBeInTheDocument();
@@ -75,7 +75,7 @@ it('loads Wallet Modal on desktop with generic Injected', async () => {
   jest.spyOn(connectionUtils, 'getIsMetaMask').mockReturnValue(false);
   jest.spyOn(connectionUtils, 'getIsCoinbaseWallet').mockReturnValue(false);
 
-  render(<WalletModal closeModal={() => {}} open={true} />);
+  render(<WalletModal />);
   expect(screen.getByText('Injected')).toBeInTheDocument();
   expect(screen.getByText('Coinbase Wallet')).toBeInTheDocument();
   expect(screen.getByText('WalletConnect')).toBeInTheDocument();
@@ -87,7 +87,7 @@ it('loads Wallet Modal on desktop with MetaMask installed', async () => {
   jest.spyOn(connectionUtils, 'getIsMetaMask').mockReturnValue(true);
   jest.spyOn(connectionUtils, 'getIsCoinbaseWallet').mockReturnValue(false);
 
-  render(<WalletModal closeModal={() => {}} open={true} />);
+  render(<WalletModal />);
   expect(screen.getByText('MetaMask')).toBeInTheDocument();
   expect(screen.getByText('Coinbase Wallet')).toBeInTheDocument();
   expect(screen.getByText('WalletConnect')).toBeInTheDocument();
@@ -101,7 +101,7 @@ it('loads Wallet Modal on mobile', async () => {
   jest.spyOn(connectionUtils, 'getIsMetaMask').mockReturnValue(false);
   jest.spyOn(connectionUtils, 'getIsCoinbaseWallet').mockReturnValue(false);
 
-  render(<WalletModal closeModal={() => {}} open={true} />);
+  render(<WalletModal />);
   expect(screen.getByText('Open in Coinbase Wallet')).toBeInTheDocument();
   expect(screen.getByText('WalletConnect')).toBeInTheDocument();
   expect(screen.getAllByTestId('wallet-modal-option')).toHaveLength(2);
@@ -114,7 +114,7 @@ it('loads Wallet Modal on MetaMask browser', async () => {
   jest.spyOn(connectionUtils, 'getIsMetaMask').mockReturnValue(true);
   jest.spyOn(connectionUtils, 'getIsCoinbaseWallet').mockReturnValue(false);
 
-  render(<WalletModal closeModal={() => {}} open={true} />);
+  render(<WalletModal />);
   expect(screen.getByText('MetaMask')).toBeInTheDocument();
   expect(screen.getAllByTestId('wallet-modal-option')).toHaveLength(1);
 });
@@ -126,7 +126,7 @@ it('loads Wallet Modal on Coinbase Wallet browser', async () => {
   jest.spyOn(connectionUtils, 'getIsMetaMask').mockReturnValue(false);
   jest.spyOn(connectionUtils, 'getIsCoinbaseWallet').mockReturnValue(true);
 
-  render(<WalletModal closeModal={() => {}} open={true} />);
+  render(<WalletModal />);
   expect(screen.getByText('Coinbase Wallet')).toBeInTheDocument();
   expect(screen.getAllByTestId('wallet-modal-option')).toHaveLength(1);
 });

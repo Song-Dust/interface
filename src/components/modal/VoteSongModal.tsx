@@ -8,17 +8,16 @@ import { SONG } from 'constants/tokens';
 import { useVoteCallback } from 'hooks/arena/useVoteCallback';
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback';
 import { useTopic } from 'hooks/useArena';
-import useWalletActivation from 'hooks/useWalletActivation';
 import { useTokenBalance } from 'lib/hooks/useCurrencyBalance';
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useToggleWalletModal } from 'state/application/hooks';
 import { formatBalance } from 'utils/numbers';
 
 const VoteSongModal = (props: ModalPropsInterface) => {
   const { chainId, account } = useWeb3React();
   const active = useMemo(() => !!account, [account]);
-  const { tryActivation } = useWalletActivation();
 
   const { id: topicId } = useParams();
   const { choices, loaded } = useTopic(Number(topicId));
@@ -83,10 +82,12 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     }
   };
 
+  const toggleWalletModal = useToggleWalletModal();
+
   function renderButton() {
     if (!active) {
       return (
-        <button data-testid="cast-vote-btn" className={'btn-primary btn-large'} onClick={tryActivation}>
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
           Connect Wallet
         </button>
       );

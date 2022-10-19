@@ -1,4 +1,5 @@
 import Popups from 'components/popups';
+import WalletModal from 'components/WalletModal';
 import Web3Provider from 'components/Web3Provider';
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber';
 import { MulticallUpdater } from 'lib/state/multicall';
@@ -32,6 +33,7 @@ export default function Main() {
             <BlockNumberProvider>
               <Updaters />
               <Popups />
+              <WalletModal />
               <App />
             </BlockNumberProvider>
           </Web3Provider>

@@ -4,16 +4,16 @@ import { useWeb3React } from '@web3-react/core';
 import algoliasearch from 'algoliasearch/lite';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import SongMiniCard from 'components/song/SongMiniCard';
-import useWalletActivation from 'hooks/useWalletActivation';
 import React, { Fragment, useMemo, useState } from 'react';
 import { InstantSearch, SearchBox, useHits } from 'react-instantsearch-hooks-web';
+import { useToggleWalletModal } from 'state/application/hooks';
 
 import { SongMetadata } from '../../types';
 
 const AddSongModal = (props: ModalPropsInterface) => {
   const { account } = useWeb3React();
   const active = useMemo(() => !!account, [account]);
-  const { tryActivation } = useWalletActivation();
+  const toggleWalletModal = useToggleWalletModal();
 
   const [selectedSong, setSelectedSong] = useState<SongMetadata | null>(null);
 
@@ -87,11 +87,11 @@ const AddSongModal = (props: ModalPropsInterface) => {
               Go back
             </button>
             {active ? (
-              <button data-testid="wallet-connect" className={'btn-primary btn-large w-64'} onClick={tryActivation}>
+              <button data-testid="wallet-connect" className={'btn-primary btn-large w-64'} onClick={toggleWalletModal}>
                 Add song to category
               </button>
             ) : (
-              <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={tryActivation}>
+              <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
                 Connect Wallet
               </button>
             )}

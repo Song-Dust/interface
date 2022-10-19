@@ -5,16 +5,12 @@ import Modal from 'components/modal';
 import AddSongModal from 'components/modal/AddSongModal';
 import VoteSongModal from 'components/modal/VoteSongModal';
 import { SongTags } from 'components/song/SongTags';
-import { getConnection } from 'connection/utils';
 import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import { useTopic } from 'hooks/useArena';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAppDispatch } from 'state/hooks';
-import { updateSelectedWallet } from 'state/user/reducer';
+import { useToggleWalletModal } from 'state/application/hooks';
 import { parseTokenURI, shortenAddress } from 'utils/index';
-
-import { injectedConnection } from '../connection';
 
 // todo we need to find a way to use our color variables (tailwind) to set primary and secondary color of duoton icons
 const style = {
@@ -25,20 +21,8 @@ const style = {
 } as React.CSSProperties;
 
 const Category = () => {
-  const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const active = useMemo(() => !!account, [account]);
-
-  const tryActivation = useCallback(async () => {
-    const connector = injectedConnection.connector;
-    const connectionType = getConnection(connector).type;
-    try {
-      await connector.activate();
-      dispatch(updateSelectedWallet({ wallet: connectionType }));
-    } catch (error: any) {
-      console.debug(`web3-react connection error: ${error}`);
-    }
-  }, [dispatch]);
 
   const [voteSongModalOpen, setOpenVoteSongModalOpen] = useState(false);
 
@@ -72,12 +56,13 @@ const Category = () => {
 
   const { id: topicId } = useParams();
   const { choices, loaded } = useTopic(Number(topicId));
+  const toggleWalletModal = useToggleWalletModal();
 
   const renderConnector = () => {
     return active ? (
       <p data-testid="wallet-connect">Wallet Connected {shortenAddress(account)}</p>
     ) : (
-      <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={tryActivation}>
+      <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
         Connect Wallet
       </button>
     );

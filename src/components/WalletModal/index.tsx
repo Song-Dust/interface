@@ -1,8 +1,10 @@
 import { useWeb3React } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
-import Modal, { ModalPropsInterface } from 'components/modal';
+import Modal from 'components/modal';
 import { getConnection, getConnectionName, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'connection/utils';
 import { useCallback, useEffect, useState } from 'react';
+import { useModalIsOpen, useToggleWalletModal } from 'state/application/hooks';
+import { ApplicationModal } from 'state/application/reducer';
 import { updateConnectionError } from 'state/connection/reducer';
 import { useAppDispatch, useAppSelector } from 'state/hooks';
 import { updateSelectedWallet } from 'state/user/reducer';
@@ -21,7 +23,7 @@ const WALLET_VIEWS = {
   PENDING: 'pending',
 };
 
-export default function WalletModal(props: ModalPropsInterface) {
+export default function WalletModal() {
   const dispatch = useAppDispatch();
   const { connector, account, chainId } = useWeb3React();
   const [connectedWallets, addWalletToConnectedWallets] = useConnectedWallets();
@@ -38,11 +40,14 @@ export default function WalletModal(props: ModalPropsInterface) {
     setWalletView(WALLET_VIEWS.OPTIONS);
   }, [setWalletView]);
 
+  const walletModalOpen = useModalIsOpen(ApplicationModal.WALLET);
+  const toggleWalletModal = useToggleWalletModal();
+
   useEffect(() => {
-    if (props.open) {
+    if (walletModalOpen) {
       setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS);
     }
-  }, [props.open, setWalletView, account]);
+  }, [walletModalOpen, setWalletView, account]);
 
   useEffect(() => {
     if (pendingConnector && walletView !== WALLET_VIEWS.PENDING) {
@@ -73,13 +78,13 @@ export default function WalletModal(props: ModalPropsInterface) {
         await connector.activate();
 
         dispatch(updateSelectedWallet({ wallet: connectionType }));
-        props.closeModal();
+        toggleWalletModal();
       } catch (error: any) {
         console.debug(`web3-react connection error: ${error}`);
         dispatch(updateConnectionError({ connectionType, error: error.message }));
       }
     },
-    [dispatch, props],
+    [toggleWalletModal, dispatch],
   );
 
   function getOptions() {
@@ -144,7 +149,7 @@ export default function WalletModal(props: ModalPropsInterface) {
   }
 
   return (
-    <Modal closeModal={props.closeModal} open={props.open} title="Connect Wallet">
+    <Modal closeModal={toggleWalletModal} open={walletModalOpen} title="Connect Wallet">
       {getModalContent()}
     </Modal>
   );
