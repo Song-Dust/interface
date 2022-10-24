@@ -118,16 +118,16 @@ export function useTopic(topicId: number) {
     if (!choices.length) {
       setChoices(choicesRaw);
       const loadedChoices: Choice[] = [];
-      for (let i = 0; i < choicesRaw.length; i++) {
-        fetchMetadata(choicesRaw[i].metaDataUrl)
+      for (const choiceRaw of choicesRaw) {
+        fetchMetadata(choiceRaw.metaDataUrl)
           .then((m) => {
             loadedChoices.push({
-              ...choicesRaw[i],
+              ...choiceRaw,
               meta: m,
             });
           })
           .catch((_e) => {
-            loadedChoices.push(choicesRaw[i]);
+            loadedChoices.push(choiceRaw);
           })
           .finally(() => {
             if (loadedChoices.length === choicesRaw.length) {
