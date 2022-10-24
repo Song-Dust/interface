@@ -3,6 +3,7 @@ import { Transition } from '@headlessui/react';
 import { useWeb3React } from '@web3-react/core';
 import Input from 'components/basic/input';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
+import SongTile from 'components/song/SongTile';
 import { ARENA_ADDRESS } from 'constants/addresses';
 import { SONG } from 'constants/tokens';
 import { useVoteCallback } from 'hooks/arena/useVoteCallback';
@@ -148,22 +149,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
         <main className={'flex flex-wrap gap-6'}>
           {choices.map((song) => {
             return (
-              <div
-                onClick={() => setSelectedSongId(song.id)}
-                key={song.id}
-                className={'w-64 h-24 bg-cover relative'}
-                data-testid={`category-list-item-${song.id}-choose`}
-              >
-                {/* todo #alimahdiyar img below must be an iframe link to youtube video*/}
-                <img
-                  alt="choice"
-                  src={'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'}
-                  className={'rounded-xl w-full h-full'}
-                />
-                <div className={'px-2 pt-1 absolute inset-0'}>
-                  <p className={'font-bold text-xl'}>{song.description}</p>
-                </div>
-              </div>
+              <SongTile onClick={() => setSelectedSongId(song.id)} key={song.id} id={song.id} songMeta={song.meta} />
             );
           })}
         </main>
@@ -181,7 +167,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
             <section className={'flex'}>
               <div className={'flex-1'}>
                 <p className={''}>
-                  <span>{selectedSong?.description}</span> selected
+                  <span>{selectedSong?.meta?.name}</span> selected
                 </p>
                 <p className={''}>
                   {active ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}

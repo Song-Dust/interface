@@ -14,7 +14,7 @@ const style = {
   '--fa-secondary-opacity': 0.4,
 } as React.CSSProperties;
 
-export default function SongMiniCard({
+export default function SongCard({
   onClick,
   id,
   songMeta,
