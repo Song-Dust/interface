@@ -137,7 +137,7 @@ export function useTopic(topicId: number) {
           });
       }
     }
-  }, [choices.length, choicesRaw]);
+  }, [choices.length, choicesRaw, fetchMetadata]);
 
   const nextChoiceIdLoaded = nextChoiceIdResult && !nextChoiceIdResult.loading;
   const topicsLoaded =
