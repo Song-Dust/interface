@@ -7,8 +7,10 @@ import MulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/Uniswa
 import { useWeb3React } from '@web3-react/core';
 import ERC20_ABI from 'abis/erc20.json';
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json';
-import { Erc20 } from 'abis/types';
-import { ARENA_ADDRESS, MULTICALL_ADDRESS } from 'constants/addresses';
+import SONGADAY_ABI from 'abis/songaday.json';
+import { Erc20, Songaday } from 'abis/types';
+import { ARENA_ADDRESS, MULTICALL_ADDRESS, SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import { SupportedChainId } from 'constants/chains';
 import { Providers } from 'constants/providers';
 import { useMemo } from 'react';
 import { Arena } from 'types/contracts/Arena';
@@ -23,6 +25,7 @@ export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
   ABI: any,
   withSignerIfPossible = true,
+  targetChainId?: SupportedChainId,
 ): T | null {
   const { provider, account, chainId } = useWeb3React();
 
@@ -33,12 +36,12 @@ export function useContract<T extends Contract = Contract>(
     else address = addressOrAddressMap[chainId];
     if (!address) return null;
     try {
-      return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined);
+      return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined, targetChainId);
     } catch (error) {
       console.error('Failed to get contract', error);
       return null;
     }
-  }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as T;
+  }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account, targetChainId]) as T;
 }
 
 export function getProviderOrSigner(library: any, account?: string): any {
@@ -54,7 +57,7 @@ export function getContract(
   ABI: any,
   library: Web3Provider,
   account?: string,
-  targetChainId?: number,
+  targetChainId?: SupportedChainId,
 ): Contract | null {
   if (!isAddress(address) || address === AddressZero) {
     throw new Error(`Invalid 'address' parameter '${address}'.`);
@@ -72,6 +75,10 @@ export function getContract(
 
 export function useArenaContract() {
   return useContract<Arena>(ARENA_ADDRESS, ArenaABI, true);
+}
+
+export function useSongadayContract() {
+  return useContract<Songaday>(SONGADAY_CONTRACT_ADDRESS, SONGADAY_ABI, true, SupportedChainId.MAINNET);
 }
 
 export function useInterfaceMulticall() {

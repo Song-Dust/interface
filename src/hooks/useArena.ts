@@ -1,11 +1,11 @@
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
 import { Interface } from '@ethersproject/abi';
-import axios from 'axios';
-import { useArenaContract } from 'hooks/useContract';
+import { useArenaContract, useSongadayContract } from 'hooks/useContract';
 import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { parseTokenURI } from 'utils';
 
-import { Choice, SongMetadata } from '../types';
+import { Choice } from '../types';
 import { Arena, TopicStruct } from '../types/contracts/Arena';
 
 const { abi: ArenaABI } = ArenaJson;
@@ -97,17 +97,33 @@ export function useTopic(topicId: number) {
 
   const [choices, setChoices] = useState<Choice[]>([]);
 
+  const songadayContract = useSongadayContract();
+  const fetchMetadata = useCallback(
+    async (tokenId: string) => {
+      if (!songadayContract) throw new Error('contract not loaded');
+      try {
+        const tokenURI = await songadayContract.tokenURI(tokenId);
+        const URI = parseTokenURI(tokenURI);
+        const response = await fetch(URI);
+        const songmeta = await response.json();
+        return songmeta;
+      } catch (e) {
+        console.log('metaData fatch error', e);
+      }
+    },
+    [songadayContract],
+  );
+
   useEffect(() => {
     if (!choices.length) {
       setChoices(choicesRaw);
       const loadedChoices: Choice[] = [];
       for (let i = 0; i < choicesRaw.length; i++) {
-        axios
-          .get<SongMetadata>(choicesRaw[i].metaDataUrl)
+        fetchMetadata(choicesRaw[i].metaDataUrl)
           .then((m) => {
             loadedChoices.push({
               ...choicesRaw[i],
-              meta: m.data,
+              meta: m,
             });
           })
           .catch((_e) => {

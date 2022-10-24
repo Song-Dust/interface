@@ -1,7 +1,7 @@
-import { faCircleInfo,faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
+import { faCircleInfo, faHexagonVerticalNft } from '@fortawesome/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useWeb3React } from '@web3-react/core';
-import Input from 'components/basic/input'
+import Input from 'components/basic/input';
 import Modal from 'components/modal';
 import AddSongModal from 'components/modal/AddSongModal';
 import VoteSongModal from 'components/modal/VoteSongModal';
