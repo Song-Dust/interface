@@ -1,26 +1,35 @@
 import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
 import { Interface } from '@ethersproject/abi';
-import { BigNumber } from '@ethersproject/bignumber';
 import axios from 'axios';
 import { useArenaContract } from 'hooks/useContract';
 import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
 import { useEffect, useMemo, useState } from 'react';
 
 import { Choice, SongMetadata } from '../types';
-import { TopicStruct } from '../types/contracts/Arena';
+import { Arena, TopicStruct } from '../types/contracts/Arena';
 
 const { abi: ArenaABI } = ArenaJson;
 const arenaInterface = new Interface(ArenaABI);
 
+export type ContractFunctionReturnType<T> = T extends (...args: any) => Promise<infer R>
+  ? // TODO: handle struct return type
+    R extends void
+    ? void
+    : R
+  : any;
+
 export function useArena() {
   const arenaContract = useArenaContract();
 
-  const nextTopicIdCall = useMemo(() => {
-    return [arenaInterface.encodeFunctionData('nextTopicId', [])];
+  const nextTopicIdAndArenaInfoCall = useMemo(() => {
+    return [arenaInterface.encodeFunctionData('nextTopicId', []), arenaInterface.encodeFunctionData('info', [])];
   }, []);
 
-  const [nextTopicIdResult] = useSingleContractWithCallData(arenaContract, nextTopicIdCall);
-  const nextTopicId: BigNumber | null = nextTopicIdResult?.result?.[0];
+  const [nextTopicIdResult, infoResult] = useSingleContractWithCallData(arenaContract, nextTopicIdAndArenaInfoCall);
+
+  const nextTopicId: ContractFunctionReturnType<Arena['callStatic']['nextTopicId']> | undefined =
+    nextTopicIdResult?.result?.[0];
+  const arenaInfo = infoResult?.result as ContractFunctionReturnType<Arena['callStatic']['info']> | undefined;
 
   const getTopicsCallInputs = useMemo(() => {
     const topicIds: number[] = nextTopicId ? Array.from(Array(nextTopicId.toNumber()).keys()) : [];
@@ -50,7 +59,7 @@ export function useArena() {
     }, []);
   }, [getTopicsResult]);
 
-  return { nextTopicId, topics };
+  return { nextTopicId, topics, arenaInfo };
 }
 
 export function useTopic(topicId: number) {
@@ -61,7 +70,8 @@ export function useTopic(topicId: number) {
 
   const [nextChoiceIdResult] = useSingleContractWithCallData(arenaContract, nextChoiceIdCall);
 
-  const nextChoiceId: BigNumber | null = nextChoiceIdResult?.result?.[0];
+  const nextChoiceId: ContractFunctionReturnType<Arena['callStatic']['nextChoiceId']> | null =
+    nextChoiceIdResult?.result?.[0];
 
   const getChoicesCallInputs = useMemo(() => {
     const choiceIds: number[] = nextChoiceId ? Array.from(Array(nextChoiceId.toNumber()).keys()) : [];
@@ -95,7 +105,6 @@ export function useTopic(topicId: number) {
         axios
           .get<SongMetadata>(choicesRaw[i].metaDataUrl)
           .then((m) => {
-            console.log({ m });
             loadedChoices.push({
               ...choicesRaw[i],
               meta: m.data,

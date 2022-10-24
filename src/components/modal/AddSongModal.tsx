@@ -1,20 +1,29 @@
 // import PropTypes from 'prop-types';
+import { formatEther } from '@ethersproject/units';
 import { Transition } from '@headlessui/react';
 import { useWeb3React } from '@web3-react/core';
 import algoliasearch from 'algoliasearch/lite';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import SongMiniCard from 'components/song/SongMiniCard';
-import React, { Fragment, useMemo, useState } from 'react';
+import { ARENA_ADDRESS } from 'constants/addresses';
+import { SONG } from 'constants/tokens';
+import { useAddChoiceCallback } from 'hooks/arena/useAddChoiceCallback';
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback';
+import { useArena } from 'hooks/useArena';
+import { useTokenBalance } from 'lib/hooks/useCurrencyBalance';
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { InstantSearch, SearchBox, useHits } from 'react-instantsearch-hooks-web';
+import { useParams } from 'react-router-dom';
 import { useToggleWalletModal } from 'state/application/hooks';
+import { formatCurrencyAmount } from 'utils/formatCurrencyAmount';
 
 import { SongMetadata } from '../../types';
 
 const AddSongModal = (props: ModalPropsInterface) => {
   const { account } = useWeb3React();
   const active = useMemo(() => !!account, [account]);
-  const toggleWalletModal = useToggleWalletModal();
-
+  const { arenaInfo } = useArena();
   const [selectedSong, setSelectedSong] = useState<SongMetadata | null>(null);
 
   function closeAction() {
@@ -46,6 +55,120 @@ const AddSongModal = (props: ModalPropsInterface) => {
       </main>
     );
   };
+  const { chainId } = useWeb3React();
+  const currency = chainId ? SONG[chainId] : undefined;
+
+  const parsedAmount = useMemo(() => {
+    return arenaInfo?.choiceCreationFee && currency
+      ? tryParseCurrencyAmount(formatEther(arenaInfo.choiceCreationFee).toString(), currency)
+      : undefined;
+  }, [arenaInfo, currency]);
+
+  const { id: topicId } = useParams();
+
+  const { callback: addChoiceCallback } = useAddChoiceCallback(
+    Number(topicId),
+    String(selectedSong?.token_id || ''),
+    selectedSong?.name || '',
+  );
+  const [loading, setLoading] = useState(false);
+
+  const songBalance = useTokenBalance(account ?? undefined, chainId ? SONG[chainId] : undefined);
+
+  const songSymbol = songBalance?.currency.symbol || 'SONG';
+
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const handleAddChoice = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      await addChoiceCallback?.();
+    } catch (e) {
+      console.log('add choice failed');
+      console.log(e);
+    }
+    if (mounted.current) {
+      setLoading(false);
+    }
+  };
+
+  const toggleWalletModal = useToggleWalletModal();
+
+  const insufficientBalance = useMemo(
+    () => songBalance && parsedAmount && songBalance.lessThan(parsedAmount),
+    [parsedAmount, songBalance],
+  );
+
+  const [approvalSong, approveSongCallback] = useApproveCallback(
+    parsedAmount,
+    chainId ? ARENA_ADDRESS[chainId] : undefined,
+  );
+
+  function renderButton() {
+    if (!active) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
+          Connect Wallet
+        </button>
+      );
+    }
+    if (!arenaInfo) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+          Loading...
+        </button>
+      );
+    }
+    if (insufficientBalance) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+          Insufficient {songSymbol} balance
+        </button>
+      );
+    }
+    if (approvalSong === ApprovalState.NOT_APPROVED) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'} onClick={approveSongCallback}>
+          Approve {songSymbol}
+        </button>
+      );
+    }
+    if (approvalSong === ApprovalState.PENDING) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+          Waiting for Approve...
+        </button>
+      );
+    }
+    if (approvalSong === ApprovalState.UNKNOWN) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+          Loading Approval State...
+        </button>
+      );
+    }
+    if (loading) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+          Sending Transaction...
+        </button>
+      );
+    }
+    return (
+      <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'} onClick={handleAddChoice}>
+        Add song to category
+      </button>
+    );
+  }
+
   return (
     <Modal
       className={'!max-w-4xl relative overflow-hidden'}
@@ -78,7 +201,10 @@ const AddSongModal = (props: ModalPropsInterface) => {
               </p>
               {active && <p className={''}>You need to Connect your wallet for adding a song</p>}
               <p>
-                Submit fee: <span className={'font-semibold'}>24.25 SONG</span>
+                Submit fee:{' '}
+                <span className={'font-semibold'}>
+                  {parsedAmount ? formatCurrencyAmount(parsedAmount, 4) : ''} {currency?.symbol}
+                </span>
               </p>
             </div>
           </section>
@@ -86,15 +212,7 @@ const AddSongModal = (props: ModalPropsInterface) => {
             <button onClick={closeAction} className={'btn-primary-inverted btn-large mr-2'}>
               Go back
             </button>
-            {active ? (
-              <button data-testid="wallet-connect" className={'btn-primary btn-large w-64'} onClick={toggleWalletModal}>
-                Add song to category
-              </button>
-            ) : (
-              <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
-                Connect Wallet
-              </button>
-            )}
+            {renderButton()}
           </section>
           {/* footer action */}
         </footer>

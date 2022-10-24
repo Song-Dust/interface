@@ -32,21 +32,10 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     setSelectedSongId(null);
   }
 
-  const songBalance = useTokenBalance(account ?? undefined, chainId ? SONG[chainId] : undefined);
   const [voteAmount, setVoteAmount] = useState('');
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(voteAmount, chainId && SONG[chainId] ? SONG[chainId] : undefined),
     [chainId, voteAmount],
-  );
-
-  const insufficientBalance = useMemo(
-    () => songBalance && parsedAmount && songBalance.lessThan(parsedAmount),
-    [parsedAmount, songBalance],
-  );
-
-  const [approvalSong, approveSongCallback] = useApproveCallback(
-    parsedAmount,
-    chainId ? ARENA_ADDRESS[chainId] : undefined,
   );
 
   const { callback: voteCallback } = useVoteCallback(
@@ -56,6 +45,8 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     selectedSong?.description || '',
   );
   const [loading, setLoading] = useState(false);
+
+  const songBalance = useTokenBalance(account ?? undefined, chainId ? SONG[chainId] : undefined);
 
   const songSymbol = songBalance?.currency.symbol || 'SONG';
 
@@ -83,6 +74,16 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   };
 
   const toggleWalletModal = useToggleWalletModal();
+
+  const insufficientBalance = useMemo(
+    () => songBalance && parsedAmount && songBalance.lessThan(parsedAmount),
+    [parsedAmount, songBalance],
+  );
+
+  const [approvalSong, approveSongCallback] = useApproveCallback(
+    parsedAmount,
+    chainId ? ARENA_ADDRESS[chainId] : undefined,
+  );
 
   function renderButton() {
     if (!active) {

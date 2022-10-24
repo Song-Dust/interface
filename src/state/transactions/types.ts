@@ -14,8 +14,9 @@ export interface SerializableTransactionReceipt {
  * These values is persisted in state and if you change the value it will cause errors
  */
 export enum TransactionType {
-  APPROVAL = 0,
+  APPROVAL,
   VOTE,
+  ADD_CHOICE,
 }
 
 export interface BaseTransactionInfo {
@@ -35,7 +36,12 @@ export interface VoteTransactionInfo extends BaseTransactionInfo {
   choiceTitle: string;
 }
 
-export type TransactionInfo = ApproveTransactionInfo | VoteTransactionInfo;
+export interface AddChoiceTransactionInfo extends BaseTransactionInfo {
+  type: TransactionType.ADD_CHOICE;
+  choiceTitle: string;
+}
+
+export type TransactionInfo = ApproveTransactionInfo | VoteTransactionInfo | AddChoiceTransactionInfo;
 
 export interface TransactionDetails {
   hash: string;
