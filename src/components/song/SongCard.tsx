@@ -45,8 +45,9 @@ export default function SongCard({
         </div>
 
         <div>
-        <p className={'text-dark-gray mt-4'} data-testid={`category-list-item-${id}-meta`}>
-          Added by <span className={'text-black font-semibold'}>{songMeta.created_by}</span> at {songMeta.Date}
+        <p className={'text-dark-gray text-sm mt-4 mb-1'} data-testid={`category-list-item-${id}-meta`}>
+          Added by <span className={'text-black font-semibold'}>{songMeta.created_by}</span>
+          {songMeta.Date && (<>at {songMeta.Date}</>)}
         </p>
         <a
           href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${songMeta.token_id}`}
