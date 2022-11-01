@@ -26,7 +26,7 @@ export default function SongCard({
   return (
     <div
       onClick={onClick}
-      className={'bg-squircle w-[311px] h-[316px] bg-cover p-4'}
+      className={'bg-squircle w-[311px] h-[316px] bg-cover p-5'}
       data-testid={`category-list-item-${id}`}
     >
       {/* todo img below must be an iframe link to youtube video*/}
@@ -38,19 +38,24 @@ export default function SongCard({
         )}
         className={'rounded-xl'}
       />
-      <div className={'px-2 pt-1'}>
+      <div className={'px-2 pt-1 flex flex-col justify-between h-40'}>
+        <div className={'pt-1.5'}>
         <p className={'font-bold text-xl'}>{songMeta.name}</p>
         {songMeta.attributes && <SongTags attributes={songMeta.attributes} />}
+        </div>
+
+        <div>
         <p className={'text-dark-gray mt-4'} data-testid={`category-list-item-${id}-meta`}>
           Added by <span className={'text-black font-semibold'}>{songMeta.created_by}</span> at {songMeta.Date}
         </p>
         <a
           href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${songMeta.token_id}`}
-          className={'flex gap-1.5 mt-2'}
+          className={'flex gap-1.5'}
         >
           <FontAwesomeIcon fontSize={24} icon={faHexagonVerticalNft} style={style} />
           <span className={'text-primary font-semibold text-under underline'}>View on Opensea</span>
         </a>
+        </div>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ interface SongTagProps {
 }
 
 export const SongTags: React.FC<SongTagProps> = ({ attributes, tagsExpanded }) => {
-  const allowedTraits = ['Instrument', 'Beard', 'Mood', 'Location', 'Genre', 'Style', 'Tempo', 'Key'];
+  const allowedTraits = ['Mood', 'Genre'];
   // For each trait, collect all the attributes
   type Tags = { key: string; value: string }[];
 

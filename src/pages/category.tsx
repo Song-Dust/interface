@@ -121,7 +121,7 @@ const Category = () => {
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
-          <header>
+          <header className={'mb-8'}>
             <Input icon={faCircleInfo} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
             {/*<Input type="button"></Input>*/}
           </header>
