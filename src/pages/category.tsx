@@ -1,4 +1,4 @@
-import {faCheckToSlot,faCircleInfo, faCoins,faHourglassClock, faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
+import {faCheckToSlot, faCoins,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { useWeb3React } from '@web3-react/core';
 import Input from 'components/basic/input';
@@ -122,7 +122,7 @@ const Category = () => {
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
           <header className={'mb-8'}>
-            <Input icon={faCircleInfo} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
+            <Input icon={faMagnifyingGlass} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
             {/*<Input type="button"></Input>*/}
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>

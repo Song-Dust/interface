@@ -29,7 +29,7 @@ const Input = (props: InputProps) => {
   }, [maxAmountInput, onUserInput]);
   return (
     <>
-      <div className={'flex border-light-gray border-2 rounded-xl px-4 h-14'}>
+      <div className={'flex items-center gap-3 border-light-gray border-2 rounded-xl px-4 h-14'}>
         <div className={'input-icon'}>
           { icon && (<FontAwesomeIcon fontSize={24} icon={icon} style={style} />)}
         </div>
@@ -37,7 +37,7 @@ const Input = (props: InputProps) => {
         <input
           type={props.type}
           placeholder={placeholder}
-          className={'focus:outline-0'}
+          className={'focus:outline-0 w-full text-lg'}
           onChange={(e) => onUserInput(e.target.value)}
           value={props.value || ''}
           data-testid={props.testid && `${props.testid}-input`}
