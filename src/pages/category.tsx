@@ -1,4 +1,5 @@
-import { faCircleInfo } from '@fortawesome/pro-duotone-svg-icons';
+import {faCheckToSlot,faCircleInfo, faCoins,faHourglassClock, faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { useWeb3React } from '@web3-react/core';
 import Input from 'components/basic/input';
 import Modal from 'components/modal';
@@ -10,6 +11,21 @@ import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useToggleWalletModal } from 'state/application/hooks';
 import { shortenAddress } from 'utils/index';
+
+const style = {
+  '--fa-primary-color': '#353535',
+  '--fa-secondary-color': '#EF476F',
+  '--fa-primary-opacity': 1,
+  '--fa-secondary-opacity': 0.4,
+} as React.CSSProperties;
+
+const monoStyle = {
+  '--fa-primary-color': '#353535',
+  '--fa-secondary-color': '#193154',
+  '--fa-primary-opacity': 1,
+  '--fa-secondary-opacity': 0.4,
+} as React.CSSProperties;
+
 
 const Category = () => {
   const { account } = useWeb3React();
@@ -103,7 +119,7 @@ const Category = () => {
         </div>
         <img alt="header" src={'/category-header.png'} />
       </header>
-      <main className={'flex'}>
+      <main className={'flex gap-8'}>
         <section className={'flex-1'}>
           <header>
             <Input icon={faCircleInfo} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
@@ -111,7 +127,7 @@ const Category = () => {
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
         </section>
-        <aside className={'w-68'}>
+        <aside className={'w-64'}>
           <button
             onClick={openVoteSongModal}
             className={'btn-primary btn-large w-full mb-2'}
@@ -119,6 +135,60 @@ const Category = () => {
           >
             Vote for a Song!
           </button>
+          <section className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}>
+            <div><FontAwesomeIcon fontSize={36} icon={faHourglassClock} style={style} /></div>
+            <div>
+              <h2 className={'font-bold'}>24 Days</h2>
+              <p className={'font-semibold'}>Left untill the snapshot</p>
+            </div>
+          </section>
+          <section className={'category-info rounded-2xl bg-primary-light-2 flex flex-col gap-6 px-6 pt-6 mb-4 pb-7'}>
+            <div className={'flex gap-3 flex-col'}>
+              <label className={'font-semibold'}>Category&apos;s General Stats</label>
+              <div className={'rounded-xl bg-g1 flex gap-4 py-4 px-5 justify-between items-center'}>
+                <div><FontAwesomeIcon fontSize={42} icon={faCheckToSlot} style={monoStyle} /></div>
+                <div className={''}>
+                  <h1 className={'font-bold'}>2.25k</h1>
+                  <p className={'font-semibold relative -mt-2'}>SONG casted</p>
+                </div>
+              </div>
+              <section className={'flex gap-4'}>
+                <div className={'rounded-xl bg-yellowC flex flex-col justify-center items-center w-24 h-24'}>
+                  <FontAwesomeIcon fontSize={24} icon={faPeopleGroup} style={monoStyle} />
+                  <h2 className={'font-bold'}>3</h2>
+                  <p className={'font-normal text-sm'}>Participants</p>
+                </div>
+                <div className={'rounded-xl bg-greenC flex-col flex justify-center items-center w-24 h-24'}>
+                  <FontAwesomeIcon fontSize={24} icon={faSpinnerThird} style={monoStyle} />
+                  <h2 className={'font-bold'}>32/50</h2>
+                  <p className={'font-normal text-sm'}>Cycles past</p>
+
+                </div>
+              </section>
+            </div>
+            <div className={'flex gap-3 flex-col'}>
+              <label className={'font-semibold'}>Your stats in this category</label>
+              <div className={'rounded-xl bg-g1 flex gap-4 py-4 px-5 justify-between items-center'}>
+                <div><FontAwesomeIcon fontSize={42} icon={faCoins} style={monoStyle} /></div>
+                <div className={''}>
+                  <h1 className={'font-bold'}>2.73</h1>
+                  <p className={'font-semibold relative -mt-2'}>SONG earned</p>
+                </div>
+              </div>
+              <section className={'flex gap-4'}>
+                <div className={'rounded-xl bg-yellowC flex flex-col justify-center items-center w-24 h-24'}>
+                  <FontAwesomeIcon fontSize={24} icon={faPeopleGroup} style={monoStyle} />
+                  <h2 className={'font-bold'}>3</h2>
+                  <p className={'font-normal text-sm'}>Song voted</p>
+                </div>
+                <div className={'rounded-xl bg-greenC flex-col flex justify-center items-center w-24 h-24'}>
+                  <FontAwesomeIcon fontSize={24} icon={faSpinnerThird} style={monoStyle} />
+                  <h2 className={'font-bold'}>240</h2>
+                  <p className={'font-normal text-sm'}>SONG casted</p>
+                </div>
+              </section>
+            </div>
+          </section>
           <button onClick={openMoreActionModal} className={'btn-primary-inverted btn-large w-full'}>
             More Actions
           </button>

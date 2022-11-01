@@ -19,6 +19,8 @@ module.exports = {
         black: '#353535',
         chips: '#5EBAB0',
         gray: '#BFBFBF',
+        yellowC: '#FFD166',
+        greenC: '#7FE3CA',
         'light-gray': '#EBECEF',
         'light-gray-2': '#EDF2F3',
         'dark-gray': '#757575',
@@ -33,6 +35,7 @@ module.exports = {
       backgroundImage: {
         'token-left': "url('/img/tokenLeft-background.svg')",
         gradient: 'linear-gradient(135deg,#5158f6,#822df5 33.76%,#f3a761)',
+        g1: 'linear-gradient(90.54deg, rgba(239, 71, 111, 0.15) -2.28%, rgba(146, 84, 153, 0.15) 102.51%);',
         'presale-header': "url('/img/presale-header.svg')",
         'public-sale-header': "url('/img/public-header.svg')",
         squircle: "url('../public/squircle.png')",
