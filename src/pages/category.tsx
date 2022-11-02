@@ -1,4 +1,4 @@
-import {faCheckToSlot, faCoins,faEye,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
+import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { useWeb3React } from '@web3-react/core';
 import Input from 'components/basic/input';
@@ -178,12 +178,12 @@ const Category = () => {
               </div>
               <section className={'flex gap-4'}>
                 <div className={'rounded-xl bg-yellowC flex flex-col justify-center items-center w-24 h-24'}>
-                  <FontAwesomeIcon fontSize={24} icon={faPeopleGroup} style={monoStyle} />
+                  <FontAwesomeIcon fontSize={24} icon={faGuitars} style={monoStyle} />
                   <h2 className={'font-bold'}>3</h2>
                   <p className={'font-normal text-sm'}>Song voted</p>
                 </div>
                 <div className={'rounded-xl bg-greenC flex-col flex justify-center items-center w-24 h-24'}>
-                  <FontAwesomeIcon fontSize={24} icon={faSpinnerThird} style={monoStyle} />
+                  <FontAwesomeIcon fontSize={24} icon={faCheckToSlot} style={monoStyle} />
                   <h2 className={'font-bold'}>240</h2>
                   <p className={'font-normal text-sm'}>SONG casted</p>
                 </div>
