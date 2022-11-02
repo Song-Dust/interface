@@ -1,4 +1,4 @@
-import {faCheckToSlot, faCoins,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
+import {faCheckToSlot, faCoins,faEye,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { useWeb3React } from '@web3-react/core';
 import Input from 'components/basic/input';
@@ -121,8 +121,9 @@ const Category = () => {
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
-          <header className={'mb-8'}>
-            <Input icon={faMagnifyingGlass} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
+          <header className={'mb-8 flex gap-4 justify-between'}>
+            <Input className={'w-104'} icon={faMagnifyingGlass} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
+            <Input type={'submit'} className={'basis-52'} icon={faEye} toggle toggleLabel={'Default View'} onUserInput={() => {}}></Input>
             {/*<Input type="button"></Input>*/}
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>

@@ -9,7 +9,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   currencyBalance?: CurrencyAmount<Currency>;
   onUserInput: (value: string) => void;
   testid?: string;
-  icon?: IconDefinition
+  icon?: IconDefinition;
+  className?: string;
+  toggle?: boolean;
+  toggleLabel?: string;
 }
 
 const style = {
@@ -21,15 +24,16 @@ const style = {
 
 const Input = (props: InputProps) => {
 
-  const { currencyBalance, placeholder, onUserInput, icon } = props;
+  const { currencyBalance, placeholder, onUserInput, icon, className, toggle, toggleLabel } = props;
 
   const maxAmountInput = maxAmountSpend(currencyBalance);
   const handleMax = useCallback(() => {
     maxAmountInput && onUserInput(maxAmountInput.toExact());
   }, [maxAmountInput, onUserInput]);
   return (
-    <>
-      <div className={'flex items-center gap-3 border-light-gray border-2 rounded-xl px-4 h-14'}>
+    <div className={`${(className) ? className : ''}`}>
+      <div className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 
+      h-14 ${toggle ? 'justify-center' : ''}`}>
         <div className={'input-icon'}>
           { icon && (<FontAwesomeIcon fontSize={24} icon={icon} style={style} />)}
         </div>
@@ -66,7 +70,7 @@ const Input = (props: InputProps) => {
           </div>
         )}
       </footer>
-    </>
+    </div>
   );
 };
 
