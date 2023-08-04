@@ -1,14 +1,13 @@
-import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
 import { Interface } from '@ethersproject/abi';
+import ArenaABI from 'abis/arena.json';
 import { useArenaContract, useSongadayContract } from 'hooks/useContract';
 import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { parseTokenURI } from 'utils';
 
+import { Arena, TopicStruct } from '../abis/types/Arena';
 import { Choice } from '../types';
-import { Arena, TopicStruct } from '../types/contracts/Arena';
 
-const { abi: ArenaABI } = ArenaJson;
 const arenaInterface = new Interface(ArenaABI);
 
 export type ContractFunctionReturnType<T> = T extends (...args: any) => Promise<infer R>
@@ -22,12 +21,12 @@ export function useArena() {
   const arenaContract = useArenaContract();
 
   const nextTopicIdAndArenaInfoCall = useMemo(() => {
-    return [arenaInterface.encodeFunctionData('nextTopicId', []), arenaInterface.encodeFunctionData('info', [])];
+    return [arenaInterface.encodeFunctionData('getNextTopicId', []), arenaInterface.encodeFunctionData('info', [])];
   }, []);
 
   const [nextTopicIdResult, infoResult] = useSingleContractWithCallData(arenaContract, nextTopicIdAndArenaInfoCall);
 
-  const nextTopicId: ContractFunctionReturnType<Arena['callStatic']['nextTopicId']> | undefined =
+  const nextTopicId: ContractFunctionReturnType<Arena['callStatic']['getNextTopicId']> | undefined =
     nextTopicIdResult?.result?.[0];
   const arenaInfo = infoResult?.result as ContractFunctionReturnType<Arena['callStatic']['info']> | undefined;
 
@@ -44,7 +43,7 @@ export function useArena() {
       const result = value.result[0];
       acc.push({
         cycleDuration: result[0],
-        startBlock: result[1],
+        startTime: result[1],
         sharePerCyclePercentage: result[2],
         prevContributorsFeePercentage: result[3],
         topicFeePercentage: result[4],
@@ -53,7 +52,6 @@ export function useArena() {
         fundingPeriod: result[7],
         fundingPercentage: result[8],
         funds: result[9],
-        metaDataUrl: result[10],
       });
       return acc;
     }, []);
@@ -65,12 +63,12 @@ export function useArena() {
 export function useTopic(topicId: number) {
   const arenaContract = useArenaContract();
   const nextChoiceIdCall = useMemo(() => {
-    return [arenaInterface.encodeFunctionData('nextChoiceId', [topicId])];
+    return [arenaInterface.encodeFunctionData('getNextChoiceIdInTopic', [topicId])];
   }, [topicId]);
 
   const [nextChoiceIdResult] = useSingleContractWithCallData(arenaContract, nextChoiceIdCall);
 
-  const nextChoiceId: ContractFunctionReturnType<Arena['callStatic']['nextChoiceId']> | null =
+  const nextChoiceId: ContractFunctionReturnType<Arena['callStatic']['getNextChoiceIdInTopic']> | null =
     nextChoiceIdResult?.result?.[0];
 
   const getChoicesCallInputs = useMemo(() => {

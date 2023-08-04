@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Wallet } from '@ethersproject/wallet';
 
+import { ChoiceStruct, TopicStruct } from '../../src/abis/types/Arena';
 import { SongMetadata } from '../../src/types';
-import { ChoiceStruct, TopicStruct } from '../../src/types/contracts/Arena';
 import { shortenAddress } from '../../src/utils';
 
 export const TEST_PRIVATE_KEY = '0xe580410d7c37d26c6ad1a837bbae46bc27f9066a466fb3a66e770523b4666d19';

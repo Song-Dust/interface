@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@attentionstreams/contracts": "0.0.7",
     "@coinbase/wallet-sdk": "^3.3.0",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
@@ -62,8 +61,7 @@
   "scripts": {
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
     "contracts:compile:uniswaphelpers": "typechain --target ethers-v5 --out-dir src/abis/types/uniswap \"./node_modules/@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json\"",
-    "contracts:compile:attentionstreams": "typechain --target ethers-v5 --out-dir src/types/contracts \"./node_modules/@attentionstreams/contracts/artifacts/contracts/main/**/*.json\"",
-    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:attentionstreams && yarn contracts:compile:uniswaphelpers",
+    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:uniswaphelpers",
     "prepare": "yarn contracts:compile",
     "start": "react-app-rewired start",
     "start:cypress": "env REACT_APP_IS_CYPRESS='true' react-app-rewired start",

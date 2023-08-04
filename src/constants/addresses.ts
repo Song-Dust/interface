@@ -5,7 +5,7 @@ export type AddressMap = { [chainId: number]: string };
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const ARENA_ADDRESS: AddressMap = {
-  [SupportedChainId.GOERLI]: '0x29eB89E03F317B87aB3510bE0ED748CBab916D21',
+  [SupportedChainId.GOERLI]: '0x9b7b03dEaE9346bbe6f1bD1B0A112E9329aF9661',
 };
 
 export const MULTICALL_ADDRESS: AddressMap = {

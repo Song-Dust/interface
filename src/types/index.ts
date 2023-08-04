@@ -1,4 +1,4 @@
-import { ChoiceStruct } from './contracts/Arena';
+import { ChoiceStruct } from 'abis/types/Arena';
 
 export type SongTag = { subject: string; title: string };
 

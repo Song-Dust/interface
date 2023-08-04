@@ -1,23 +1,22 @@
-import ArenaJson from '@attentionstreams/contracts/artifacts/contracts/main/Arena.sol/Arena.json';
 import { isAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import MulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json';
 import { useWeb3React } from '@web3-react/core';
+import ArenaABI from 'abis/arena.json';
 import ERC20_ABI from 'abis/erc20.json';
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json';
 import SONGADAY_ABI from 'abis/songaday.json';
 import { Erc20, Songaday } from 'abis/types';
+import { Arena } from 'abis/types/Arena';
 import { ARENA_ADDRESS, MULTICALL_ADDRESS, SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import { SupportedChainId } from 'constants/chains';
 import { Providers } from 'constants/providers';
 import { useMemo } from 'react';
-import { Arena } from 'types/contracts/Arena';
 
 import { UniswapInterfaceMulticall } from '../abis/types/uniswap';
 
-const { abi: ArenaABI } = ArenaJson;
 const { abi: MulticallABI } = MulticallJson;
 
 // returns null on errors
