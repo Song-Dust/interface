@@ -7,18 +7,18 @@ import { parseTokenURI } from 'utils/index';
 
 import { SongMetadata } from '../../types';
 
-const style = {
-  '--fa-primary-color': '#353535',
-  '--fa-secondary-color': '#EF476F',
-  '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4
-} as React.CSSProperties;
+// const style = {
+//   '--fa-primary-color': '#353535',
+//   '--fa-secondary-color': '#EF476F',
+//   '--fa-primary-opacity': 1,
+//   '--fa-secondary-opacity': 0.4
+// } as React.CSSProperties;
 
 export default function SongCard({
-                                   onClick,
-                                   id,
-                                   songMeta
-                                 }: {
+  onClick,
+  id,
+  songMeta,
+}: {
   onClick?: () => void;
   id: string | number;
   songMeta: SongMetadata;
@@ -31,10 +31,10 @@ export default function SongCard({
     >
       {/* todo img below must be an iframe link to youtube video*/}
       <img
-        alt='choice'
+        alt="choice"
         src={parseTokenURI(
           songMeta.image ||
-          'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'
+            'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
         )}
         className={'rounded-xl'}
       />
@@ -47,7 +47,7 @@ export default function SongCard({
         <div>
           <p className={'text-dark-gray text-sm mt-4 mb-1'} data-testid={`category-list-item-${id}-meta`}>
             Added by <span className={'text-black font-semibold'}>{songMeta.created_by}</span>
-            {songMeta.Date && (<>at {songMeta.Date}</>)}
+            {songMeta.Date && <>at {songMeta.Date}</>}
           </p>
           <a
             href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${songMeta.token_id}`}

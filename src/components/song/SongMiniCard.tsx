@@ -6,18 +6,18 @@ import { parseTokenURI } from 'utils/index';
 
 import { SongMetadata } from '../../types';
 
-const style = {
-  '--fa-primary-color': '#353535',
-  '--fa-secondary-color': '#EF476F',
-  '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4
-} as React.CSSProperties;
+// const style = {
+//   '--fa-primary-color': '#353535',
+//   '--fa-secondary-color': '#EF476F',
+//   '--fa-primary-opacity': 1,
+//   '--fa-secondary-opacity': 0.4
+// } as React.CSSProperties;
 
 export default function SongMiniCard({
-                                       onClick,
-                                       id,
-                                       songMeta
-                                     }: {
+  onClick,
+  id,
+  songMeta,
+}: {
   onClick: () => void;
   id: string | number;
   songMeta: SongMetadata | null | undefined;
@@ -26,10 +26,10 @@ export default function SongMiniCard({
     <div onClick={onClick} className={'rounded-3xl w-64 bg-light-gray-2 p-4'} data-testid={`category-list-item-${id}`}>
       {/* todo img below must be an iframe link to youtube video*/}
       <img
-        alt='choice'
+        alt="choice"
         src={parseTokenURI(
           songMeta?.image ||
-          'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png'
+            'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
         )}
         className={'rounded-xl'}
       />

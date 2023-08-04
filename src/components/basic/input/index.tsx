@@ -14,25 +14,34 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   toggleLabel?: string;
 }
 
-const style = {
-  '--fa-primary-color': '#353535',
-  '--fa-secondary-color': '#EF476F',
-  '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4
-} as React.CSSProperties;
+// const style = {
+//   '--fa-primary-color': '#353535',
+//   '--fa-secondary-color': '#EF476F',
+//   '--fa-primary-opacity': 1,
+//   '--fa-secondary-opacity': 0.4
+// } as React.CSSProperties;
 
 const Input = (props: InputProps) => {
-
-  const { currencyBalance, placeholder, onUserInput, icon, className, toggle, toggleLabel } = props;
+  const {
+    currencyBalance,
+    placeholder,
+    onUserInput,
+    // icon,
+    className,
+    toggle,
+    // , toggleLabel
+  } = props;
 
   const maxAmountInput = maxAmountSpend(currencyBalance);
   const handleMax = useCallback(() => {
     maxAmountInput && onUserInput(maxAmountInput.toExact());
   }, [maxAmountInput, onUserInput]);
   return (
-    <div className={`${(className) ? className : ''}`}>
-      <div className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 
-      h-14 ${toggle ? 'justify-center' : ''}`}>
+    <div className={`${className ? className : ''}`}>
+      <div
+        className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 
+      h-14 ${toggle ? 'justify-center' : ''}`}
+      >
         <div className={'input-icon'}>
           {/*{ icon && (<FontAwesomeIcon fontSize={24} icon={icon} style={style} />)}*/}
         </div>

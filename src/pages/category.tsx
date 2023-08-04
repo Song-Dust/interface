@@ -12,20 +12,19 @@ import { useParams } from 'react-router-dom';
 import { useToggleWalletModal } from 'state/application/hooks';
 import { shortenAddress } from 'utils/index';
 
-const style = {
-  '--fa-primary-color': '#353535',
-  '--fa-secondary-color': '#EF476F',
-  '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4
-} as React.CSSProperties;
-
-const monoStyle = {
-  '--fa-primary-color': '#353535',
-  '--fa-secondary-color': '#193154',
-  '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4
-} as React.CSSProperties;
-
+// const style = {
+//   '--fa-primary-color': '#353535',
+//   '--fa-secondary-color': '#EF476F',
+//   '--fa-primary-opacity': 1,
+//   '--fa-secondary-opacity': 0.4
+// } as React.CSSProperties;
+//
+// const monoStyle = {
+//   '--fa-primary-color': '#353535',
+//   '--fa-secondary-color': '#193154',
+//   '--fa-primary-opacity': 1,
+//   '--fa-secondary-opacity': 0.4
+// } as React.CSSProperties;
 
 const Category = () => {
   const { account } = useWeb3React();
@@ -67,9 +66,9 @@ const Category = () => {
 
   const renderConnector = () => {
     return active ? (
-      <p data-testid='wallet-connect'>Wallet Connected {shortenAddress(account)}</p>
+      <p data-testid="wallet-connect">Wallet Connected {shortenAddress(account)}</p>
     ) : (
-      <button data-testid='wallet-connect' className={'btn-primary btn-large'} onClick={toggleWalletModal}>
+      <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
         Connect Wallet
       </button>
     );
@@ -117,23 +116,31 @@ const Category = () => {
             suggests, Jonathan recorded all of the songs here in a hotel room.
           </p>
         </div>
-        <img alt='header' src={'/category-header.png'} />
+        <img alt="header" src={'/category-header.png'} />
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
           <header className={'mb-8 flex gap-4 justify-between'}>
-            <Input className={'w-104'} icon={
-              undefined
-              // faMagnifyingGlass
-            } placeholder={'Search songs in this category'}
-                   onUserInput={() => {
-                   }}></Input>
-            <Input type={'submit'} className={'basis-52'} icon={
-              undefined
-              // faEye
-            } toggle toggleLabel={'Default View'}
-                   onUserInput={() => {
-                   }}></Input>
+            <Input
+              className={'w-104'}
+              icon={
+                undefined
+                // faMagnifyingGlass
+              }
+              placeholder={'Search songs in this category'}
+              onUserInput={() => {}}
+            ></Input>
+            <Input
+              type={'submit'}
+              className={'basis-52'}
+              icon={
+                undefined
+                // faEye
+              }
+              toggle
+              toggleLabel={'Default View'}
+              onUserInput={() => {}}
+            ></Input>
             {/*<Input type="button"></Input>*/}
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
@@ -142,12 +149,13 @@ const Category = () => {
           <button
             onClick={openVoteSongModal}
             className={'btn-primary btn-large w-full mb-2'}
-            data-testid='open-vote-modal'
+            data-testid="open-vote-modal"
           >
             Vote for a Song!
           </button>
           <section
-            className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}>
+            className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}
+          >
             {/*<div><FontAwesomeIcon fontSize={36} icon={faHourglassClock} style={style} /></div>*/}
             <div>
               <h2 className={'font-bold'}>24 Days</h2>
@@ -174,7 +182,6 @@ const Category = () => {
                   {/*<FontAwesomeIcon fontSize={24} icon={faSpinnerThird} style={monoStyle} />*/}
                   <h2 className={'font-bold'}>32/50</h2>
                   <p className={'font-normal text-sm'}>Cycles past</p>
-
                 </div>
               </section>
             </div>
