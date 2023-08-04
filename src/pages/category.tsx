@@ -1,5 +1,5 @@
-import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+// import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
+// import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { useWeb3React } from '@web3-react/core';
 import Input from 'components/basic/input';
 import Modal from 'components/modal';
@@ -16,14 +16,14 @@ const style = {
   '--fa-primary-color': '#353535',
   '--fa-secondary-color': '#EF476F',
   '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4,
+  '--fa-secondary-opacity': 0.4
 } as React.CSSProperties;
 
 const monoStyle = {
   '--fa-primary-color': '#353535',
   '--fa-secondary-color': '#193154',
   '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4,
+  '--fa-secondary-opacity': 0.4
 } as React.CSSProperties;
 
 
@@ -67,9 +67,9 @@ const Category = () => {
 
   const renderConnector = () => {
     return active ? (
-      <p data-testid="wallet-connect">Wallet Connected {shortenAddress(account)}</p>
+      <p data-testid='wallet-connect'>Wallet Connected {shortenAddress(account)}</p>
     ) : (
-      <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
+      <button data-testid='wallet-connect' className={'btn-primary btn-large'} onClick={toggleWalletModal}>
         Connect Wallet
       </button>
     );
@@ -117,13 +117,23 @@ const Category = () => {
             suggests, Jonathan recorded all of the songs here in a hotel room.
           </p>
         </div>
-        <img alt="header" src={'/category-header.png'} />
+        <img alt='header' src={'/category-header.png'} />
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
           <header className={'mb-8 flex gap-4 justify-between'}>
-            <Input className={'w-104'} icon={faMagnifyingGlass} placeholder={'Search songs in this category'} onUserInput={() => {}}></Input>
-            <Input type={'submit'} className={'basis-52'} icon={faEye} toggle toggleLabel={'Default View'} onUserInput={() => {}}></Input>
+            <Input className={'w-104'} icon={
+              undefined
+              // faMagnifyingGlass
+            } placeholder={'Search songs in this category'}
+                   onUserInput={() => {
+                   }}></Input>
+            <Input type={'submit'} className={'basis-52'} icon={
+              undefined
+              // faEye
+            } toggle toggleLabel={'Default View'}
+                   onUserInput={() => {
+                   }}></Input>
             {/*<Input type="button"></Input>*/}
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
@@ -132,12 +142,13 @@ const Category = () => {
           <button
             onClick={openVoteSongModal}
             className={'btn-primary btn-large w-full mb-2'}
-            data-testid="open-vote-modal"
+            data-testid='open-vote-modal'
           >
             Vote for a Song!
           </button>
-          <section className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}>
-            <div><FontAwesomeIcon fontSize={36} icon={faHourglassClock} style={style} /></div>
+          <section
+            className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}>
+            {/*<div><FontAwesomeIcon fontSize={36} icon={faHourglassClock} style={style} /></div>*/}
             <div>
               <h2 className={'font-bold'}>24 Days</h2>
               <p className={'font-semibold'}>Left untill the snapshot</p>
@@ -147,7 +158,7 @@ const Category = () => {
             <div className={'flex gap-3 flex-col'}>
               <label className={'font-semibold'}>Category&apos;s General Stats</label>
               <div className={'rounded-xl bg-g1 flex gap-4 py-4 px-5 justify-between items-center'}>
-                <div><FontAwesomeIcon fontSize={42} icon={faCheckToSlot} style={monoStyle} /></div>
+                {/*<div><FontAwesomeIcon fontSize={42} icon={faCheckToSlot} style={monoStyle} /></div>*/}
                 <div className={''}>
                   <h1 className={'font-bold'}>2.25k</h1>
                   <p className={'font-semibold relative -mt-2'}>SONG casted</p>
@@ -155,12 +166,12 @@ const Category = () => {
               </div>
               <section className={'flex gap-4'}>
                 <div className={'rounded-xl bg-yellowC flex flex-col justify-center items-center w-24 h-24'}>
-                  <FontAwesomeIcon fontSize={24} icon={faPeopleGroup} style={monoStyle} />
+                  {/*<FontAwesomeIcon fontSize={24} icon={faPeopleGroup} style={monoStyle} />*/}
                   <h2 className={'font-bold'}>3</h2>
                   <p className={'font-normal text-sm'}>Participants</p>
                 </div>
                 <div className={'rounded-xl bg-greenC flex-col flex justify-center items-center w-24 h-24'}>
-                  <FontAwesomeIcon fontSize={24} icon={faSpinnerThird} style={monoStyle} />
+                  {/*<FontAwesomeIcon fontSize={24} icon={faSpinnerThird} style={monoStyle} />*/}
                   <h2 className={'font-bold'}>32/50</h2>
                   <p className={'font-normal text-sm'}>Cycles past</p>
 
@@ -170,7 +181,7 @@ const Category = () => {
             <div className={'flex gap-3 flex-col'}>
               <label className={'font-semibold'}>Your stats in this category</label>
               <div className={'rounded-xl bg-g1 flex gap-4 py-4 px-5 justify-between items-center'}>
-                <div><FontAwesomeIcon fontSize={42} icon={faCoins} style={monoStyle} /></div>
+                {/*<div><FontAwesomeIcon fontSize={42} icon={faCoins} style={monoStyle} /></div>*/}
                 <div className={''}>
                   <h1 className={'font-bold'}>2.73</h1>
                   <p className={'font-semibold relative -mt-2'}>SONG earned</p>
@@ -178,12 +189,12 @@ const Category = () => {
               </div>
               <section className={'flex gap-4'}>
                 <div className={'rounded-xl bg-yellowC flex flex-col justify-center items-center w-24 h-24'}>
-                  <FontAwesomeIcon fontSize={24} icon={faGuitars} style={monoStyle} />
+                  {/*<FontAwesomeIcon fontSize={24} icon={faGuitars} style={monoStyle} />*/}
                   <h2 className={'font-bold'}>3</h2>
                   <p className={'font-normal text-sm'}>Song voted</p>
                 </div>
                 <div className={'rounded-xl bg-greenC flex-col flex justify-center items-center w-24 h-24'}>
-                  <FontAwesomeIcon fontSize={24} icon={faCheckToSlot} style={monoStyle} />
+                  {/*<FontAwesomeIcon fontSize={24} icon={faCheckToSlot} style={monoStyle} />*/}
                   <h2 className={'font-bold'}>240</h2>
                   <p className={'font-normal text-sm'}>SONG casted</p>
                 </div>

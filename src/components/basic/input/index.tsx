@@ -1,5 +1,4 @@
-import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+// import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core';
 import React, { useCallback } from 'react';
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount';
@@ -9,7 +8,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   currencyBalance?: CurrencyAmount<Currency>;
   onUserInput: (value: string) => void;
   testid?: string;
-  icon?: IconDefinition;
+  icon?: any; // IconDefinition;
   className?: string;
   toggle?: boolean;
   toggleLabel?: string;
@@ -19,8 +18,8 @@ const style = {
   '--fa-primary-color': '#353535',
   '--fa-secondary-color': '#EF476F',
   '--fa-primary-opacity': 1,
-  '--fa-secondary-opacity': 0.4,
-}as React.CSSProperties;
+  '--fa-secondary-opacity': 0.4
+} as React.CSSProperties;
 
 const Input = (props: InputProps) => {
 
@@ -35,7 +34,7 @@ const Input = (props: InputProps) => {
       <div className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 
       h-14 ${toggle ? 'justify-center' : ''}`}>
         <div className={'input-icon'}>
-          { icon && (<FontAwesomeIcon fontSize={24} icon={icon} style={style} />)}
+          {/*{ icon && (<FontAwesomeIcon fontSize={24} icon={icon} style={style} />)}*/}
         </div>
         {/*todo remove focus on input*/}
         <input
