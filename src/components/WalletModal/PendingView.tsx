@@ -1,11 +1,10 @@
 import { Connector } from '@web3-react/types';
-import Lottie from 'react-lottie';
+import Lottie from 'lottie-react';
 
 // @ts-ignore
-import animationData from "../../assets/lottiefiles/loading-1.json";
+import animationData from '../../assets/lottiefiles/loading-1.json';
 // @ts-ignore
 export default function PendingView({
-
   connector,
   error = false,
   tryActivation,
@@ -21,8 +20,8 @@ export default function PendingView({
     autoplay: true,
     animationData,
     rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice"
-    }
+      preserveAspectRatio: 'xMidYMid slice',
+    },
   };
   return error ? (
     <main>
@@ -42,15 +41,12 @@ export default function PendingView({
     </main>
   ) : (
     <main className={'flex flex-col gap-4 items-center'}>
-      <div className={'-mt-8'}><Lottie
-        options={defaultOptions}
-        height={200}
-        width={200}
-      />
+      <div className={'-mt-8'}>
+        <Lottie animationData={defaultOptions} height={200} width={200} />
       </div>
       <div className={'flex flex-col gap-2 items-center mb-2 -mt-8'}>
-      <h3>Waiting to connect</h3>
-      <p className={''}>Confirm this connection in your wallet</p>
+        <h3>Waiting to connect</h3>
+        <p className={''}>Confirm this connection in your wallet</p>
       </div>
     </main>
   );
