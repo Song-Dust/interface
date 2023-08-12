@@ -101,9 +101,9 @@ const Category = () => {
         closeModal={closeMoreActionModal}
         open={moreActionModalOpen}
       >
-        <main className={'flex flex-wrap gap-6'}>
-          <button>new category</button>
-          <button onClick={openAddSongModal}>new Song-a-day song</button>
+        <main className={'flex flex-wrap gap-6 flex-col items-start mt-4'}>
+          <button className='bg-neutral-200 rounded-xl w-full py-3 text-start text-lg font-semibold text-black'>new category</button>
+          <button className='bg-neutral-200 rounded-xl w-full py-3 text-start text-lg font-semibold text-black' onClick={openAddSongModal}>new Song-a-day song</button>
         </main>
       </Modal>
 
