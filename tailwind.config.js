@@ -49,6 +49,9 @@ module.exports = {
       zIndex: {
         100: '100',
       },
+      screens: {
+        'xxl': '1512px',
+      },
     },
   },
   // plugins: [require('@tailwindcss/forms'),require('@tailwindcss/aspect-ratio'),],

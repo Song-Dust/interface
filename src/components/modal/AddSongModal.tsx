@@ -171,7 +171,7 @@ const AddSongModal = (props: ModalPropsInterface) => {
 
   return (
     <Modal
-      className={'!max-w-4xl relative overflow-hidden'}
+      className={'!max-w-4xl w-full overflow-visible right-full'}
       title={`Select the song you want to add to this category`}
       closeModal={props.closeModal}
       open={props.open}

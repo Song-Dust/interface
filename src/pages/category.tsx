@@ -96,14 +96,14 @@ const Category = () => {
       <VoteSongModal closeModal={closeVoteSongModal} open={voteSongModalOpen} />
       <AddSongModal closeModal={closeAddSongModal} open={addSongModalOpen} />
       <Modal
-        className={'relative overflow-hidden'}
+        className={'absolute right-0 overflow-hidden bottom-44 w-64'}
         title={`What do you want to add?`}
         closeModal={closeMoreActionModal}
         open={moreActionModalOpen}
       >
         <main className={'flex flex-wrap gap-6 flex-col items-start mt-4'}>
           <button className='bg-neutral-200 rounded-xl w-full py-3 text-start text-lg font-semibold text-black'>new category</button>
-          <button className='bg-neutral-200 rounded-xl w-full py-3 text-start text-lg font-semibold text-black' onClick={openAddSongModal}>new Song-a-day song</button>
+          <button className='bg-neutral-200 rounded-xl w-full py-3 text-start text-lg font-semibold text-black' onClick={openAddSongModal} onClickCapture={closeMoreActionModal} >new Song-a-day song</button>
         </main>
       </Modal>
 
