@@ -23,7 +23,7 @@ export default function SongMiniCard({
   songMeta: SongMetadata | null | undefined;
 }) {
   return (
-    <div onClick={onClick} className={'rounded-3xl w-64 bg-light-gray-2 p-4'} data-testid={`category-list-item-${id}`}>
+    <div onClick={onClick} className={'rounded-3xl w-60 bg-light-gray-2 p-4'} data-testid={`category-list-item-${id}`}>
       {/* todo img below must be an iframe link to youtube video*/}
       <img
         alt="choice"

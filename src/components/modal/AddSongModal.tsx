@@ -35,13 +35,13 @@ const AddSongModal = (props: ModalPropsInterface) => {
   const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
   const Stats = () => {
     const { results } = useHits();
-    return <>Showing {results?.nbHits.toLocaleString() || 0} songs from the catalog</>;
+    return <div className='pb-2'>Showing {results?.nbHits.toLocaleString() || 0} songs from the catalog</div>;
   };
 
   const CustomHits = () => {
     const { hits } = useHits<SongMetadata & Record<string, unknown>>();
     return (
-      <main className={'flex flex-wrap gap-6'} style={{ maxHeight: '500px', overflowY: 'auto' }}>
+      <main className={'flex flex-wrap gap-6 pt-4 justify-center overflow-auto'} style={{ maxHeight: '70%'}}>
         {hits.map((song) => {
           return (
             <SongMiniCard
@@ -171,7 +171,7 @@ const AddSongModal = (props: ModalPropsInterface) => {
 
   return (
     <Modal
-      className={'!max-w-4xl w-full overflow-visible right-full px-10'}
+      className={'!max-w-4xl w-full px-6 h-2/3 max-h'}
       title={`Select the song you want to add to this category`}
       closeModal={props.closeModal}
       open={props.open}
@@ -183,13 +183,14 @@ const AddSongModal = (props: ModalPropsInterface) => {
             form: 'relative',
             input: 'block w-full pl-7 px-4 py-2 border border-slate-400 placeholder-slate-600 focus:outline-none focus:border-pink-500 focus:ring-pink-500 rounded-xl focus:ring-1',
             submitIcon: 'absolute top-4 left-0 bottom-0 w-8',
+            resetIcon: 'hidden',
           }} />
           <div className='flex items-center gap-2'>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 2C9 1.46875 9.4375 1 10 1H14C14.5312 1 15 1.46875 15 2V6C15 6.5625 14.5312 7 14 7C13.4375 7 13 6.5625 13 6V4.4375L7.6875 9.71875C7.3125 10.125 6.65625 10.125 6.28125 9.71875C5.875 9.34375 5.875 8.6875 6.28125 8.3125L11.5625 3H10C9.4375 3 9 2.5625 9 2Z" fill="#193154" />
               <path opacity="0.4" d="M1 4C1 2.90625 1.875 2 3 2H6C6.53125 2 7 2.46875 7 3C7 3.5625 6.53125 4 6 4H3V13H12V10C12 9.46875 12.4375 9 13 9C13.5312 9 14 9.46875 14 10V13C14 14.125 13.0938 15 12 15H3C1.875 15 1 14.125 1 13V4Z" fill="#193154" />
             </svg>
-            <p className='text-sm font-normal text-black'>Click here for advanced exploration</p>
+            <p className='text-sm font-normal text-black hover:underline hover:cursor-pointer'>Click here for advanced exploration</p>
           </div>
         </div>
         <Stats />
