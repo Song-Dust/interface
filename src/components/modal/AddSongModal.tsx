@@ -171,7 +171,7 @@ const AddSongModal = (props: ModalPropsInterface) => {
 
   return (
     <Modal
-      className={'!max-w-4xl w-full px-6 h-2/3 max-h'}
+      className={'!max-w-4xl w-full px-6 h-3/4 max-h'}
       title={`Select the song you want to add to this category`}
       closeModal={props.closeModal}
       open={props.open}

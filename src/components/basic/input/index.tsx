@@ -26,10 +26,10 @@ const Input = (props: InputProps) => {
     currencyBalance,
     placeholder,
     onUserInput,
-    // icon,
+    icon,
     className,
     toggle,
-    // , toggleLabel
+    // toggleLabel
   } = props;
 
   const maxAmountInput = maxAmountSpend(currencyBalance);
@@ -39,11 +39,10 @@ const Input = (props: InputProps) => {
   return (
     <div className={`${className ? className : ''}`}>
       <div
-        className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 
-      h-14 ${toggle ? 'justify-center' : ''}`}
+        className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 h-14 ${toggle ? 'justify-center' : ''}`}
       >
         <div className={'input-icon'}>
-          {/*{ icon && (<FontAwesomeIcon fontSize={24} icon={icon} style={style} />)}*/}
+          {icon}
         </div>
         {/*todo remove focus on input*/}
         <input
@@ -51,7 +50,7 @@ const Input = (props: InputProps) => {
           placeholder={placeholder}
           className={'focus:outline-0 w-full text-lg'}
           onChange={(e) => onUserInput(e.target.value)}
-          value={props.value || ''}
+          // value={props.value || ''}
           data-testid={props.testid && `${props.testid}-input`}
         ></input>
         <div className={'input-token'}></div>

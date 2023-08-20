@@ -6,6 +6,7 @@ import Modal from 'components/modal';
 import AddSongModal from 'components/modal/AddSongModal';
 import VoteSongModal from 'components/modal/VoteSongModal';
 import SongCard from 'components/song/SongCard';
+import ToggleBox from 'components/Toggle';
 import { useTopic } from 'hooks/useArena';
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -133,27 +134,20 @@ const Category = () => {
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
           <header className={'mb-8 flex gap-4 justify-between'}>
-            <Input
-              className={'w-104'}
-              icon={
-                undefined
-                // faMagnifyingGlass
-              }
-              placeholder={'Search songs in this category'}
-              onUserInput={() => { }}
-            ></Input>
-            <Input
-              type={'submit'}
-              className={'basis-52'}
-              icon={
-                undefined
-                // faEye
-              }
-              toggle
-              toggleLabel={'Default View'}
-              onUserInput={() => { }}
-            ></Input>
-            {/*<Input type="button"></Input>*/}
+            <div className='flex w-full justify-between'>
+              <Input
+                className={'w-104'}
+                icon={
+                  <svg width="28" height="32" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M26.6544 26.2868L20.2574 19.8897C19.4577 21.1158 18.4449 22.1287 17.2721 22.9283L23.6158 29.3254C24.4687 30.125 25.8015 30.125 26.6544 29.3254C27.454 28.4724 27.454 27.1397 26.6544 26.2868Z" fill="#353535" />
+                    <path opacity="0.4" d="M11.0349 2.61765C4.95772 2.61765 0 7.62868 0 13.7059C0 19.8364 4.95772 24.7941 11.0349 24.7941C17.1121 24.7941 22.1232 19.8364 22.1232 13.7059C22.1232 7.62868 17.1654 2.61765 11.0349 2.61765ZM11.0349 20.5294C7.25 20.5294 4.2114 17.4908 4.2114 13.7059C4.2114 9.97427 7.25 6.88235 11.0349 6.88235C14.7665 6.88235 17.8585 9.97427 17.8585 13.7059C17.8585 17.4908 14.8199 20.5294 11.0349 20.5294Z" fill="#EC2A64" />
+                  </svg>
+                }
+                placeholder={'Search songs in this category'}
+                onUserInput={() => { }}
+              ></Input>
+              <ToggleBox />
+            </div>
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
         </section>
