@@ -69,7 +69,7 @@ const Category = () => {
     return active ? (
       <p data-testid="wallet-connect">Wallet Connected {shortenAddress(account)}</p>
     ) : (
-      <button data-testid="wallet-connect" className={'btn-primary btn-large'} onClick={toggleWalletModal}>
+      <button data-testid="wallet-connect" className={'bg-primary-light btn-small text-primary font-bold rounded-3xl'} onClick={toggleWalletModal}>
         Connect Wallet
       </button>
     );
@@ -93,7 +93,7 @@ const Category = () => {
 
   // @ts-ignore
   return (
-    <div className={'px-24 py-24'}>
+    <div className={'px-24 py-12'}>
       <VoteSongModal closeModal={closeVoteSongModal} open={voteSongModalOpen} />
       <AddSongModal closeModal={closeAddSongModal} open={addSongModalOpen} />
       <Modal
@@ -120,16 +120,23 @@ const Category = () => {
         </main>
       </Modal>
 
-      <div>{renderConnector()}</div>
-      <header className={'bg-gradient-light w-full h-48 rounded-3xl flex p-6 mb-12'}>
-        <div>
+      <div className='flex justify-between pb-4'>
+        <div className='flex items-center gap-2 relative'>
+          <img src='/songDustLogo.png' alt='Logo' />
+          <p className='text-black font-semibold text-3xl z-10'>SongDust</p>
+          <p className='text-primary-light font-semibold text-3xl absolute left-14 top-2'>SongDust</p>
+        </div>
+        {renderConnector()}
+      </div>
+      <header className={'bg-gradient-light w-full h-fit rounded-3xl flex px-8 py-6 mb-12 mt-16 relative'}>
+        <div className='max-w-[80%]'>
           <h1>Songs were written in a hotel room</h1>
-          <p className={'text-label'}>
+          <p className={'text-label py-3'}>
             This is the description section of this category called “songs were written in a hotel room”, as the name
             suggests, Jonathan recorded all of the songs here in a hotel room.
           </p>
         </div>
-        <img alt="header" src={'/category-header.png'} />
+        <img alt="header" src={'/category-header.png'} className='absolute bottom-0 right-0 max-w-[240px]' />
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
@@ -146,7 +153,11 @@ const Category = () => {
                 placeholder={'Search songs in this category'}
                 onUserInput={() => { }}
               ></Input>
-              <ToggleBox />
+              <ToggleBox
+                options={[
+                  { name: 'Default view' },
+                  { name: 'Ranked view' },
+                ]} />
             </div>
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>

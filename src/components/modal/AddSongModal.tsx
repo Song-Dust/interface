@@ -206,11 +206,11 @@ const AddSongModal = (props: ModalPropsInterface) => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0 translate-y-32 "
       >
-        <footer className={'absolute left-0 right-0 bottom-0 bg-white border-gray border-t py-4 px-2'}>
+        <footer className={'absolute left-0 right-0 bottom-0 bg-white border-gray border-t rounded-b-2xl py-4 px-8'}>
           <section className={'flex'}>
             <div className={'flex-1'}>
-              <p className={''}>
-                <span>{selectedSong?.name}</span> selected
+              <p className={'font-semibold text-xl'}>
+                <span className='text-primary'>{selectedSong?.name}</span> selected
               </p>
               {active && <p className={''}>You need to Connect your wallet for adding a song</p>}
               <p>
