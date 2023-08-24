@@ -163,7 +163,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0 translate-y-32 "
         >
-          <footer className={'px-4 py-2 absolute left-0 right-0 bottom-0 bg-white border-gray border-t py-4 px-2'}>
+          <footer className={'absolute left-0 right-0 bottom-0 bg-white border-gray border-t py-4 px-2'}>
             <section className={'flex'}>
               <div className={'flex-1'}>
                 <p className={''}>

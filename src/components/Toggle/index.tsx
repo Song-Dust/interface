@@ -1,8 +1,16 @@
+/* eslint-disable react/display-name */
 import { Listbox, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { forwardRef,Fragment, useImperativeHandle, useState } from 'react'
 
-const ToggleBox = ({ options }: { options: { name: string }[] },) => {
+const options = [
+  { name: 'Default view' },
+  { name: 'Ranked view' },
+]
+
+const ToggleBox = forwardRef((props, ref) => {
   const [selected, setSelected] = useState(options[0])
+  
+  useImperativeHandle(ref, () => ({ selected }), [selected])
 
   return (
     <div className="w-48">
@@ -41,6 +49,6 @@ const ToggleBox = ({ options }: { options: { name: string }[] },) => {
       </Listbox>
     </div>
   )
-}
+})
 
 export default ToggleBox;

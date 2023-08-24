@@ -21,6 +21,7 @@ module.exports = {
         gray: '#BFBFBF',
         yellowC: '#FFD166',
         greenC: '#7FE3CA',
+        'primary-green': '#56C75B',
         'light-gray': '#EBECEF',
         'light-gray-2': '#EDF2F3',
         'dark-gray': '#757575',
@@ -35,6 +36,7 @@ module.exports = {
       backgroundImage: {
         'token-left': "url('/img/tokenLeft-background.svg')",
         gradient: 'linear-gradient(135deg,#5158f6,#822df5 33.76%,#f3a761)',
+        'gradient-2': 'linear-gradient(92.4deg, #ef476f75 -3.65%, #b64f8987 63.46%, #9254998c 106.47%)',
         g1: 'linear-gradient(90.54deg, rgba(239, 71, 111, 0.15) -2.28%, rgba(146, 84, 153, 0.15) 102.51%);',
         'presale-header': "url('/img/presale-header.svg')",
         'public-sale-header': "url('/img/public-header.svg')",

@@ -5,10 +5,11 @@ import Input from 'components/basic/input';
 import Modal from 'components/modal';
 import AddSongModal from 'components/modal/AddSongModal';
 import VoteSongModal from 'components/modal/VoteSongModal';
+import RankedView from 'components/rankedView';
 import SongCard from 'components/song/SongCard';
-import ToggleBox from 'components/Toggle';
+import ToggleBox from 'components/toggle';
 import { useTopic } from 'hooks/useArena';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useToggleWalletModal } from 'state/application/hooks';
 import { shortenAddress } from 'utils/index';
@@ -30,6 +31,7 @@ import { shortenAddress } from 'utils/index';
 const Category = () => {
   const { account } = useWeb3React();
   const active = useMemo(() => !!account, [account]);
+  const toggleRef = useRef<any>(null)
 
   const [voteSongModalOpen, setOpenVoteSongModalOpen] = useState(false);
 
@@ -76,7 +78,7 @@ const Category = () => {
   };
 
   function renderList() {
-    return loaded ? (
+    return loaded && toggleRef?.current?.selected.name === 'Default view' ? (
       choices.map((song) => {
         return song.meta ? (
           <SongCard key={song.id} songMeta={song.meta} id={song.id} />
@@ -86,6 +88,13 @@ const Category = () => {
           </div>
         );
       })
+    ) : loaded && toggleRef?.current?.selected.name === 'Ranked view' ? (
+      //HARD CODED
+      <>
+        <RankedView openseaLink='#' youtubeLink='#' songTitle='Graydient Is Daddy' rankPercentage={26} songNum={'2.6k'} status={'up'} barPercentage={0} />
+        <RankedView openseaLink='#' youtubeLink='#' songTitle='What About Our Content And Infinite Suffering' rankPercentage={24} songNum={'2.4k'} status={'down'} barPercentage={25} />
+        <RankedView openseaLink='#' youtubeLink='#' songTitle='Graydient Is Daddy' rankPercentage={18} songNum={'1.8k'} barPercentage={0} />
+      </>
     ) : (
       <div>loading</div>
     );
@@ -153,11 +162,7 @@ const Category = () => {
                 placeholder={'Search songs in this category'}
                 onUserInput={() => { }}
               ></Input>
-              <ToggleBox
-                options={[
-                  { name: 'Default view' },
-                  { name: 'Ranked view' },
-                ]} />
+              <ToggleBox ref={toggleRef} />
             </div>
           </header>
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
