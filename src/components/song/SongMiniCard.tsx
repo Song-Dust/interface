@@ -17,13 +17,15 @@ export default function SongMiniCard({
   onClick,
   id,
   songMeta,
+  className
 }: {
   onClick: () => void;
   id: string | number;
   songMeta: SongMetadata | null | undefined;
+  className: string;
 }) {
   return (
-    <div onClick={onClick} className={'rounded-3xl w-60 bg-light-gray-2 p-4'} data-testid={`category-list-item-${id}`}>
+    <div onClick={onClick} className={`rounded-3xl w-60 p-4 ${className}`} data-testid={`category-list-item-${id}`}>
       {/* todo img below must be an iframe link to youtube video*/}
       <img
         alt="choice"

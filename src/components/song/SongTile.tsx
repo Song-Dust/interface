@@ -7,13 +7,16 @@ export default function SongTile({
   onClick,
   id,
   songMeta,
+  className
 }: {
   onClick: () => void;
   id: string | number;
   songMeta: SongMetadata | null | undefined;
+  className: string;
+  
 }) {
   return (
-    <div onClick={onClick} className={'w-64 h-24 bg-cover relative rounded-xl overflow-hidden border-2 border-black'} data-testid={`category-list-item-${id}-choose`}>
+    <div onClick={onClick} className={`w-64 h-24 bg-cover relative rounded-xl overflow-hidden border-2 border-black ${className}`} data-testid={`category-list-item-${id}-choose`}>
       {/* todo img below must be an iframe link to youtube video*/}
       <img
         alt="choice"

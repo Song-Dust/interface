@@ -5,7 +5,8 @@ const RankedView = ({
     rankPercentage,
     songNum,
     status,
-    barPercentage
+    barPercentage,
+    prevRank
 }: {
     openseaLink: string,
     youtubeLink: string,
@@ -13,14 +14,15 @@ const RankedView = ({
     rankPercentage: number,
     songNum: string | number,
     status?: 'up' | 'down',
-    barPercentage: number
+    barPercentage: number,
+    prevRank?: number
 }) => {
     return (
         <div className="flex max-h-fit w-full gap-4">
             <div className="bg-light-gray-2 rounded-xl w-24 flex flex-col justify-center items-center">
                 <p className="font-semibold text-[40px] leading-10">1</p>
                 {status ? <div className="flex items-center gap-1">
-                    <p className={`font-bold text-xl ${status === 'up' ? `text-primary-green` : `text-red-500`} `}>1</p>
+                    <p className={`font-bold text-xl ${status === 'up' ? `text-primary-green` : `text-red-500`} `}>{prevRank}</p>
                     <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${status === 'up' ? `rotate-0` : `rotate-180`}`}>
                         <path d="M12.6875 9.71876C12.3125 10.125 11.6562 10.125 11.2812 9.71876L8.5 6.93751L5.6875 9.71876C5.3125 10.125 4.65625 10.125 4.28125 9.71876C3.875 9.34376 3.875 8.68751 4.28125 8.31251L7.78125 4.81251C7.96875 4.62501 8.21875 4.50001 8.5 4.50001C8.75 4.50001 9 4.62501 9.1875 4.81251L12.6875 8.31251C13.0938 8.68751 13.0938 9.34376 12.6875 9.71876Z" fill={`${status === 'up' ? `#56C75B` : `#FF0000`}`} />
                         <path opacity="0.4" d="M8.5 7.62939e-06C4.0625 7.62939e-06 0.5 3.59376 0.5 8.00001C0.5 12.4375 4.0625 16 8.5 16C12.9062 16 16.5 12.4375 16.5 8.00001C16.5 3.59376 12.9062 7.62939e-06 8.5 7.62939e-06ZM12.6875 9.71876C12.3125 10.125 11.6562 10.125 11.2812 9.71876L8.5 6.93751L5.6875 9.71876C5.3125 10.125 4.65625 10.125 4.28125 9.71876C3.875 9.34376 3.875 8.68751 4.28125 8.31251L7.78125 4.81251C7.96875 4.62501 8.21875 4.50001 8.5 4.50001C8.75 4.50001 9 4.62501 9.1875 4.81251L12.6875 8.31251C13.0938 8.68751 13.0938 9.34376 12.6875 9.71876Z" fill={`${status === 'up' ? `#56C75B` : `#FF0000`}`} />

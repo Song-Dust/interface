@@ -41,10 +41,11 @@ const AddSongModal = (props: ModalPropsInterface) => {
   const CustomHits = () => {
     const { hits } = useHits<SongMetadata & Record<string, unknown>>();
     return (
-      <main className={'flex flex-wrap gap-6 pt-4 justify-center overflow-auto'} style={{ maxHeight: '70%'}}>
+      <main className={'flex flex-wrap gap-6 pt-4 justify-center overflow-auto'} style={{ maxHeight: '70%' }}>
         {hits.map((song) => {
           return (
             <SongMiniCard
+              className={`${song.token_id === selectedSong?.token_id ? `bg-primary-light` : `bg-light-gray-2`}`}
               onClick={() => setSelectedSong(song)}
               key={song.token_id}
               id={song.token_id}

@@ -92,9 +92,24 @@ const Category = () => {
     ) : loaded && toggleRef?.current?.selected.name === 'Ranked view' ? (
       //HARD CODED
       <>
-        <RankedView openseaLink='#' youtubeLink='#' songTitle='Graydient Is Daddy' rankPercentage={26} songNum={'2.6k'} status={'up'} barPercentage={0} />
-        <RankedView openseaLink='#' youtubeLink='#' songTitle='What About Our Content And Infinite Suffering' rankPercentage={24} songNum={'2.4k'} status={'down'} barPercentage={25} />
-        <RankedView openseaLink='#' youtubeLink='#' songTitle='Graydient Is Daddy' rankPercentage={18} songNum={'1.8k'} barPercentage={0} />
+        <RankedView
+        openseaLink='#' youtubeLink='#'
+        songTitle='Graydient Is Daddy'
+        rankPercentage={26}
+        songNum={'2.6k'} status={'up'} prevRank={1}
+        barPercentage={0} />
+        <RankedView
+        openseaLink='#' youtubeLink='#'
+        songTitle='What About Our Content And Infinite Suffering'
+        rankPercentage={24}
+        songNum={'2.4k'} status={'down'} prevRank={1}
+        barPercentage={25} />
+        <RankedView
+        openseaLink='#' youtubeLink='#'
+        songTitle='Graydient Is Daddy'
+        rankPercentage={18}
+        songNum={'1.8k'}
+        barPercentage={0} />
       </>
     ) : (
       <Spinner />
