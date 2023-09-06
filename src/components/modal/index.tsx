@@ -1,3 +1,4 @@
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, PropsWithChildren } from 'react';
 
@@ -28,8 +29,8 @@ const Modal = (props: ModalProps) => {
             <div className='fixed inset-0 bg-black bg-opacity-25' />
           </Transition.Child>
 
-          <div className='fixed inset-0 overflow-y-auto'>
-            <div className='flex min-h-full items-center justify-center p-4 text-center'>
+          <div className='fixed inset-0 overflow-y-auto flex justify-center max-w-screen-xxl mx-auto px-24'>
+            <div className='flex min-h-full items-center justify-center text-center flex-col relative w-full'>
               <Transition.Child
                 as={Fragment}
                 enter='ease-out duration-200'
@@ -40,9 +41,12 @@ const Modal = (props: ModalProps) => {
                 leaveTo='opacity-0 scale-95'
               >
                 <Dialog.Panel
-                  className={`${className} max-w-md w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
+                  className={`${className} max-w-md transform overflow-visible rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
                 >
-                  <Dialog.Title as='h3' className='relative text-lg font-medium leading-6 text-gray-900 mb-8'>
+                  <button onClick={closeModal} className='bg-white rounded-3xl w-10 h-10 text-lg font-bold leading-4 mb-3 absolute right-0 bottom-full'>X
+                    {/* <FontAwesomeIcon icon="fa-regular fa-xmark" style={{color: "#000000",}} /> */}
+                  </button>
+                  <Dialog.Title as='h3' className='relative text-lg font-bold leading-6 text-gray-900 mb-8'>
                     {title ? title : ''}
                     <div onClick={closeModal} className={'absolute -right-1 -top-2 p-2 cursor-pointer'}>
                       {/*<FontAwesomeIcon style={{ fontSize: 20 }} className={''} icon={faXmark}></FontAwesomeIcon>*/}

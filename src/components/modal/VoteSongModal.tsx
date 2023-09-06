@@ -149,7 +149,9 @@ const VoteSongModal = (props: ModalPropsInterface) => {
         <main className={'flex flex-wrap gap-6'}>
           {choices.map((song) => {
             return (
-              <SongTile onClick={() => setSelectedSongId(song.id)} key={song.id} id={song.id} songMeta={song.meta} />
+              <SongTile onClick={() => setSelectedSongId(song.id)}
+                className={`${song.id === selectedSongId ||selectedSongId === null ? 'opacity-100' : 'opacity-30'}`}
+                key={song.id} id={song.id} songMeta={song.meta} />
             );
           })}
         </main>
@@ -163,11 +165,11 @@ const VoteSongModal = (props: ModalPropsInterface) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0 translate-y-32 "
         >
-          <footer className={'px-4 py-2 absolute left-0 right-0 bottom-0 bg-white border-gray border-t py-4 px-2'}>
+          <footer className={'absolute left-0 right-0 bottom-0 rounded-xl bg-white border-gray border-t py-4 px-2'}>
             <section className={'flex'}>
               <div className={'flex-1'}>
-                <p className={''}>
-                  <span>{selectedSong?.meta?.name}</span> selected
+                <p className={'font-semibold text-xl'}>
+                  <span className='text-primary'>{selectedSong?.meta?.name}</span> selected
                 </p>
                 <p className={''}>
                   {active ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}
@@ -199,10 +201,9 @@ const VoteSongModal = (props: ModalPropsInterface) => {
 
   return (
     <Modal
-      className={'!max-w-2xl relative overflow-hidden'}
+      className={'!max-w-2xl relative overflow-hidden h-2/3'}
       {...props}
-      title={`Select the song you want to vote for (${choices.length} songs nominated)`}
-    >
+      title={`Select the song you want to vote for (${choices.length} songs nominated)`}>
       {loaded ? modalContent() : <div>loading</div>}
     </Modal>
   );
