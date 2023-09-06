@@ -57,7 +57,7 @@ const RankedView = ({
           </div>
           <div className="flex gap-2 items-center">
             <div className="grow bg-[#F3A7B0] rounded-xl h-[14px] overflow-hidden">
-              <span className={`flex bg-primary h-[inherit] rounded-xl w-[${barPercentage}%]`}></span>
+              <span className={`flex bg-primary h-[inherit] rounded-xl`} style={{ width: barPercentage + '%' }}></span>
             </div>
             <div className="flex items-center gap-1">
               <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
