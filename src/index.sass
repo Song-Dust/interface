@@ -77,15 +77,12 @@ html
     @apply text-xs rounded-md bg-chips text-white px-2 py-0.5
 
 
-
   .text-gradient
     @apply bg-clip-text bg-gradient
     -webkit-text-fill-color: transparent
 
   .element-disabled
-    @apply bg-disabled-bg text-disabled-text hover:bg-disabled-bg cursor-default #{!important}
-
-
+    @apply bg-disabled-bg text-disabled-text hover:bg-disabled-bg cursor-default !important
 
 
 //@layer utilities
@@ -96,9 +93,11 @@ html
 .countdown-container
   div
     @apply flex justify-center items-center flex-col
+
   p
     &:first-child
       @apply text-5xl font-bold
+
     &:last-child
       @apply text-label text-sm font-medium
 
