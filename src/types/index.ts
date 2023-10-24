@@ -1,4 +1,4 @@
-import { ChoiceStruct } from 'abis/types/Arena';
+import { Address } from 'wagmi';
 
 export type SongTag = { subject: string; title: string };
 
@@ -19,9 +19,13 @@ export interface SongMetadata {
   Date: string;
 }
 
-export type Choice = ChoiceStruct & {
-  meta?: SongMetadata | null;
+export type ChoiceRaw = {
   id: number;
+  metadataURI: string;
+  address: Address;
+};
+export type Choice = ChoiceRaw & {
+  meta?: SongMetadata | null;
 };
 
 export enum TransactionStatus {

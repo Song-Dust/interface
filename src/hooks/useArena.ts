@@ -1,130 +1,129 @@
-import { Interface } from '@ethersproject/abi';
-import ArenaABI from 'abis/arena.json';
-import { useArenaContract, useSongadayContract } from 'hooks/useContract';
-import { useSingleContractMultipleData, useSingleContractWithCallData } from 'lib/hooks/multicall';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { mainnet, multicall, readContract } from '@wagmi/core';
+import { choiceABI, songADayABI, topicABI, useTopicChoicesLength } from 'abis/types/generated';
+import axios from 'axios';
+import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import { useCallback, useEffect, useState } from 'react';
 import { parseTokenURI } from 'utils';
+import { Address } from 'wagmi';
 
-import { Arena, TopicStruct } from '../abis/types/Arena';
-import { Choice } from '../types';
+import { Choice, ChoiceRaw, SongMetadata } from '../types';
 
-const arenaInterface = new Interface(ArenaABI);
+// export function useArena() {
+//   const arenaContract = useArenaContract();
+//
+//   const nextTopicIdAndArenaInfoCall = useMemo(() => {
+//     return [arenaInterface.encodeFunctionData('getNextTopicId', []), arenaInterface.encodeFunctionData('info', [])];
+//   }, []);
+//
+//   const [nextTopicIdResult, infoResult] = useSingleContractWithCallData(arenaContract, nextTopicIdAndArenaInfoCall);
+//
+//   const nextTopicId: ContractFunctionReturnType<Arena['callStatic']['getNextTopicId']> | undefined =
+//     nextTopicIdResult?.result?.[0];
+//   const arenaInfo = infoResult?.result as ContractFunctionReturnType<Arena['callStatic']['info']> | undefined;
+//
+//   const getTopicsCallInputs = useMemo(() => {
+//     const topicIds: number[] = nextTopicId ? Array.from(Array(nextTopicId.toNumber()).keys()) : [];
+//     return topicIds.map((id) => [id]);
+//   }, [nextTopicId]);
+//
+//   const getTopicsResult = useSingleContractMultipleData(arenaContract, 'topics', getTopicsCallInputs);
+//
+//   const topics = useMemo(() => {
+//     return getTopicsResult.reduce((acc: TopicStruct[], value) => {
+//       if (!value.result) return acc;
+//       const result = value.result[0];
+//       acc.push({
+//         cycleDuration: result[0],
+//         startTime: result[1],
+//         sharePerCyclePercentage: result[2],
+//         prevContributorsFeePercentage: result[3],
+//         topicFeePercentage: result[4],
+//         maxChoiceFeePercentage: result[5],
+//         relativeSupportThreshold: result[6],
+//         fundingPeriod: result[7],
+//         fundingPercentage: result[8],
+//         funds: result[9],
+//       });
+//       return acc;
+//     }, []);
+//   }, [getTopicsResult]);
+//
+//   return { nextTopicId, topics, arenaInfo };
+// }
 
-export type ContractFunctionReturnType<T> = T extends (...args: any) => Promise<infer R>
-  ? // TODO: handle struct return type
-    R extends void
-    ? void
-    : R
-  : any;
-
-export function useArena() {
-  const arenaContract = useArenaContract();
-
-  const nextTopicIdAndArenaInfoCall = useMemo(() => {
-    return [arenaInterface.encodeFunctionData('getNextTopicId', []), arenaInterface.encodeFunctionData('info', [])];
-  }, []);
-
-  const [nextTopicIdResult, infoResult] = useSingleContractWithCallData(arenaContract, nextTopicIdAndArenaInfoCall);
-
-  const nextTopicId: ContractFunctionReturnType<Arena['callStatic']['getNextTopicId']> | undefined =
-    nextTopicIdResult?.result?.[0];
-  const arenaInfo = infoResult?.result as ContractFunctionReturnType<Arena['callStatic']['info']> | undefined;
-
-  const getTopicsCallInputs = useMemo(() => {
-    const topicIds: number[] = nextTopicId ? Array.from(Array(nextTopicId.toNumber()).keys()) : [];
-    return topicIds.map((id) => [id]);
-  }, [nextTopicId]);
-
-  const getTopicsResult = useSingleContractMultipleData(arenaContract, 'topics', getTopicsCallInputs);
-
-  const topics = useMemo(() => {
-    return getTopicsResult.reduce((acc: TopicStruct[], value) => {
-      if (!value.result) return acc;
-      const result = value.result[0];
-      acc.push({
-        cycleDuration: result[0],
-        startTime: result[1],
-        sharePerCyclePercentage: result[2],
-        prevContributorsFeePercentage: result[3],
-        topicFeePercentage: result[4],
-        maxChoiceFeePercentage: result[5],
-        relativeSupportThreshold: result[6],
-        fundingPeriod: result[7],
-        fundingPercentage: result[8],
-        funds: result[9],
-      });
-      return acc;
-    }, []);
-  }, [getTopicsResult]);
-
-  return { nextTopicId, topics, arenaInfo };
-}
-
-export function useTopic(topicId: number) {
-  const arenaContract = useArenaContract();
-  const nextChoiceIdCall = useMemo(() => {
-    return [arenaInterface.encodeFunctionData('getNextChoiceIdInTopic', [topicId])];
-  }, [topicId]);
-
-  const [nextChoiceIdResult] = useSingleContractWithCallData(arenaContract, nextChoiceIdCall);
-
-  const nextChoiceId: ContractFunctionReturnType<Arena['callStatic']['getNextChoiceIdInTopic']> | null =
-    nextChoiceIdResult?.result?.[0];
-
-  const getChoicesCallInputs = useMemo(() => {
-    const choiceIds: number[] = nextChoiceId ? Array.from(Array(nextChoiceId.toNumber()).keys()) : [];
-    return choiceIds.map((id) => [topicId, id]);
-  }, [nextChoiceId, topicId]);
-
-  const getChoicesResult = useSingleContractMultipleData(arenaContract, 'topicChoices', getChoicesCallInputs);
-  const choicesRaw = useMemo(() => {
-    return getChoicesResult.reduce((acc: Choice[], value, i) => {
-      if (!value.result) return acc;
-      const result = value.result[0];
-      acc.push({
-        id: i,
-        description: result[0],
-        funds: result[1],
-        feePercentage: result[2],
-        fundingTarget: result[3],
-        metaDataUrl: result[4],
-      });
-      return acc;
-    }, []);
-  }, [getChoicesResult]);
-
-  const [choices, setChoices] = useState<Choice[]>([]);
-
-  const songadayContract = useSongadayContract();
-  const fetchMetadata = useCallback(
-    async (tokenId: string) => {
-      if (!songadayContract) throw new Error('contract not loaded');
-      try {
-        const tokenURI = await songadayContract.tokenURI(tokenId);
-        const URI = parseTokenURI(tokenURI);
-        const response = await fetch(URI);
-        const songmeta = await response.json();
-        return songmeta;
-      } catch (e) {
-        console.log('metaData fatch error', e);
-      }
-    },
-    [songadayContract],
-  );
+export function useTopic(topicAddress: Address | undefined) {
+  const { data: choicesLength } = useTopicChoicesLength({
+    address: topicAddress,
+  });
+  const [choicesRaw, setChoicesRaw] = useState<ChoiceRaw[] | null>(null);
 
   useEffect(() => {
-    if (!choices.length) {
+    async function loadData() {
+      if (!topicAddress || choicesLength === undefined) return;
+      if (choicesLength === 0n) {
+        setChoicesRaw([]);
+        return;
+      }
+      const indexes = Array.from(Array(choicesLength).keys());
+      const choiceAddresses = await multicall({
+        allowFailure: false,
+        contracts: indexes.map((item) => ({
+          address: topicAddress,
+          abi: topicABI,
+          functionName: 'choices',
+          args: [BigInt(item)],
+        })),
+      });
+      const metadataURIs = await multicall({
+        allowFailure: false,
+        contracts: choiceAddresses.map((address) => ({
+          address,
+          abi: choiceABI,
+          functionName: 'metadataURI',
+        })),
+      });
+      setChoicesRaw(
+        indexes.map((i) => ({
+          id: i,
+          metadataURI: metadataURIs[i],
+          address: choiceAddresses[i],
+        })),
+      );
+    }
+
+    loadData();
+  }, [choicesLength, topicAddress]);
+
+  const [choices, setChoices] = useState<Choice[] | undefined>(undefined);
+
+  const fetchMetadata = useCallback(async (tokenId: string) => {
+    const tokenURI = await readContract({
+      chainId: mainnet.id,
+      abi: songADayABI,
+      address: SONGADAY_CONTRACT_ADDRESS,
+      functionName: 'tokenURI',
+      args: [BigInt(tokenId)],
+    });
+    const URI = parseTokenURI(tokenURI);
+    return (await axios.get<SongMetadata>(URI)).data;
+  }, []);
+
+  useEffect(() => {
+    if (!choicesRaw) return;
+    if (!choices?.length) {
       setChoices(choicesRaw);
       const loadedChoices: Choice[] = [];
       for (const choiceRaw of choicesRaw) {
-        fetchMetadata(choiceRaw.metaDataUrl)
+        fetchMetadata(choiceRaw.metadataURI)
           .then((m) => {
             loadedChoices.push({
               ...choiceRaw,
               meta: m,
             });
           })
-          .catch((_e) => {
+          .catch((e) => {
+            console.log('load metadata error');
+            console.log(e);
             loadedChoices.push(choiceRaw);
           })
           .finally(() => {
@@ -135,13 +134,7 @@ export function useTopic(topicId: number) {
           });
       }
     }
-  }, [choices.length, choicesRaw, fetchMetadata]);
+  }, [choices, choicesRaw, fetchMetadata]);
 
-  const nextChoiceIdLoaded = nextChoiceIdResult && !nextChoiceIdResult.loading;
-  const topicsLoaded =
-    nextChoiceId?.toNumber() === 0 ||
-    (getChoicesResult.length > 0 && !getChoicesResult.some((callState) => callState.loading));
-  const loaded = nextChoiceIdLoaded && topicsLoaded;
-
-  return { nextChoiceId, choicesRaw, choices, loaded };
+  return { choices, loaded: choices !== undefined };
 }

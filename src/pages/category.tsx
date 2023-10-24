@@ -1,6 +1,6 @@
 // import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 // import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { useWeb3React } from '@web3-react/core';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
 import Spinner from 'components/loadingSpinner';
 import Modal from 'components/modal';
@@ -12,8 +12,8 @@ import ToggleBox from 'components/Toggle';
 import { useTopic } from 'hooks/useArena';
 import React, { useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useToggleWalletModal } from 'state/application/hooks';
 import { shortenAddress } from 'utils/index';
+import { Address, useAccount } from 'wagmi';
 
 // const style = {
 //   '--fa-primary-color': '#353535',
@@ -30,7 +30,7 @@ import { shortenAddress } from 'utils/index';
 // } as React.CSSProperties;
 
 const Category = () => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
   const active = useMemo(() => !!account, [account]);
   const toggleRef = useRef<any>(null);
 
@@ -64,9 +64,9 @@ const Category = () => {
     setMoreActionModalOpen(false);
   }
 
-  const { id: topicId } = useParams();
-  const { choices, loaded } = useTopic(Number(topicId));
-  const toggleWalletModal = useToggleWalletModal();
+  const { topicAddress } = useParams();
+  const { choices, loaded } = useTopic(topicAddress as Address | undefined);
+  const { openConnectModal } = useConnectModal();
 
   const renderConnector = () => {
     return active ? (
@@ -75,7 +75,7 @@ const Category = () => {
       <button
         data-testid="wallet-connect"
         className={'bg-primary-light btn-small text-primary font-bold rounded-3xl'}
-        onClick={toggleWalletModal}
+        onClick={openConnectModal}
       >
         Connect Wallet
       </button>
@@ -83,12 +83,16 @@ const Category = () => {
   };
 
   function renderList() {
-    return loaded && toggleRef?.current?.selected.name === 'Default view' ? (
+    return choices !== undefined && toggleRef?.current?.selected.name === 'Default view' ? (
       choices.map((song) => {
         return song.meta ? (
           <SongCard key={song.id} songMeta={song.meta} id={song.id} />
         ) : (
-          <div className={'bg-squircle w-[311px] h-[316px] bg-cover p-4'} data-testid={`category-list-item-${song.id}`}>
+          <div
+            key={song.id}
+            className={'bg-squircle w-[311px] h-[316px] bg-cover p-4'}
+            data-testid={`category-list-item-${song.id}`}
+          >
             <Spinner classes="h-full items-center" />
           </div>
         );

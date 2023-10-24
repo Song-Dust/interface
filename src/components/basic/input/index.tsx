@@ -1,11 +1,7 @@
-// import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core';
 import React, { useCallback } from 'react';
-import { formatCurrencyAmount } from 'utils/formatCurrencyAmount';
-import { maxAmountSpend } from 'utils/maxAmountSpend';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  currencyBalance?: CurrencyAmount<Currency>;
+  currencyBalance?: any;
   onUserInput: (value: string) => void;
   testid?: string;
   icon?: any; // IconDefinition;
@@ -32,18 +28,21 @@ const Input = (props: InputProps) => {
     // toggleLabel
   } = props;
 
-  const maxAmountInput = maxAmountSpend(currencyBalance);
+  // const maxAmountInput = maxAmountSpend(currencyBalance);
+  // const handleMax = useCallback(() => {
+  //   maxAmountInput && onUserInput(maxAmountInput.toExact());
+  // }, [maxAmountInput, onUserInput]);
   const handleMax = useCallback(() => {
-    maxAmountInput && onUserInput(maxAmountInput.toExact());
-  }, [maxAmountInput, onUserInput]);
+    // maxAmountInput && onUserInput(maxAmountInput.toExact());
+  }, []);
   return (
     <div className={`${className ? className : ''}`}>
       <div
-        className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 h-14 ${toggle ? 'justify-center' : ''}`}
+        className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 h-14 ${
+          toggle ? 'justify-center' : ''
+        }`}
       >
-        <div className={'input-icon'}>
-          {icon}
-        </div>
+        <div className={'input-icon'}>{icon}</div>
         {/*todo remove focus on input*/}
         <input
           type={props.type}
@@ -62,9 +61,10 @@ const Input = (props: InputProps) => {
             <p className={'text-dark-gray text-sm'}>
               Balance:{' '}
               <span className={'font-semibold'}>
-                {currencyBalance
-                  ? formatCurrencyAmount(currencyBalance, 4) + ' ' + currencyBalance.currency.symbol
-                  : ''}
+                {/*{currencyBalance*/}
+                {/*  ? formatCurrencyAmount(currencyBalance, 4) + ' ' + currencyBalance.currency.symbol*/}
+                {/*  : ''}*/}
+                123
               </span>
             </p>
             <button

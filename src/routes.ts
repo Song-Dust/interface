@@ -1,10 +1,10 @@
 export enum RouteParam {
-  CATEGORY_ID = 'id',
+  CATEGORY_ADDRESS = 'topicAddress',
 }
 
 export enum RoutePath {
   LANDING = '/',
-  CATEGORY = `/category/:id/`,
+  CATEGORY = `/category/:topicAddress/`,
 }
 
 export function getRoute(path: RoutePath, params?: { [key: string]: string }) {

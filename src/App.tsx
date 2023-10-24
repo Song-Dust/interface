@@ -15,7 +15,7 @@ function App() {
         element={
           <Navigate
             to={getRoute(RoutePath.CATEGORY, {
-              [RouteParam.CATEGORY_ID]: '2',
+              [RouteParam.CATEGORY_ADDRESS]: '0x5142A2CC8c164A640f004925429AE0C8367A6A5c',
             })}
           />
         }
