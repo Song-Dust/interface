@@ -1,57 +1,108 @@
 import { mainnet, multicall, readContract } from '@wagmi/core';
-import { choiceABI, songADayABI, topicABI, useTopicChoicesLength } from 'abis/types/generated';
+import {
+  arenaABI,
+  choiceABI,
+  songADayABI,
+  topicABI,
+  useArenaChoiceCreationFee,
+  useArenaGetTopicsLength,
+  useArenaToken,
+  useErc20BalanceOf,
+  useErc20Decimals,
+  useErc20Symbol,
+  useTopicChoicesLength,
+} from 'abis/types/generated';
 import axios from 'axios';
-import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import { ARENA_ADDRESS, SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import { useContractAddress } from 'hooks/useContractAddress';
 import { useCallback, useEffect, useState } from 'react';
 import { parseTokenURI } from 'utils';
-import { Address } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 
-import { Choice, ChoiceRaw, SongMetadata } from '../types';
+import { Choice, ChoiceRaw, SongMetadata, Topic, TopicRaw } from '../types';
 
-// export function useArena() {
-//   const arenaContract = useArenaContract();
-//
-//   const nextTopicIdAndArenaInfoCall = useMemo(() => {
-//     return [arenaInterface.encodeFunctionData('getNextTopicId', []), arenaInterface.encodeFunctionData('info', [])];
-//   }, []);
-//
-//   const [nextTopicIdResult, infoResult] = useSingleContractWithCallData(arenaContract, nextTopicIdAndArenaInfoCall);
-//
-//   const nextTopicId: ContractFunctionReturnType<Arena['callStatic']['getNextTopicId']> | undefined =
-//     nextTopicIdResult?.result?.[0];
-//   const arenaInfo = infoResult?.result as ContractFunctionReturnType<Arena['callStatic']['info']> | undefined;
-//
-//   const getTopicsCallInputs = useMemo(() => {
-//     const topicIds: number[] = nextTopicId ? Array.from(Array(nextTopicId.toNumber()).keys()) : [];
-//     return topicIds.map((id) => [id]);
-//   }, [nextTopicId]);
-//
-//   const getTopicsResult = useSingleContractMultipleData(arenaContract, 'topics', getTopicsCallInputs);
-//
-//   const topics = useMemo(() => {
-//     return getTopicsResult.reduce((acc: TopicStruct[], value) => {
-//       if (!value.result) return acc;
-//       const result = value.result[0];
-//       acc.push({
-//         cycleDuration: result[0],
-//         startTime: result[1],
-//         sharePerCyclePercentage: result[2],
-//         prevContributorsFeePercentage: result[3],
-//         topicFeePercentage: result[4],
-//         maxChoiceFeePercentage: result[5],
-//         relativeSupportThreshold: result[6],
-//         fundingPeriod: result[7],
-//         fundingPercentage: result[8],
-//         funds: result[9],
-//       });
-//       return acc;
-//     }, []);
-//   }, [getTopicsResult]);
-//
-//   return { nextTopicId, topics, arenaInfo };
-// }
+export function useArena() {
+  const arenaAddress = useContractAddress(ARENA_ADDRESS);
+  const { data: choiceCreationFee } = useArenaChoiceCreationFee({
+    address: arenaAddress,
+  });
+  return {
+    choiceCreationFee,
+  };
+}
 
-export function useTopic(topicAddress: Address | undefined) {
+export function useArenaTokenData(topicAddress?: Address) {
+  const arenaAddress = useContractAddress(ARENA_ADDRESS);
+  const { address } = useAccount();
+  const { data: arenaTokenAddress } = useArenaToken({
+    address: arenaAddress,
+  });
+  const { data: arenaTokenSymbol } = useErc20Symbol({
+    address: arenaTokenAddress,
+  });
+  const { data: arenaTokenDecimals } = useErc20Decimals({
+    address: arenaTokenAddress,
+  });
+  const { data: arenaTokenBalance } = useErc20BalanceOf({
+    address: arenaTokenAddress,
+    args: address ? [address] : undefined,
+  });
+  return {
+    arenaTokenBalance,
+    arenaTokenAddress,
+    arenaTokenSymbol,
+    arenaTokenDecimals,
+  };
+}
+
+export function useArenaTopics() {
+  const arenaAddress = useContractAddress(ARENA_ADDRESS);
+  const { data: topicsLength } = useArenaGetTopicsLength({
+    address: arenaAddress,
+  });
+  const [topicsRaw, setTopicsRaw] = useState<TopicRaw[] | null>(null);
+
+  useEffect(() => {
+    async function loadData() {
+      if (!arenaAddress || topicsLength === undefined) return;
+      if (topicsLength === 0n) {
+        setTopicsRaw([]);
+        return;
+      }
+      const indexes = Array.from(Array(topicsLength).keys());
+      const topicAddresses = await multicall({
+        allowFailure: false,
+        contracts: indexes.map((item) => ({
+          address: arenaAddress,
+          abi: arenaABI,
+          functionName: 'topics',
+          args: [BigInt(item)],
+        })),
+      });
+      const metadataURIs = await multicall({
+        allowFailure: false,
+        contracts: topicAddresses.map((address) => ({
+          address,
+          abi: topicABI,
+          functionName: 'metadataURI',
+        })),
+      });
+      setTopicsRaw(
+        indexes.map((i) => ({
+          id: i,
+          metadataURI: metadataURIs[i],
+          address: topicAddresses[i],
+        })),
+      );
+    }
+
+    loadData();
+  }, [topicsLength, arenaAddress]);
+
+  return { topicsLength, topics: topicsRaw as Topic[] };
+}
+
+export function useTopicChoices(topicAddress: Address | undefined) {
   const { data: choicesLength } = useTopicChoicesLength({
     address: topicAddress,
   });
@@ -64,7 +115,7 @@ export function useTopic(topicAddress: Address | undefined) {
         setChoicesRaw([]);
         return;
       }
-      const indexes = Array.from(Array(choicesLength).keys());
+      const indexes = Array.from(Array(Number(choicesLength)).keys());
       const choiceAddresses = await multicall({
         allowFailure: false,
         contracts: indexes.map((item) => ({
@@ -82,6 +133,13 @@ export function useTopic(topicAddress: Address | undefined) {
           functionName: 'metadataURI',
         })),
       });
+      console.log(
+        indexes.map((i) => ({
+          id: i,
+          metadataURI: metadataURIs[i],
+          address: choiceAddresses[i],
+        })),
+      );
       setChoicesRaw(
         indexes.map((i) => ({
           id: i,

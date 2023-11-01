@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address, Chain } from 'wagmi';
 
 export type SongTag = { subject: string; title: string };
 
@@ -18,6 +18,15 @@ export interface SongMetadata {
   }[];
   Date: string;
 }
+
+export type TopicRaw = {
+  id: number;
+  metadataURI: string;
+  address: Address;
+};
+export type Topic = TopicRaw & {
+  meta?: any | null;
+};
 
 export type ChoiceRaw = {
   id: number;
@@ -40,4 +49,8 @@ export type Transaction = {
   amount: string;
   tokenSymbol: string;
   amountTo: string;
+};
+
+export type AddressMap = {
+  [key: Chain['id']]: Address;
 };

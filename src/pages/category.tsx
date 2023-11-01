@@ -9,7 +9,7 @@ import VoteSongModal from 'components/modal/VoteSongModal';
 import RankedView from 'components/rankedView';
 import SongCard from 'components/song/SongCard';
 import ToggleBox from 'components/Toggle';
-import { useTopic } from 'hooks/useArena';
+import { useTopicChoices } from 'hooks/useArena';
 import React, { useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { shortenAddress } from 'utils/index';
@@ -65,7 +65,7 @@ const Category = () => {
   }
 
   const { topicAddress } = useParams();
-  const { choices, loaded } = useTopic(topicAddress as Address | undefined);
+  const { choices, loaded } = useTopicChoices(topicAddress as Address | undefined);
   const { openConnectModal } = useConnectModal();
 
   const renderConnector = () => {

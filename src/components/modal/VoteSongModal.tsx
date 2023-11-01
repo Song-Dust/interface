@@ -2,7 +2,7 @@ import { Transition } from '@headlessui/react';
 import Input from 'components/basic/input';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import SongTile from 'components/song/SongTile';
-import { useTopic } from 'hooks/useArena';
+import { useTopicChoices } from 'hooks/useArena';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Choice } from 'types';
@@ -14,7 +14,7 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   const active = useMemo(() => !!account, [account]);
 
   const { topicAddress } = useParams();
-  const { choices } = useTopic(topicAddress as Address | undefined);
+  const { choices } = useTopicChoices(topicAddress as Address | undefined);
 
   const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
   const selectedSong = useMemo(() => {
