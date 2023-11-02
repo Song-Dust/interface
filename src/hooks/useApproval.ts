@@ -18,6 +18,7 @@ export function useApproval({
   const { data: allowance } = useErc20Allowance({
     address: tokenAddress,
     args: spender && address ? [address, spender] : undefined,
+    watch: true,
   });
 
   const [txState, setTxState] = useState(TransactionState.INITIAL);

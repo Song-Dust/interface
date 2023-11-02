@@ -137,12 +137,18 @@ const AddSongModal = (props: ModalPropsInterface) => {
     }
     if (
       approvalStateArenaToken === ApprovalState.PREPARING_TRANSACTION ||
-      approvalStateArenaToken === ApprovalState.AWAITING_USER_CONFIRMATION ||
-      approvalStateArenaToken === ApprovalState.AWAITING_TRANSACTION
+      approvalStateArenaToken === ApprovalState.AWAITING_USER_CONFIRMATION
     ) {
       return (
         <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
           Waiting for Approve...
+        </button>
+      );
+    }
+    if (approvalStateArenaToken === ApprovalState.AWAITING_TRANSACTION) {
+      return (
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+          Sending Approval Transaction...
         </button>
       );
     }

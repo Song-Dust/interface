@@ -37,20 +37,12 @@ export type Choice = ChoiceRaw & {
   meta?: SongMetadata | null;
 };
 
-export enum TransactionStatus {
-  SUCCESS,
-  PENDING,
-}
-
-export type Transaction = {
-  status: TransactionStatus;
-  type: string;
-  message: string;
-  amount: string;
-  tokenSymbol: string;
-  amountTo: string;
-};
-
 export type AddressMap = {
   [key: Chain['id']]: Address;
+};
+
+export type TokenBalance = {
+  decimals?: number;
+  balance?: bigint;
+  symbol?: string;
 };

@@ -133,13 +133,6 @@ export function useTopicChoices(topicAddress: Address | undefined) {
           functionName: 'metadataURI',
         })),
       });
-      console.log(
-        indexes.map((i) => ({
-          id: i,
-          metadataURI: metadataURIs[i],
-          address: choiceAddresses[i],
-        })),
-      );
       setChoicesRaw(
         indexes.map((i) => ({
           id: i,
