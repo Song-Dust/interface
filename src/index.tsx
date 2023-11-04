@@ -23,6 +23,10 @@ if (!process.env.REACT_APP_INFURA_API_KEY) {
   throw new Error('REACT_APP_INFURA_API_KEY not provided');
 }
 
+if (!process.env.REACT_APP_PINATA_JWT) {
+  throw new Error('REACT_APP_PINATA_JWT not provided');
+}
+
 const { publicClient } = configureChains(
   [...chains, mainnet],
   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_API_KEY }), publicProvider()],

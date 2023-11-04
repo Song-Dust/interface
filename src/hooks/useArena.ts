@@ -1,38 +1,42 @@
-import { mainnet, multicall, readContract } from '@wagmi/core';
+import { multicall } from '@wagmi/core';
 import {
   arenaABI,
   choiceABI,
-  songADayABI,
   topicABI,
   useArenaChoiceCreationFee,
   useArenaGetTopicsLength,
   useArenaToken,
+  useArenaTopicCreationFee,
   useErc20BalanceOf,
   useErc20Decimals,
   useErc20Symbol,
   useTopicChoicesLength,
 } from 'abis/types/generated';
 import axios from 'axios';
-import { ARENA_ADDRESS, SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import { ARENA_ADDRESS_MAP } from 'constants/addresses';
 import { useContractAddress } from 'hooks/useContractAddress';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { parseTokenURI } from 'utils';
 import { Address, useAccount } from 'wagmi';
 
-import { Choice, ChoiceRaw, SongMetadata, Topic, TopicRaw } from '../types';
+import { Choice, ChoiceRaw, SongMetadata, Topic, TopicMetadata, TopicRaw } from '../types';
 
 export function useArena() {
-  const arenaAddress = useContractAddress(ARENA_ADDRESS);
+  const arenaAddress = useContractAddress(ARENA_ADDRESS_MAP);
   const { data: choiceCreationFee } = useArenaChoiceCreationFee({
     address: arenaAddress,
   });
+  const { data: topicCreationFee } = useArenaTopicCreationFee({
+    address: arenaAddress,
+  });
   return {
+    topicCreationFee,
     choiceCreationFee,
   };
 }
 
-export function useArenaTokenData(topicAddress?: Address) {
-  const arenaAddress = useContractAddress(ARENA_ADDRESS);
+export function useArenaTokenData() {
+  const arenaAddress = useContractAddress(ARENA_ADDRESS_MAP);
   const { address } = useAccount();
   const { data: arenaTokenAddress } = useArenaToken({
     address: arenaAddress,
@@ -55,8 +59,8 @@ export function useArenaTokenData(topicAddress?: Address) {
   };
 }
 
-export function useArenaTopics() {
-  const arenaAddress = useContractAddress(ARENA_ADDRESS);
+export function useArenaTopicData() {
+  const arenaAddress = useContractAddress(ARENA_ADDRESS_MAP);
   const { data: topicsLength } = useArenaGetTopicsLength({
     address: arenaAddress,
   });
@@ -65,11 +69,12 @@ export function useArenaTopics() {
   useEffect(() => {
     async function loadData() {
       if (!arenaAddress || topicsLength === undefined) return;
+      console.log({ topicsLength });
       if (topicsLength === 0n) {
         setTopicsRaw([]);
         return;
       }
-      const indexes = Array.from(Array(topicsLength).keys());
+      const indexes = Array.from(Array(Number(topicsLength)).keys());
       const topicAddresses = await multicall({
         allowFailure: false,
         contracts: indexes.map((item) => ({
@@ -87,6 +92,13 @@ export function useArenaTopics() {
           functionName: 'metadataURI',
         })),
       });
+      console.log(
+        indexes.map((i) => ({
+          id: i,
+          metadataURI: metadataURIs[i],
+          address: topicAddresses[i],
+        })),
+      );
       setTopicsRaw(
         indexes.map((i) => ({
           id: i,
@@ -99,10 +111,38 @@ export function useArenaTopics() {
     loadData();
   }, [topicsLength, arenaAddress]);
 
-  return { topicsLength, topics: topicsRaw as Topic[] };
+  const [topics, setTopics] = useState<Topic[] | undefined>(undefined);
+  useEffect(() => {
+    if (!topicsRaw || topics?.length) return;
+    setTopics(topicsRaw);
+    const loadedTopics: Topic[] = [];
+    for (const topicRaw of topicsRaw) {
+      axios
+        .get<TopicMetadata>(parseTokenURI(topicRaw.metadataURI))
+        .then((res) => {
+          loadedTopics.push({
+            ...topicRaw,
+            meta: res.data,
+          });
+        })
+        .catch((e) => {
+          console.log('load metadata error');
+          console.log(e);
+          loadedTopics.push(topicRaw);
+        })
+        .finally(() => {
+          if (loadedTopics.length === topicsRaw.length) {
+            loadedTopics.sort((a, b) => a.id - b.id);
+            setTopics(loadedTopics);
+          }
+        });
+    }
+  }, [topics, topicsRaw]);
+
+  return { topicsLength, topics, loaded: topics !== undefined };
 }
 
-export function useTopicChoices(topicAddress: Address | undefined) {
+export function useTopicChoiceData(topicAddress: Address | undefined) {
   const { data: choicesLength } = useTopicChoicesLength({
     address: topicAddress,
   });
@@ -146,46 +186,32 @@ export function useTopicChoices(topicAddress: Address | undefined) {
   }, [choicesLength, topicAddress]);
 
   const [choices, setChoices] = useState<Choice[] | undefined>(undefined);
-
-  const fetchMetadata = useCallback(async (tokenId: string) => {
-    const tokenURI = await readContract({
-      chainId: mainnet.id,
-      abi: songADayABI,
-      address: SONGADAY_CONTRACT_ADDRESS,
-      functionName: 'tokenURI',
-      args: [BigInt(tokenId)],
-    });
-    const URI = parseTokenURI(tokenURI);
-    return (await axios.get<SongMetadata>(URI)).data;
-  }, []);
-
   useEffect(() => {
-    if (!choicesRaw) return;
-    if (!choices?.length) {
-      setChoices(choicesRaw);
-      const loadedChoices: Choice[] = [];
-      for (const choiceRaw of choicesRaw) {
-        fetchMetadata(choiceRaw.metadataURI)
-          .then((m) => {
-            loadedChoices.push({
-              ...choiceRaw,
-              meta: m,
-            });
-          })
-          .catch((e) => {
-            console.log('load metadata error');
-            console.log(e);
-            loadedChoices.push(choiceRaw);
-          })
-          .finally(() => {
-            if (loadedChoices.length === choicesRaw.length) {
-              loadedChoices.sort((a, b) => a.id - b.id);
-              setChoices(loadedChoices);
-            }
+    if (!choicesRaw || choices?.length) return;
+    setChoices(choicesRaw);
+    const loadedChoices: Choice[] = [];
+    for (const choiceRaw of choicesRaw) {
+      axios
+        .get<SongMetadata>(parseTokenURI(choiceRaw.metadataURI))
+        .then((res) => {
+          loadedChoices.push({
+            ...choiceRaw,
+            meta: res.data,
           });
-      }
+        })
+        .catch((e) => {
+          console.log('load metadata error');
+          console.log(e);
+          loadedChoices.push(choiceRaw);
+        })
+        .finally(() => {
+          if (loadedChoices.length === choicesRaw.length) {
+            loadedChoices.sort((a, b) => a.id - b.id);
+            setChoices(loadedChoices);
+          }
+        });
     }
-  }, [choices, choicesRaw, fetchMetadata]);
+  }, [choices, choicesRaw]);
 
   return { choices, loaded: choices !== undefined };
 }

@@ -24,8 +24,12 @@ export type TopicRaw = {
   metadataURI: string;
   address: Address;
 };
+export type TopicMetadata = {
+  title: string;
+  description: string;
+};
 export type Topic = TopicRaw & {
-  meta?: any | null;
+  meta?: TopicMetadata | null;
 };
 
 export type ChoiceRaw = {
@@ -45,4 +49,11 @@ export type TokenBalance = {
   decimals?: number;
   balance?: bigint;
   symbol?: string;
+};
+
+export type PinataResponse = {
+  IpfsHash: string;
+  PinSize: number;
+  Timestamp: string;
+  isDuplicate?: boolean;
 };

@@ -4,16 +4,13 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
 import Spinner from 'components/loadingSpinner';
 import Modal from 'components/modal';
-import AddSongModal from 'components/modal/AddSongModal';
-import VoteSongModal from 'components/modal/VoteSongModal';
+import AddCategoryModal from 'components/modal/AddCategoryModal';
 import RankedView from 'components/rankedView';
-import SongCard from 'components/song/SongCard';
 import ToggleBox from 'components/Toggle';
-import { useTopicChoiceData } from 'hooks/useArena';
+import { useArenaTopicData } from 'hooks/useArena';
 import React, { useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { shortenAddress } from 'utils/index';
-import { Address, useAccount } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 // const style = {
 //   '--fa-primary-color': '#353535',
@@ -29,29 +26,18 @@ import { Address, useAccount } from 'wagmi';
 //   '--fa-secondary-opacity': 0.4
 // } as React.CSSProperties;
 
-const Category = () => {
+const Arena = () => {
   const { address: account } = useAccount();
   const active = useMemo(() => !!account, [account]);
   const toggleRef = useRef<any>(null);
+  const [addCategoryModalOpen, setAddCategoryModalOpen] = useState(false);
 
-  const [voteSongModalOpen, setOpenVoteSongModalOpen] = useState(false);
-
-  function openVoteSongModal() {
-    setOpenVoteSongModalOpen(true);
+  function openAddCategoryModal() {
+    setAddCategoryModalOpen(true);
   }
 
-  function closeVoteSongModal() {
-    setOpenVoteSongModalOpen(false);
-  }
-
-  const [addSongModalOpen, setAddSongModalOpen] = useState(false);
-
-  function openAddSongModal() {
-    setAddSongModalOpen(true);
-  }
-
-  function closeAddSongModal() {
-    setAddSongModalOpen(false);
+  function closeAddCategoryModal() {
+    setAddCategoryModalOpen(false);
   }
 
   const [moreActionModalOpen, setMoreActionModalOpen] = useState(false);
@@ -64,8 +50,7 @@ const Category = () => {
     setMoreActionModalOpen(false);
   }
 
-  const { topicAddress } = useParams();
-  const { choices, loaded } = useTopicChoiceData(topicAddress as Address | undefined);
+  const { topics, loaded } = useArenaTopicData();
   const { openConnectModal } = useConnectModal();
 
   const renderConnector = () => {
@@ -83,15 +68,15 @@ const Category = () => {
   };
 
   function renderList() {
-    return choices !== undefined && toggleRef?.current?.selected.name === 'Default view' ? (
-      choices.map((song) => {
-        return song.meta ? (
-          <SongCard key={song.id} songMeta={song.meta} id={song.id} />
+    return topics !== undefined && toggleRef?.current?.selected.name === 'Default view' ? (
+      topics.map((topic) => {
+        return topic.meta ? (
+          <div key={topic.id}>{topic.meta.description}</div>
         ) : (
           <div
-            key={song.id}
+            key={topic.id}
             className={'bg-squircle w-[311px] h-[316px] bg-cover p-4'}
-            data-testid={`category-list-item-${song.id}`}
+            data-testid={`category-list-item-${topic.id}`}
           >
             <Spinner classes="h-full items-center" />
           </div>
@@ -137,8 +122,7 @@ const Category = () => {
   // @ts-ignore
   return (
     <div className={'px-24 py-12'}>
-      <VoteSongModal closeModal={closeVoteSongModal} open={voteSongModalOpen} />
-      <AddSongModal closeModal={closeAddSongModal} open={addSongModalOpen} />
+      <AddCategoryModal closeModal={closeAddCategoryModal} open={addCategoryModalOpen} />
       <Modal
         className={'absolute right-0 overflow-hidden bottom-44 w-64'}
         title={`What do you want to add?`}
@@ -158,26 +142,12 @@ const Category = () => {
                 fill="#EC2A64"
               />
             </svg>
-            <button className="py-3 text-start text-base font-semibold text-black">new category</button>
-          </div>
-          <div className="bg-neutral-200 rounded-xl flex w-full items-center px-3 gap-2">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M23.25 16.375C23.25 19.5 20.7109 22 17.625 22C14.5 22 12 19.5 12 16.375C12 13.2891 14.5 10.75 17.625 10.75C20.7109 10.75 23.25 13.2891 23.25 16.375ZM17 13.875V15.75H15.125C14.7734 15.75 14.5 16.0625 14.5 16.375C14.5 16.7266 14.7734 17 15.125 17H17V18.875C17 19.2266 17.2734 19.5 17.625 19.5C17.9375 19.5 18.25 19.2266 18.25 18.875V17H20.125C20.4375 17 20.75 16.7266 20.75 16.375C20.75 16.0625 20.4375 15.75 20.125 15.75H18.25V13.875C18.25 13.5625 17.9375 13.25 17.625 13.25C17.2734 13.25 17 13.5625 17 13.875Z"
-                fill="#353535"
-              />
-              <path
-                opacity="0.4"
-                d="M15.75 3.25C17.1172 3.25 18.25 4.38281 18.25 5.75V9.53906C18.0156 9.53906 17.8203 9.5 17.625 9.5C16.8047 9.5 16.0625 9.65625 15.3594 9.89062C14.5 7.46875 12.1953 5.75 9.46094 5.75C6.02344 5.75 3.21094 8.5625 3.21094 12C3.21094 15.4766 6.02344 18.25 9.46094 18.25C9.96875 18.25 10.4766 18.2109 10.9453 18.0938C11.1797 19.1094 11.6484 20.0078 12.3125 20.75H3.25C1.84375 20.75 0.75 19.6562 0.75 18.25V5.75C0.75 4.38281 1.84375 3.25 3.25 3.25H15.75ZM10.7109 12C10.7109 12.7031 10.1641 13.25 9.46094 13.25C8.79688 13.25 8.21094 12.7031 8.21094 12C8.21094 11.3359 8.79688 10.75 9.46094 10.75C10.1641 10.75 10.7109 11.3359 10.7109 12Z"
-                fill="#EC2A64"
-              />
-            </svg>
             <button
               className="py-3 text-start text-base font-semibold text-black"
-              onClick={openAddSongModal}
+              onClick={openAddCategoryModal}
               onClickCapture={closeMoreActionModal}
             >
-              new Song-a-day song
+              new category
             </button>
           </div>
         </main>
@@ -229,13 +199,6 @@ const Category = () => {
           <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
         </section>
         <aside className={'w-64'}>
-          <button
-            onClick={openVoteSongModal}
-            className={'btn-primary btn-large w-full mb-2'}
-            data-testid="open-vote-modal"
-          >
-            Vote for a Song!
-          </button>
           <section
             className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}
           >
@@ -395,9 +358,8 @@ const Category = () => {
           </section>
         </aside>
       </main>
-      {/*<button className={'btn-primary-inverted'}>Hello Songdust!</button>*/}
     </div>
   );
 };
 
-export default Category; /* Rectangle 18 */
+export default Arena; /* Rectangle 18 */

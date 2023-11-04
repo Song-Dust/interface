@@ -1,9 +1,11 @@
 import { Transition } from '@headlessui/react';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { usePrepareTopicDeployChoice, useTopicWrite } from 'abis/types/generated';
+import { mainnet } from '@wagmi/core';
+import { usePrepareTopicDeployChoice, useSongADayTokenUri, useTopicWrite } from 'abis/types/generated';
 import algoliasearch from 'algoliasearch/lite';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import SongMiniCard from 'components/song/SongMiniCard';
+import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import { useApproval } from 'hooks/useApproval';
 import { useArena, useArenaTokenData } from 'hooks/useArena';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
@@ -20,9 +22,7 @@ const AddSongModal = (props: ModalPropsInterface) => {
 
   const active = useMemo(() => !!account, [account]);
   const { choiceCreationFee } = useArena();
-  const { arenaTokenAddress, arenaTokenBalance, arenaTokenSymbol, arenaTokenDecimals } = useArenaTokenData(
-    topicAddress as Address,
-  );
+  const { arenaTokenAddress, arenaTokenBalance, arenaTokenSymbol, arenaTokenDecimals } = useArenaTokenData();
   const [selectedSong, setSelectedSong] = useState<SongMetadata | null>(null);
 
   function closeAction() {
@@ -63,9 +63,15 @@ const AddSongModal = (props: ModalPropsInterface) => {
     return formatUnits(choiceCreationFee, arenaTokenDecimals);
   }, [arenaTokenDecimals, choiceCreationFee]);
 
+  const { data: tokenURI } = useSongADayTokenUri({
+    chainId: mainnet.id,
+    address: SONGADAY_CONTRACT_ADDRESS,
+    args: selectedSong?.token_id ? [BigInt(selectedSong?.token_id)] : undefined,
+  });
+
   const { config } = usePrepareTopicDeployChoice({
     address: topicAddress as Address | undefined,
-    args: [String(selectedSong?.token_id || '')],
+    args: tokenURI ? [tokenURI] : undefined,
   });
   const { write: deployChoice } = useTopicWrite(config);
   const [loading, setLoading] = useState(false);
@@ -156,6 +162,13 @@ const AddSongModal = (props: ModalPropsInterface) => {
       return (
         <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
           Loading Approval State...
+        </button>
+      );
+    }
+    if (!deployChoice) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+          Loading...
         </button>
       );
     }

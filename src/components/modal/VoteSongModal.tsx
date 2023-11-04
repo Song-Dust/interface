@@ -5,7 +5,7 @@ import Input from 'components/basic/input';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import SongTile from 'components/song/SongTile';
 import { useApproval } from 'hooks/useApproval';
-import { useArenaTokenData, useTopicChoices } from 'hooks/useArena';
+import { useArenaTokenData, useTopicChoiceData } from 'hooks/useArena';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Choice } from 'types';
@@ -19,10 +19,8 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   const active = useMemo(() => !!account, [account]);
 
   const { topicAddress } = useParams();
-  const { choices } = useTopicChoices(topicAddress as Address | undefined);
-  const { arenaTokenAddress, arenaTokenBalance, arenaTokenSymbol, arenaTokenDecimals } = useArenaTokenData(
-    topicAddress as Address,
-  );
+  const { choices } = useTopicChoiceData(topicAddress as Address | undefined);
+  const { arenaTokenAddress, arenaTokenBalance, arenaTokenSymbol, arenaTokenDecimals } = useArenaTokenData();
 
   const [selectedChoiceAddress, setSelectedChoiceAddress] = useState<Address | undefined>(undefined);
   const selectedChoice = useMemo(() => {
