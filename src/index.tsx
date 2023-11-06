@@ -1,7 +1,7 @@
 import './index.sass';
 import '@rainbow-me/rainbowkit/styles.css';
 
-import { darkTheme, getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { mainnet } from '@wagmi/core';
 import { chains } from 'constants/chains';
 import * as process from 'process';
@@ -49,7 +49,10 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider theme={darkTheme()} chains={chains}>
+        <RainbowKitProvider
+          theme={lightTheme({ accentColor: '#FFE9EE', accentColorForeground: '#EF476F' })}
+          chains={chains}
+        >
           <App />
         </RainbowKitProvider>
       </WagmiConfig>

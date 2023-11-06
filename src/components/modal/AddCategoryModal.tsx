@@ -3,6 +3,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { prepareWriteContract, waitForTransaction, writeContract } from '@wagmi/core';
 import { arenaABI } from 'abis/types/generated';
 import axios from 'axios';
+import Input from 'components/basic/input';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import { ARENA_ADDRESS_MAP } from 'constants/addresses';
 import { useApproval } from 'hooks/useApproval';
@@ -15,7 +16,7 @@ import { TransactionState } from 'types/transaction';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
-const AddCategoryModal = (props: ModalPropsInterface) => {
+const AddCategoryModal = ({ open, closeModal }: ModalPropsInterface) => {
   const { address: account } = useAccount();
 
   const active = useMemo(() => !!account, [account]);
@@ -41,8 +42,8 @@ const AddCategoryModal = (props: ModalPropsInterface) => {
   }, []);
 
   const [txState, setTxState] = useState(TransactionState.INITIAL);
-  const [title, setTitle] = useState('Test Category 2');
-  const [description, setDescription] = useState('Test Description 2');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const { address } = useAccount();
   const handleAddChoice = useCallback(async () => {
     if (txState !== TransactionState.INITIAL || !address) return;
@@ -65,14 +66,12 @@ const AddCategoryModal = (props: ModalPropsInterface) => {
           },
         },
       );
-      console.log({ data });
-      setTxState(TransactionState.PREPARING_TRANSACTION);
       const { request } = await prepareWriteContract({
         address: arenaAddress,
         abi: arenaABI,
         functionName: 'deployTopic',
         args: [
-          BigInt(1699117753),
+          BigInt(Math.floor(Date.now() / 1000)),
           BigInt(1800),
           BigInt(300),
           BigInt(400),
@@ -88,13 +87,15 @@ const AddCategoryModal = (props: ModalPropsInterface) => {
       await waitForTransaction({
         hash,
       });
+      alert('Category added successfully!');
+      closeModal();
     } catch (err) {
       alert(String(err));
       throw err;
     } finally {
       setTxState(TransactionState.INITIAL);
     }
-  }, [address, arenaAddress, description, title, txState]);
+  }, [closeModal, address, arenaAddress, description, title, txState]);
 
   const { openConnectModal } = useConnectModal();
 
@@ -169,7 +170,14 @@ const AddCategoryModal = (props: ModalPropsInterface) => {
         </button>
       );
     }
-    if (txState !== TransactionState.INITIAL) {
+    if (txState === TransactionState.AWAITING_USER_CONFIRMATION) {
+      return (
+        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+          Waiting for user confirmation...
+        </button>
+      );
+    }
+    if (txState === TransactionState.AWAITING_TRANSACTION) {
       return (
         <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
           Sending Transaction...
@@ -178,7 +186,7 @@ const AddCategoryModal = (props: ModalPropsInterface) => {
     }
     return (
       <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'} onClick={handleAddChoice}>
-        Add song to category
+        Add category
       </button>
     );
   }
@@ -186,11 +194,27 @@ const AddCategoryModal = (props: ModalPropsInterface) => {
   return (
     <Modal
       className={'!max-w-4xl w-full px-6 h-3/4 max-h'}
-      title={`Select the song you want to add to this category`}
-      closeModal={props.closeModal}
-      open={props.open}
+      title={`Create New Category`}
+      closeModal={closeModal}
+      open={open}
     >
-      <div className="w-full flex"></div>
+      <div className="w-full">
+        <Input
+          label={'Title'}
+          placeholder={'Title'}
+          className={'focus:outline-0 w-full text-lg'}
+          onUserInput={(value) => setTitle(value)}
+          value={title}
+        ></Input>
+        <Input
+          textarea={true}
+          label={'Description'}
+          placeholder={'Description'}
+          className={'focus:outline-0 w-full text-lg'}
+          onUserInput={(value) => setDescription(value)}
+          value={description}
+        ></Input>
+      </div>
       <Transition
         as={Fragment}
         show={true}
@@ -206,7 +230,10 @@ const AddCategoryModal = (props: ModalPropsInterface) => {
             <div className={'flex-1'}>
               {!active && <p className={''}>You need to Connect your wallet for adding a topic</p>}
               <p>
-                Submit fee: <span className={'font-semibold'}>{parsedAmount ?? '...'}</span>
+                Submit fee:{' '}
+                <span className={'font-semibold'}>
+                  {parsedAmount ?? '...'} {arenaTokenSymbol}
+                </span>
               </p>
             </div>
           </section>

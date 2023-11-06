@@ -44,4 +44,4 @@ export function formatChainId(chainId: string) {
   return hexStripZeros(BigNumber.from(chainId).toHexString());
 }
 
-export const parseTokenURI = (text: string) => text.replace('ipfs://', 'https://ipfs.io/ipfs/');
+export const parseIpfsUri = (text: string) => text.replace('ipfs://', 'https://ipfs.io/ipfs/');

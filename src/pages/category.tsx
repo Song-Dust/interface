@@ -1,6 +1,6 @@
 // import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 // import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
 import Spinner from 'components/loadingSpinner';
 import Modal from 'components/modal';
@@ -12,7 +12,6 @@ import ToggleBox from 'components/Toggle';
 import { useTopicChoiceData } from 'hooks/useArena';
 import React, { useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { shortenAddress } from 'utils/index';
 import { Address, useAccount } from 'wagmi';
 
 // const style = {
@@ -67,20 +66,6 @@ const Category = () => {
   const { topicAddress } = useParams();
   const { choices, loaded } = useTopicChoiceData(topicAddress as Address | undefined);
   const { openConnectModal } = useConnectModal();
-
-  const renderConnector = () => {
-    return active ? (
-      <p data-testid="wallet-connect">Wallet Connected {shortenAddress(account)}</p>
-    ) : (
-      <button
-        data-testid="wallet-connect"
-        className={'bg-primary-light btn-small text-primary font-bold rounded-3xl'}
-        onClick={openConnectModal}
-      >
-        Connect Wallet
-      </button>
-    );
-  };
 
   function renderList() {
     return choices !== undefined && toggleRef?.current?.selected.name === 'Default view' ? (
@@ -189,7 +174,7 @@ const Category = () => {
           <p className="text-black font-semibold text-3xl z-10">SongDust</p>
           <p className="text-primary-light font-semibold text-3xl absolute left-14 top-2">SongDust</p>
         </div>
-        {renderConnector()}
+        <ConnectButton />
       </div>
       <header className={'bg-gradient-light w-full h-fit rounded-3xl flex px-8 py-6 mb-12 mt-16 relative'}>
         <div className="max-w-[80%]">

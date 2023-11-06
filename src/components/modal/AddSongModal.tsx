@@ -16,7 +16,7 @@ import { ApprovalState } from 'types/approval';
 import { formatUnits } from 'viem';
 import { Address, useAccount } from 'wagmi';
 
-const AddSongModal = (props: ModalPropsInterface) => {
+const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
   const { address: account } = useAccount();
   const { topicAddress } = useParams();
 
@@ -190,8 +190,8 @@ const AddSongModal = (props: ModalPropsInterface) => {
     <Modal
       className={'!max-w-4xl w-full px-6 h-3/4 max-h'}
       title={`Select the song you want to add to this category`}
-      closeModal={props.closeModal}
-      open={props.open}
+      closeModal={closeModal}
+      open={open}
     >
       <InstantSearch searchClient={searchClient} indexName="songs" routing>
         <div className="w-full flex items-baseline gap-5">
@@ -244,7 +244,10 @@ const AddSongModal = (props: ModalPropsInterface) => {
               </p>
               {!active && <p className={''}>You need to Connect your wallet for adding a song</p>}
               <p>
-                Submit fee: <span className={'font-semibold'}>{parsedAmount ?? '...'}</span>
+                Submit fee:{' '}
+                <span className={'font-semibold'}>
+                  {parsedAmount ?? '...'} {arenaTokenSymbol}
+                </span>
               </p>
             </div>
           </section>

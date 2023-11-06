@@ -1,5 +1,5 @@
 import React from 'react';
-import { parseTokenURI } from 'utils/index';
+import { parseIpfsUri } from 'utils/index';
 
 import { SongMetadata } from '../../types';
 
@@ -7,20 +7,23 @@ export default function SongTile({
   onClick,
   id,
   songMeta,
-  className
+  className,
 }: {
   onClick: () => void;
   id: string | number;
   songMeta: SongMetadata | null | undefined;
   className: string;
-  
 }) {
   return (
-    <div onClick={onClick} className={`w-64 h-24 bg-cover relative rounded-xl overflow-hidden border-2 border-black ${className}`} data-testid={`category-list-item-${id}-choose`}>
+    <div
+      onClick={onClick}
+      className={`w-64 h-24 bg-cover relative rounded-xl overflow-hidden border-2 border-black ${className}`}
+      data-testid={`category-list-item-${id}-choose`}
+    >
       {/* todo img below must be an iframe link to youtube video*/}
       <img
         alt="choice"
-        src={parseTokenURI(
+        src={parseIpfsUri(
           songMeta?.image ||
             'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
         )}

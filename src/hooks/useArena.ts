@@ -16,7 +16,7 @@ import axios from 'axios';
 import { ARENA_ADDRESS_MAP } from 'constants/addresses';
 import { useContractAddress } from 'hooks/useContractAddress';
 import { useEffect, useState } from 'react';
-import { parseTokenURI } from 'utils';
+import { parseIpfsUri } from 'utils';
 import { Address, useAccount } from 'wagmi';
 
 import { Choice, ChoiceRaw, SongMetadata, Topic, TopicMetadata, TopicRaw } from '../types';
@@ -63,6 +63,7 @@ export function useArenaTopicData() {
   const arenaAddress = useContractAddress(ARENA_ADDRESS_MAP);
   const { data: topicsLength } = useArenaGetTopicsLength({
     address: arenaAddress,
+    watch: true,
   });
   const [topicsRaw, setTopicsRaw] = useState<TopicRaw[] | null>(null);
 
@@ -113,12 +114,12 @@ export function useArenaTopicData() {
 
   const [topics, setTopics] = useState<Topic[] | undefined>(undefined);
   useEffect(() => {
-    if (!topicsRaw || topics?.length) return;
+    if (!topicsRaw || topics?.length === topicsRaw?.length) return;
     setTopics(topicsRaw);
     const loadedTopics: Topic[] = [];
     for (const topicRaw of topicsRaw) {
       axios
-        .get<TopicMetadata>(parseTokenURI(topicRaw.metadataURI))
+        .get<TopicMetadata>(parseIpfsUri(topicRaw.metadataURI))
         .then((res) => {
           loadedTopics.push({
             ...topicRaw,
@@ -145,6 +146,7 @@ export function useArenaTopicData() {
 export function useTopicChoiceData(topicAddress: Address | undefined) {
   const { data: choicesLength } = useTopicChoicesLength({
     address: topicAddress,
+    watch: true,
   });
   const [choicesRaw, setChoicesRaw] = useState<ChoiceRaw[] | null>(null);
 
@@ -187,12 +189,12 @@ export function useTopicChoiceData(topicAddress: Address | undefined) {
 
   const [choices, setChoices] = useState<Choice[] | undefined>(undefined);
   useEffect(() => {
-    if (!choicesRaw || choices?.length) return;
+    if (!choicesRaw || choices?.length === choicesRaw?.length) return;
     setChoices(choicesRaw);
     const loadedChoices: Choice[] = [];
     for (const choiceRaw of choicesRaw) {
       axios
-        .get<SongMetadata>(parseTokenURI(choiceRaw.metadataURI))
+        .get<SongMetadata>(parseIpfsUri(choiceRaw.metadataURI))
         .then((res) => {
           loadedChoices.push({
             ...choiceRaw,

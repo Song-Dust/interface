@@ -2,25 +2,25 @@ import React, { useCallback, useMemo } from 'react';
 import { TokenBalance } from 'types';
 import { formatUnits } from 'viem';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type Props = {
   tokenBalance?: TokenBalance;
   onUserInput: (value: string) => void;
   testid?: string;
+  textarea?: boolean;
   icon?: any; // IconDefinition;
   className?: string;
   toggle?: boolean;
   toggleLabel?: string;
-}
+  label?: string;
+};
 
-// const style = {
-//   '--fa-primary-color': '#353535',
-//   '--fa-secondary-color': '#EF476F',
-//   '--fa-primary-opacity': 1,
-//   '--fa-secondary-opacity': 0.4
-// } as React.CSSProperties;
-
-const Input = (props: InputProps) => {
+const Input = (
+  props:
+    | (React.InputHTMLAttributes<HTMLInputElement> & Props)
+    | (React.InputHTMLAttributes<HTMLTextAreaElement> & Props),
+) => {
   const {
+    label,
     value,
     tokenBalance,
     placeholder,
@@ -44,21 +44,32 @@ const Input = (props: InputProps) => {
 
   return (
     <div className={`${className ? className : ''}`}>
+      {label && <label>{label}</label>}
       <div
-        className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 h-14 ${
-          toggle ? 'justify-center' : ''
-        }`}
+        className={`flex items-center gap-3 border-light-gray bg-white border-2 rounded-xl px-4 ${
+          props.textarea ? '' : 'h-14'
+        } ${toggle ? 'justify-center' : ''}`}
       >
         <div className={'input-icon'}>{icon}</div>
         {/*todo remove focus on input*/}
-        <input
-          type={props.type}
-          placeholder={placeholder}
-          className={'focus:outline-0 w-full text-lg'}
-          onChange={(e) => onUserInput(e.target.value)}
-          value={value || ''}
-          data-testid={props.testid && `${props.testid}-input`}
-        ></input>
+        {props.textarea ? (
+          <textarea
+            placeholder={placeholder}
+            className={'focus:outline-0 w-full text-lg pt-2'}
+            onChange={(e) => onUserInput(e.target.value)}
+            value={value || ''}
+            data-testid={props.testid && `${props.testid}-input`}
+          ></textarea>
+        ) : (
+          <input
+            type={props.type}
+            placeholder={placeholder}
+            className={'focus:outline-0 w-full text-lg'}
+            onChange={(e) => onUserInput(e.target.value)}
+            value={value || ''}
+            data-testid={props.testid && `${props.testid}-input`}
+          ></input>
+        )}
         <div className={'input-token'}></div>
       </div>
       <footer className={'mt-2'}>
