@@ -1,18 +1,16 @@
 // import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 // import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
-import Spinner from 'components/loadingSpinner';
 import Modal from 'components/modal';
 import AddSongModal from 'components/modal/AddSongModal';
-import VoteSongModal from 'components/modal/VoteSongModal';
+import VoteChoiceModal from 'components/modal/VoteChoiceModal';
 import RankedView from 'components/rankedView';
-import SongCard from 'components/song/SongCard';
-import ToggleBox from 'components/Toggle';
-import { useTopicChoiceData } from 'hooks/useArena';
-import React, { useMemo, useRef, useState } from 'react';
+import { useTopic, useTopicChoiceData } from 'hooks/useArena';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Address, useAccount } from 'wagmi';
+import { Choice } from 'types';
+import { Address } from 'wagmi';
 
 // const style = {
 //   '--fa-primary-color': '#353535',
@@ -28,20 +26,8 @@ import { Address, useAccount } from 'wagmi';
 //   '--fa-secondary-opacity': 0.4
 // } as React.CSSProperties;
 
-const Category = () => {
-  const { address: account } = useAccount();
-  const active = useMemo(() => !!account, [account]);
-  const toggleRef = useRef<any>(null);
-
-  const [voteSongModalOpen, setOpenVoteSongModalOpen] = useState(false);
-
-  function openVoteSongModal() {
-    setOpenVoteSongModalOpen(true);
-  }
-
-  function closeVoteSongModal() {
-    setOpenVoteSongModalOpen(false);
-  }
+const Topic = () => {
+  const [selectedChoiceToVote, setSelectedChoiceToVote] = useState<Choice | undefined>(undefined);
 
   const [addSongModalOpen, setAddSongModalOpen] = useState(false);
 
@@ -65,64 +51,15 @@ const Category = () => {
 
   const { topicAddress } = useParams();
   const { choices, loaded } = useTopicChoiceData(topicAddress as Address | undefined);
-  const { openConnectModal } = useConnectModal();
-
-  function renderList() {
-    return choices !== undefined && toggleRef?.current?.selected.name === 'Default view' ? (
-      choices.map((song) => {
-        return song.meta ? (
-          <SongCard key={song.id} songMeta={song.meta} id={song.id} />
-        ) : (
-          <div
-            key={song.id}
-            className={'bg-squircle w-[311px] h-[316px] bg-cover p-4'}
-            data-testid={`category-list-item-${song.id}`}
-          >
-            <Spinner classes="h-full items-center" />
-          </div>
-        );
-      })
-    ) : loaded && toggleRef?.current?.selected.name === 'Ranked view' ? (
-      //HARD CODED
-      <>
-        <RankedView
-          openseaLink="#"
-          youtubeLink="#"
-          songTitle="Graydient Is Daddy"
-          rankPercentage={26}
-          songNum={'2.6k'}
-          status={'up'}
-          prevRank={1}
-          barPercentage={0}
-        />
-        <RankedView
-          openseaLink="#"
-          youtubeLink="#"
-          songTitle="What About Our Content And Infinite Suffering"
-          rankPercentage={24}
-          songNum={'2.4k'}
-          status={'down'}
-          prevRank={1}
-          barPercentage={25}
-        />
-        <RankedView
-          openseaLink="#"
-          youtubeLink="#"
-          songTitle="Graydient Is Daddy"
-          rankPercentage={18}
-          songNum={'1.8k'}
-          barPercentage={0}
-        />
-      </>
-    ) : (
-      <Spinner />
-    );
-  }
-
+  const { metadata } = useTopic(topicAddress as Address | undefined);
   // @ts-ignore
   return (
     <div className={'px-24 py-12'}>
-      <VoteSongModal closeModal={closeVoteSongModal} open={voteSongModalOpen} />
+      <VoteChoiceModal
+        closeModal={() => setSelectedChoiceToVote(undefined)}
+        open={selectedChoiceToVote !== undefined}
+        choice={selectedChoiceToVote}
+      />
       <AddSongModal closeModal={closeAddSongModal} open={addSongModalOpen} />
       <Modal
         className={'absolute right-0 overflow-hidden bottom-44 w-64'}
@@ -178,11 +115,8 @@ const Category = () => {
       </div>
       <header className={'bg-gradient-light w-full h-fit rounded-3xl flex px-8 py-6 mb-12 mt-16 relative'}>
         <div className="max-w-[80%]">
-          <h1>Songs were written in a hotel room</h1>
-          <p className={'text-label py-3'}>
-            This is the description section of this category called “songs were written in a hotel room”, as the name
-            suggests, Jonathan recorded all of the songs here in a hotel room.
-          </p>
+          <h1>{metadata?.title || '...'}</h1>
+          <p className={'text-label py-3'}>{metadata?.description || '...'}</p>
         </div>
         <img alt="header" src={'/category-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
       </header>
@@ -208,19 +142,15 @@ const Category = () => {
                 placeholder={'Search songs in this category'}
                 onUserInput={() => {}}
               ></Input>
-              <ToggleBox ref={toggleRef} />
             </div>
           </header>
-          <main className={'flex flex-wrap gap-6'}>{renderList()}</main>
+          <main className={'flex flex-wrap gap-6'}>
+            {choices?.map((choice) => (
+              <RankedView key={choice.address} choice={choice} onVoteClick={() => setSelectedChoiceToVote(choice)} />
+            ))}
+          </main>
         </section>
         <aside className={'w-64'}>
-          <button
-            onClick={openVoteSongModal}
-            className={'btn-primary btn-large w-full mb-2'}
-            data-testid="open-vote-modal"
-          >
-            Vote for a Song!
-          </button>
           <section
             className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}
           >
@@ -301,7 +231,7 @@ const Category = () => {
                       fill="#193154"
                     />
                   </svg>
-                  <h2 className={'font-bold'}>32/50</h2>
+                  <h2 className={'font-bold'}>32</h2>
                   <p className={'font-normal text-sm'}>Cycles past</p>
                 </div>
               </section>
@@ -385,4 +315,4 @@ const Category = () => {
   );
 };
 
-export default Category; /* Rectangle 18 */
+export default Topic; /* Rectangle 18 */

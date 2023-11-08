@@ -1,36 +1,22 @@
-import { Transition } from '@headlessui/react';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useChoiceWrite, usePrepareChoiceContribute } from 'abis/types/generated';
 import Input from 'components/basic/input';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import SongTile from 'components/song/SongTile';
 import { useApproval } from 'hooks/useApproval';
-import { useArenaTokenData, useTopicChoiceData } from 'hooks/useArena';
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useArenaTokenData } from 'hooks/useArena';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Choice } from 'types';
 import { ApprovalState } from 'types/approval';
 import { parseUnits } from 'viem';
-import { Address, useAccount } from 'wagmi';
+import { useAccount } from 'wagmi';
 
-const VoteSongModal = (props: ModalPropsInterface) => {
+const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: Choice | undefined }) => {
   const { address: account } = useAccount();
   // const chainId = chain?.id;
   const active = useMemo(() => !!account, [account]);
 
-  const { topicAddress } = useParams();
-  const { choices } = useTopicChoiceData(topicAddress as Address | undefined);
   const { arenaTokenAddress, arenaTokenBalance, arenaTokenSymbol, arenaTokenDecimals } = useArenaTokenData();
-
-  const [selectedChoiceAddress, setSelectedChoiceAddress] = useState<Address | undefined>(undefined);
-  const selectedChoice = useMemo(() => {
-    if (!choices || selectedChoiceAddress === null) return null;
-    return choices.find((c) => c.address === selectedChoiceAddress)!;
-  }, [choices, selectedChoiceAddress]);
-
-  function closeAction() {
-    setSelectedChoiceAddress(undefined);
-  }
 
   const { openConnectModal } = useConnectModal();
 
@@ -43,10 +29,10 @@ const VoteSongModal = (props: ModalPropsInterface) => {
   const { approvalState: approvalStateArenaToken, approve: approveArenaToken } = useApproval({
     tokenAddress: arenaTokenAddress,
     amount: parsedAmount,
-    spender: selectedChoiceAddress,
+    spender: choice?.address,
   });
   const { config } = usePrepareChoiceContribute({
-    address: selectedChoiceAddress as Address | undefined,
+    address: choice?.address,
     args: parsedAmount ? [parsedAmount] : undefined,
   });
   const { write: voteCallback } = useChoiceWrite(config);
@@ -148,83 +134,45 @@ const VoteSongModal = (props: ModalPropsInterface) => {
     );
   }
 
-  function modalContent(items: Choice[]) {
-    return (
-      <>
-        <main className={'flex flex-wrap gap-6'}>
-          {items.map((song) => {
-            return (
-              <SongTile
-                onClick={() => setSelectedChoiceAddress(song.address)}
-                className={`${
-                  song.address === selectedChoiceAddress || selectedChoiceAddress === null
-                    ? 'opacity-100'
-                    : 'opacity-30'
-                }`}
-                key={song.id}
-                id={song.id}
-                songMeta={song.meta}
-              />
-            );
-          })}
-        </main>
-        <Transition
-          as={Fragment}
-          show={selectedChoiceAddress !== null}
-          enter="transform ease-in-out transition duration-[400ms]"
-          enterFrom="opacity-0 translate-y-32"
-          enterTo="opacity-100 translate-y-0"
-          leave="transform duration-500 transition ease-in-out"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0 translate-y-32 "
-        >
-          <footer className={'absolute left-0 right-0 bottom-0 rounded-xl bg-white border-gray border-t py-4 px-2'}>
-            <section className={'flex'}>
-              <div className={'flex-1'}>
-                <p className={'font-semibold text-xl'}>
-                  <span className="text-primary">{selectedChoice?.meta?.name}</span> selected
-                </p>
-                <p className={''}>
-                  {active ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}
-                </p>
-              </div>
-              <div className={'flex-1'}>
-                <Input
-                  type={'number'}
-                  testid="vote-amount"
-                  placeholder="Enter Amount"
-                  value={voteAmount}
-                  tokenBalance={{
-                    balance: arenaTokenBalance,
-                    symbol: arenaTokenSymbol,
-                    decimals: arenaTokenDecimals,
-                  }}
-                  onUserInput={setVoteAmount}
-                />
-              </div>
-            </section>
-            <section className={'vote-modal-action flex justify-end mt-8'}>
-              <button onClick={closeAction} className={'btn-primary-inverted btn-large mr-2'}>
-                Go back
-              </button>
-              {renderButton()}
-            </section>
-            {/* footer action */}
-          </footer>
-        </Transition>
-      </>
-    );
-  }
-
   return (
     <Modal
       className={'!max-w-2xl relative overflow-hidden h-2/3'}
       {...props}
-      title={`Select the song you want to vote for (${choices?.length || '...'} songs nominated)`}
+      title={`Contributing to ${choice?.meta?.name}`}
     >
-      {choices !== undefined ? modalContent(choices) : <div>loading</div>}
+      <main className={'flex flex-wrap gap-6'}>
+        {choice && <SongTile className={`opacity-100`} id={choice.id} songMeta={choice.meta} />}
+      </main>
+      <footer className={'absolute left-0 right-0 bottom-0 rounded-xl bg-white border-gray border-t py-4 px-2'}>
+        <section className={'flex'}>
+          <div className={'flex-1'}>
+            <p className={'font-semibold text-xl'}>
+              <span className="text-primary">{choice?.meta?.name}</span> selected
+            </p>
+            <p className={''}>
+              {active ? 'Enter the amount that you want to cast' : 'Connect your wallet to cast your vote'}
+            </p>
+          </div>
+          <div className={'flex-1'}>
+            <Input
+              type={'number'}
+              testid="vote-amount"
+              placeholder="Enter Amount"
+              value={voteAmount}
+              tokenBalance={{
+                balance: arenaTokenBalance,
+                symbol: arenaTokenSymbol,
+                decimals: arenaTokenDecimals,
+              }}
+              onUserInput={setVoteAmount}
+            />
+          </div>
+        </section>
+        <section className={'vote-modal-action flex justify-end mt-8'}>{renderButton()}</section>
+        {/* footer action */}
+      </footer>
     </Modal>
   );
 };
 
-export default VoteSongModal;
+export default VoteChoiceModal;

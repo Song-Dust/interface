@@ -11,6 +11,7 @@ import {
   useErc20Decimals,
   useErc20Symbol,
   useTopicChoicesLength,
+  useTopicMetadataUri,
 } from 'abis/types/generated';
 import axios from 'axios';
 import { ARENA_ADDRESS_MAP } from 'constants/addresses';
@@ -141,6 +142,26 @@ export function useArenaTopicData() {
   }, [topics, topicsRaw]);
 
   return { topicsLength, topics, loaded: topics !== undefined };
+}
+
+export function useTopic(topicAddress: Address | undefined) {
+  const { data: metaDataUri } = useTopicMetadataUri({
+    address: topicAddress,
+  });
+  const [metadata, setMetadata] = useState<TopicMetadata | undefined>(undefined);
+
+  useEffect(() => {
+    if (metaDataUri) {
+      axios.get<TopicMetadata>(parseIpfsUri(metaDataUri)).then((res) => {
+        setMetadata(res.data);
+      });
+    }
+  }, [metaDataUri]);
+
+  return {
+    metaDataUri,
+    metadata,
+  };
 }
 
 export function useTopicChoiceData(topicAddress: Address | undefined) {

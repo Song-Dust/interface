@@ -9,7 +9,7 @@ export default function SongTile({
   songMeta,
   className,
 }: {
-  onClick: () => void;
+  onClick?: () => void;
   id: string | number;
   songMeta: SongMetadata | null | undefined;
   className: string;
