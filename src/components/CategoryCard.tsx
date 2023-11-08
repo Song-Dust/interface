@@ -15,7 +15,7 @@ import { Topic } from 'types';
 export default function CategoryCard({ topic }: { topic: Topic }) {
   return (
     <Link
-      to={RoutePath.CATEGORY.replace(':topicAddress', topic.address)}
+      to={RoutePath.TOPIC.replace(':topicAddress', topic.address)}
       className={'bg-squircle w-[311px] h-[316px] bg-cover p-5 overflow-auto'}
       data-testid={`category-list-item-${topic.id}`}
     >

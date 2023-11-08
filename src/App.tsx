@@ -10,7 +10,7 @@ import RoutePath from './routes';
 function App() {
   return (
     <Routes>
-      <Route path={RoutePath.CATEGORY} element={<Topic />} />
+      <Route path={RoutePath.TOPIC} element={<Topic />} />
       <Route path={RoutePath.LANDING} element={<Arena />} />
     </Routes>
   );
