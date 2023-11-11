@@ -1,9 +1,8 @@
 import React from 'react';
-
-import { SongMetadata } from '../../types';
+import { ChoiceMetadata } from 'types';
 
 interface SongTagProps {
-  attributes: SongMetadata['attributes'];
+  attributes: ChoiceMetadata['attributes'];
   tagsExpanded?: boolean;
 }
 

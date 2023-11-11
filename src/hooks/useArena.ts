@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import { parseIpfsUri } from 'utils';
 import { Address, useAccount } from 'wagmi';
 
-import { Choice, ChoiceRaw, SongMetadata, Topic, TopicMetadata, TopicRaw } from '../types';
+import { Choice, ChoiceMetadata, ChoiceRaw, Topic, TopicMetadata, TopicRaw } from '../types';
 
 export function useArena() {
   const arenaAddress = useContractAddress(ARENA_ADDRESS_MAP);
@@ -215,7 +215,7 @@ export function useTopicChoiceData(topicAddress: Address | undefined) {
     const loadedChoices: Choice[] = [];
     for (const choiceRaw of choicesRaw) {
       axios
-        .get<SongMetadata>(parseIpfsUri(choiceRaw.metadataURI))
+        .get<ChoiceMetadata>(parseIpfsUri(choiceRaw.metadataURI))
         .then((res) => {
           loadedChoices.push({
             ...choiceRaw,

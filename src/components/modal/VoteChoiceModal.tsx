@@ -1,8 +1,8 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useChoiceWrite, usePrepareChoiceContribute } from 'abis/types/generated';
 import Input from 'components/basic/input';
+import ChoiceTile from 'components/choice/ChoiceTile';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
-import SongTile from 'components/song/SongTile';
 import { useApproval } from 'hooks/useApproval';
 import { useArenaTokenData } from 'hooks/useArena';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -141,7 +141,7 @@ const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: C
       title={`Contributing to ${choice?.meta?.name}`}
     >
       <main className={'flex flex-wrap gap-6'}>
-        {choice && <SongTile className={`opacity-100`} id={choice.id} songMeta={choice.meta} />}
+        {choice && <ChoiceTile className={`opacity-100`} id={choice.id} choiceMeta={choice.meta} />}
       </main>
       <footer className={'absolute left-0 right-0 bottom-0 rounded-xl bg-white border-gray border-t py-4 px-2'}>
         <section className={'flex'}>

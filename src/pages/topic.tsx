@@ -3,7 +3,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
 import Modal from 'components/modal';
-import AddSongModal from 'components/modal/AddSongModal';
+import AddChoiceModal from 'components/modal/AddChoiceModal';
 import VoteChoiceModal from 'components/modal/VoteChoiceModal';
 import RankedView from 'components/rankedView';
 import { useTopic, useTopicChoiceData } from 'hooks/useArena';
@@ -29,14 +29,14 @@ import { Address } from 'wagmi';
 const Topic = () => {
   const [selectedChoiceToVote, setSelectedChoiceToVote] = useState<Choice | undefined>(undefined);
 
-  const [addSongModalOpen, setAddSongModalOpen] = useState(false);
+  const [addChoiceModalOpen, setAddChoiceModalOpen] = useState(false);
 
-  function openAddSongModal() {
-    setAddSongModalOpen(true);
+  function openAddChoiceModal() {
+    setAddChoiceModalOpen(true);
   }
 
-  function closeAddSongModal() {
-    setAddSongModalOpen(false);
+  function closeAddChoiceModal() {
+    setAddChoiceModalOpen(false);
   }
 
   const [moreActionModalOpen, setMoreActionModalOpen] = useState(false);
@@ -50,7 +50,7 @@ const Topic = () => {
   }
 
   const { topicAddress } = useParams();
-  const { choices, loaded } = useTopicChoiceData(topicAddress as Address | undefined);
+  const { choices } = useTopicChoiceData(topicAddress as Address | undefined);
   const { metadata } = useTopic(topicAddress as Address | undefined);
   // @ts-ignore
   return (
@@ -60,7 +60,7 @@ const Topic = () => {
         open={selectedChoiceToVote !== undefined}
         choice={selectedChoiceToVote}
       />
-      <AddSongModal closeModal={closeAddSongModal} open={addSongModalOpen} />
+      <AddChoiceModal closeModal={closeAddChoiceModal} open={addChoiceModalOpen} />
       <Modal
         className={'absolute right-0 overflow-hidden bottom-44 w-64'}
         title={`What do you want to add?`}
@@ -96,7 +96,7 @@ const Topic = () => {
             </svg>
             <button
               className="py-3 text-start text-base font-semibold text-black"
-              onClick={openAddSongModal}
+              onClick={openAddChoiceModal}
               onClickCapture={closeMoreActionModal}
             >
               new Song-a-day song
@@ -118,7 +118,7 @@ const Topic = () => {
           <h1>{metadata?.title || '...'}</h1>
           <p className={'text-label py-3'}>{metadata?.description || '...'}</p>
         </div>
-        <img alt="header" src={'/category-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
+        <img alt="header" src={'/topic-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
@@ -180,7 +180,7 @@ const Topic = () => {
               <p className={'font-semibold'}>Left untill the snapshot</p>
             </div>
           </section>
-          <section className={'category-info rounded-2xl bg-primary-light-2 flex flex-col gap-6 px-6 pt-6 mb-4 pb-7'}>
+          <section className={'topic-info rounded-2xl bg-primary-light-2 flex flex-col gap-6 px-6 pt-6 mb-4 pb-7'}>
             <div className={'flex gap-3 flex-col'}>
               <label className={'font-semibold'}>Category&apos;s General Stats</label>
               <div className={'rounded-xl bg-g1 flex gap-4 py-4 px-5 justify-between items-center'}>

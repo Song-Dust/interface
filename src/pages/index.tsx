@@ -2,12 +2,11 @@
 // import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
-import CategoryCard from 'components/CategoryCard';
 import Spinner from 'components/loadingSpinner';
-import AddCategoryModal from 'components/modal/AddCategoryModal';
+import AddTopicModal from 'components/modal/AddTopicModal';
+import TopicCard from 'components/TopicCard';
 import { useArenaTopicData } from 'hooks/useArena';
-import React, { useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
+import React, { useState } from 'react';
 
 // const style = {
 //   '--fa-primary-color': '#353535',
@@ -24,16 +23,14 @@ import { useAccount } from 'wagmi';
 // } as React.CSSProperties;
 
 const Arena = () => {
-  const { address: account } = useAccount();
-  const active = useMemo(() => !!account, [account]);
-  const [addCategoryModalOpen, setAddCategoryModalOpen] = useState(false);
+  const [addTopicModalOpen, setAddTopicModalOpen] = useState(false);
 
-  function openAddCategoryModal() {
-    setAddCategoryModalOpen(true);
+  function openAddTopicModal() {
+    setAddTopicModalOpen(true);
   }
 
-  function closeAddCategoryModal() {
-    setAddCategoryModalOpen(false);
+  function closeAddTopicModal() {
+    setAddTopicModalOpen(false);
   }
 
   const { topics } = useArenaTopicData();
@@ -42,12 +39,12 @@ const Arena = () => {
     return topics !== undefined ? (
       topics.map((topic) => {
         return topic.meta ? (
-          <CategoryCard key={topic.id} topic={topic} />
+          <TopicCard key={topic.id} topic={topic} />
         ) : (
           <div
             key={topic.id}
             className={'bg-squircle w-[311px] h-[316px] bg-cover p-4'}
-            data-testid={`category-list-item-${topic.id}`}
+            data-testid={`topic-list-item-${topic.id}`}
           >
             <Spinner classes="h-full items-center" />
           </div>
@@ -61,7 +58,7 @@ const Arena = () => {
   // @ts-ignore
   return (
     <div className={'px-24 py-12'}>
-      <AddCategoryModal closeModal={closeAddCategoryModal} open={addCategoryModalOpen} />
+      <AddTopicModal closeModal={closeAddTopicModal} open={addTopicModalOpen} />
 
       <div className="flex justify-between pb-4">
         <div className="flex items-center gap-2 relative">
@@ -80,7 +77,7 @@ const Arena = () => {
             Ranking songs
           </p>
         </div>
-        <img alt="header" src={'/category-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
+        <img alt="header" src={'/topic-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
@@ -106,8 +103,8 @@ const Arena = () => {
               ></Input>
               <button
                 className="btn-primary btn-large mb-2"
-                onClick={openAddCategoryModal}
-                onClickCapture={closeAddCategoryModal}
+                onClick={openAddTopicModal}
+                onClickCapture={closeAddTopicModal}
               >
                 New Category
               </button>

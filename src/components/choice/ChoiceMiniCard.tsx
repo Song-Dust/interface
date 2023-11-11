@@ -4,7 +4,7 @@ import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import React from 'react';
 import { parseIpfsUri } from 'utils/index';
 
-import { SongMetadata } from '../../types';
+import { ChoiceMetadata } from '../../types';
 
 // const style = {
 //   '--fa-primary-color': '#353535',
@@ -13,33 +13,33 @@ import { SongMetadata } from '../../types';
 //   '--fa-secondary-opacity': 0.4
 // } as React.CSSProperties;
 
-export default function SongMiniCard({
+export default function ChoiceMiniCard({
   onClick,
   id,
-  songMeta,
+  choiceMeta,
   className,
 }: {
   onClick: () => void;
   id: string | number;
-  songMeta: SongMetadata | null | undefined;
+  choiceMeta: ChoiceMetadata | null | undefined;
   className: string;
 }) {
   return (
-    <div onClick={onClick} className={`rounded-3xl w-60 p-4 ${className}`} data-testid={`category-list-item-${id}`}>
+    <div onClick={onClick} className={`rounded-3xl w-60 p-4 ${className}`} data-testid={`topic-list-item-${id}`}>
       {/* todo img below must be an iframe link to youtube video*/}
       <img
         alt="choice"
         src={parseIpfsUri(
-          songMeta?.image ||
+          choiceMeta?.image ||
             'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
         )}
         className={'rounded-xl'}
       />
       <div className={'px-2 pt-2'}>
-        <p className={'font-bold text-xl'}>{songMeta?.name}</p>
+        <p className={'font-bold text-xl'}>{choiceMeta?.name}</p>
 
         <a
-          href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${songMeta?.token_id}`}
+          href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${choiceMeta?.token_id}`}
           className={'flex gap-1.5 mt-2'}
         >
           {/*<FontAwesomeIcon fontSize={24} icon={faCircleInfo} style={style} />*/}

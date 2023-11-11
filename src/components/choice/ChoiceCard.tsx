@@ -3,7 +3,7 @@
 import { SongTags } from 'components/song/SongTags';
 import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import React from 'react';
-import { SongMetadata } from 'types';
+import { ChoiceMetadata } from 'types';
 import { parseIpfsUri } from 'utils/index';
 
 // const style = {
@@ -13,43 +13,43 @@ import { parseIpfsUri } from 'utils/index';
 //   '--fa-secondary-opacity': 0.4
 // } as React.CSSProperties;
 
-export default function SongCard({
+export default function ChoiceCard({
   onClick,
   id,
-  songMeta,
+  choiceMeta,
 }: {
   onClick?: () => void;
   id: string | number;
-  songMeta: SongMetadata;
+  choiceMeta: ChoiceMetadata;
 }) {
   return (
     <div
       onClick={onClick}
       className={'bg-squircle w-[311px] h-[316px] bg-cover p-5'}
-      data-testid={`category-list-item-${id}`}
+      data-testid={`topic-list-item-${id}`}
     >
       {/* todo img below must be an iframe link to youtube video*/}
       <img
         alt="choice"
         src={parseIpfsUri(
-          songMeta.image ||
+          choiceMeta.image ||
             'https://bafybeicp7kjqwzzyfuryefv2l5q23exl3dbd6rgmuqzxs3cy6vaa2iekka.ipfs.w3s.link/sample.png',
         )}
         className={'rounded-xl'}
       />
       <div className={'px-2 pt- flex flex-col justify-between'}>
         <div className={'pt-1.5'}>
-          <p className={'font-bold text-xl mb-2'}>{songMeta.name}</p>
-          {songMeta.attributes && <SongTags attributes={songMeta.attributes} />}
+          <p className={'font-bold text-xl mb-2'}>{choiceMeta.name}</p>
+          {choiceMeta.attributes && <SongTags attributes={choiceMeta.attributes} />}
         </div>
 
         <div>
-          <p className={'text-dark-gray text-sm mt-1'} data-testid={`category-list-item-${id}-meta`}>
-            Added by <span className={'text-black font-semibold'}>{songMeta.created_by}</span>
-            {songMeta.Date && <>at {songMeta.Date}</>}
+          <p className={'text-dark-gray text-sm mt-1'} data-testid={`topic-list-item-${id}-meta`}>
+            Added by <span className={'text-black font-semibold'}>{choiceMeta.created_by}</span>
+            {choiceMeta.Date && <>at {choiceMeta.Date}</>}
           </p>
           <a
-            href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${songMeta.token_id}`}
+            href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${choiceMeta.token_id}`}
             className={'flex gap-1.5'}
           >
             {/*<FontAwesomeIcon fontSize={24} icon={faHexagonVerticalNft} style={style} />*/}

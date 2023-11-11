@@ -1,8 +1,8 @@
 import { Address, Chain } from 'wagmi';
 
-export type SongTag = { subject: string; title: string };
+// export type SongTag = { subject: string; title: string };
 
-export interface SongMetadata {
+export interface ChoiceMetadata {
   name: string;
   created_by: string;
   description: string;
@@ -38,7 +38,7 @@ export type ChoiceRaw = {
   address: Address;
 };
 export type Choice = ChoiceRaw & {
-  meta?: SongMetadata | null;
+  meta?: ChoiceMetadata | null;
 };
 
 export type AddressMap = {

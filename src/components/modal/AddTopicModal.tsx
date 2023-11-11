@@ -16,7 +16,7 @@ import { TransactionState } from 'types/transaction';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
-const AddCategoryModal = ({ open, closeModal }: ModalPropsInterface) => {
+const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
   const { address: account } = useAccount();
 
   const active = useMemo(() => !!account, [account]);
@@ -113,28 +113,28 @@ const AddCategoryModal = ({ open, closeModal }: ModalPropsInterface) => {
   function renderButton() {
     if (!active) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large'} onClick={openConnectModal}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large'} onClick={openConnectModal}>
           Connect Wallet
         </button>
       );
     }
     if (topicCreationFee === undefined) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Loading...
         </button>
       );
     }
     if (insufficientBalance) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Insufficient {arenaTokenSymbol} balance
         </button>
       );
     }
     if (approvalStateArenaToken === ApprovalState.NOT_APPROVED) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'} onClick={approveArenaToken}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'} onClick={approveArenaToken}>
           Approve {arenaTokenSymbol}
         </button>
       );
@@ -144,7 +144,7 @@ const AddCategoryModal = ({ open, closeModal }: ModalPropsInterface) => {
       approvalStateArenaToken === ApprovalState.AWAITING_USER_CONFIRMATION
     ) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Waiting for Approve...
         </button>
       );
@@ -158,34 +158,34 @@ const AddCategoryModal = ({ open, closeModal }: ModalPropsInterface) => {
     }
     if (approvalStateArenaToken === ApprovalState.UNKNOWN) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Loading Approval State...
         </button>
       );
     }
     if (txState === TransactionState.UPLOADING_METADATA) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Uploading Metadata...
         </button>
       );
     }
     if (txState === TransactionState.AWAITING_USER_CONFIRMATION) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Waiting for user confirmation...
         </button>
       );
     }
     if (txState === TransactionState.AWAITING_TRANSACTION) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Sending Transaction...
         </button>
       );
     }
     return (
-      <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'} onClick={handleAddChoice}>
+      <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'} onClick={handleAddChoice}>
         Add category
       </button>
     );
@@ -244,4 +244,4 @@ const AddCategoryModal = ({ open, closeModal }: ModalPropsInterface) => {
   );
 };
 
-export default AddCategoryModal;
+export default AddTopicModal;

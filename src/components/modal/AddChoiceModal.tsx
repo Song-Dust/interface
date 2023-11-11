@@ -3,30 +3,30 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { mainnet } from '@wagmi/core';
 import { usePrepareTopicDeployChoice, useSongADayTokenUri, useTopicWrite } from 'abis/types/generated';
 import algoliasearch from 'algoliasearch/lite';
+import ChoiceMiniCard from 'components/choice/ChoiceMiniCard';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
-import SongMiniCard from 'components/song/SongMiniCard';
 import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import { useApproval } from 'hooks/useApproval';
 import { useArena, useArenaTokenData } from 'hooks/useArena';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { InstantSearch, SearchBox, useHits } from 'react-instantsearch-hooks-web';
 import { useParams } from 'react-router-dom';
-import { SongMetadata } from 'types';
+import { ChoiceMetadata } from 'types';
 import { ApprovalState } from 'types/approval';
 import { formatUnits } from 'viem';
 import { Address, useAccount } from 'wagmi';
 
-const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
+const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
   const { address: account } = useAccount();
   const { topicAddress } = useParams();
 
   const active = useMemo(() => !!account, [account]);
   const { choiceCreationFee } = useArena();
   const { arenaTokenAddress, arenaTokenBalance, arenaTokenSymbol, arenaTokenDecimals } = useArenaTokenData();
-  const [selectedSong, setSelectedSong] = useState<SongMetadata | null>(null);
+  const [selectedChoice, setSelectedChoice] = useState<ChoiceMetadata | null>(null);
 
   function closeAction() {
-    setSelectedSong(null);
+    setSelectedChoice(null);
   }
 
   const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || '';
@@ -38,17 +38,17 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
   };
 
   const CustomHits = () => {
-    const { hits } = useHits<SongMetadata & Record<string, unknown>>();
+    const { hits } = useHits<ChoiceMetadata & Record<string, unknown>>();
     return (
       <main className={'flex flex-wrap gap-6 pt-4 justify-center overflow-auto'} style={{ maxHeight: '70%' }}>
-        {hits.map((song) => {
+        {hits.map((choice) => {
           return (
-            <SongMiniCard
-              className={`${song.token_id === selectedSong?.token_id ? `bg-primary-light` : `bg-light-gray-2`}`}
-              onClick={() => setSelectedSong(song)}
-              key={song.token_id}
-              id={song.token_id}
-              songMeta={song}
+            <ChoiceMiniCard
+              className={`${choice.token_id === selectedChoice?.token_id ? `bg-primary-light` : `bg-light-gray-2`}`}
+              onClick={() => setSelectedChoice(choice)}
+              key={choice.token_id}
+              id={choice.token_id}
+              choiceMeta={choice}
             />
           );
         })}
@@ -66,7 +66,7 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
   const { data: tokenURI } = useSongADayTokenUri({
     chainId: mainnet.id,
     address: SONGADAY_CONTRACT_ADDRESS,
-    args: selectedSong?.token_id ? [BigInt(selectedSong?.token_id)] : undefined,
+    args: selectedChoice?.token_id ? [BigInt(selectedChoice?.token_id)] : undefined,
   });
 
   const { config } = usePrepareTopicDeployChoice({
@@ -115,28 +115,28 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
   function renderButton() {
     if (!active) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large'} onClick={openConnectModal}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large'} onClick={openConnectModal}>
           Connect Wallet
         </button>
       );
     }
     if (choiceCreationFee === undefined) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Loading...
         </button>
       );
     }
     if (insufficientBalance) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Insufficient {arenaTokenSymbol} balance
         </button>
       );
     }
     if (approvalStateArenaToken === ApprovalState.NOT_APPROVED) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'} onClick={approveArenaToken}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'} onClick={approveArenaToken}>
           Approve {arenaTokenSymbol}
         </button>
       );
@@ -146,7 +146,7 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
       approvalStateArenaToken === ApprovalState.AWAITING_USER_CONFIRMATION
     ) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Waiting for Approve...
         </button>
       );
@@ -160,27 +160,27 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
     }
     if (approvalStateArenaToken === ApprovalState.UNKNOWN) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Loading Approval State...
         </button>
       );
     }
     if (!deployChoice) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Loading...
         </button>
       );
     }
     if (loading) {
       return (
-        <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Sending Transaction...
         </button>
       );
     }
     return (
-      <button data-testid="add-song-btn" className={'btn-primary btn-large w-64'} onClick={handleAddChoice}>
+      <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'} onClick={handleAddChoice}>
         Add song to category
       </button>
     );
@@ -228,7 +228,7 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
       </InstantSearch>
       <Transition
         as={Fragment}
-        show={selectedSong !== null}
+        show={selectedChoice !== null}
         enter="transform ease-in-out transition duration-[400ms]"
         enterFrom="opacity-0 translate-y-32"
         enterTo="opacity-100 translate-y-0"
@@ -240,7 +240,7 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
           <section className={'flex'}>
             <div className={'flex-1'}>
               <p className={'font-semibold text-xl'}>
-                <span className="text-primary">{selectedSong?.name}</span> selected
+                <span className="text-primary">{selectedChoice?.name}</span> selected
               </p>
               {!active && <p className={''}>You need to Connect your wallet for adding a song</p>}
               <p>
@@ -264,4 +264,4 @@ const AddSongModal = ({ open, closeModal }: ModalPropsInterface) => {
   );
 };
 
-export default AddSongModal;
+export default AddChoiceModal;

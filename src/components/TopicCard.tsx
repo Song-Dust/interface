@@ -12,12 +12,12 @@ import { Topic } from 'types';
 //   '--fa-secondary-opacity': 0.4
 // } as React.CSSProperties;
 
-export default function CategoryCard({ topic }: { topic: Topic }) {
+export default function TopicCard({ topic }: { topic: Topic }) {
   return (
     <Link
       to={RoutePath.TOPIC.replace(':topicAddress', topic.address)}
       className={'bg-squircle w-[311px] h-[316px] bg-cover p-5 overflow-auto'}
-      data-testid={`category-list-item-${topic.id}`}
+      data-testid={`topic-list-item-${topic.id}`}
     >
       {/* todo img below must be an iframe link to youtube video*/}
       <img
