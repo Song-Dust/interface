@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { TokenBalance } from 'types';
+import { toCompactFormat } from 'utils/number';
 import { formatUnits } from 'viem';
 
 type Props = {
@@ -79,7 +80,7 @@ const Input = (
             <p className={'text-dark-gray text-sm'}>
               Balance:{' '}
               <span className={'font-semibold'}>
-                {parsedBalance ? Number(parsedBalance).toLocaleString() + ' ' + tokenBalance.symbol : '...'}
+                {parsedBalance ? toCompactFormat(Number(parsedBalance)) + ' ' + tokenBalance.symbol : '...'}
               </span>
             </p>
             <button

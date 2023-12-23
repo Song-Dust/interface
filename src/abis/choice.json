@@ -2,11 +2,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "topic",
-        "type": "address"
-      },
-      {
         "internalType": "string",
         "name": "_metadataURI",
         "type": "string"
@@ -285,6 +280,30 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "contributeFor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "positionIndex",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "contributorFee",
     "outputs": [
@@ -455,19 +474,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "snapshotDuration",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -576,6 +582,25 @@
   {
     "inputs": [],
     "name": "totalShares",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "cycleNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "totalSharesAtCycle",
     "outputs": [
       {
         "internalType": "uint256",

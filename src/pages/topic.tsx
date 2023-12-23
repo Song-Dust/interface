@@ -1,16 +1,16 @@
 // import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 // import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
-import Modal from 'components/modal';
+import Header from 'components/Header';
 import AddChoiceModal from 'components/modal/AddChoiceModal';
 import VoteChoiceModal from 'components/modal/VoteChoiceModal';
 import RankedView from 'components/rankedView';
-import { useTopic, useTopicChoiceData } from 'hooks/useArena';
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useTopicContext } from 'contexts/TopicContext';
+import { useArenaTokenData } from 'hooks/useArena';
+import React, { useMemo, useState } from 'react';
 import { Choice } from 'types';
-import { Address } from 'wagmi';
+import { toCompactFormat } from 'utils/number';
+import { formatUnits } from 'viem';
 
 // const style = {
 //   '--fa-primary-color': '#353535',
@@ -39,86 +39,36 @@ const Topic = () => {
     setAddChoiceModalOpen(false);
   }
 
-  const [moreActionModalOpen, setMoreActionModalOpen] = useState(false);
+  const { arenaTokenSymbol, arenaTokenDecimals } = useArenaTokenData();
+  const { choices, metadata, currentCycleNumber, topicTokens } = useTopicContext();
 
-  function openMoreActionModal() {
-    setMoreActionModalOpen(true);
-  }
+  const parsedTopicTokensAmount = useMemo(() => {
+    if (topicTokens === undefined || arenaTokenDecimals === undefined) return undefined;
+    return formatUnits(topicTokens, arenaTokenDecimals);
+  }, [arenaTokenDecimals, topicTokens]);
 
-  function closeMoreActionModal() {
-    setMoreActionModalOpen(false);
-  }
+  const [filterString, setFilterString] = useState('');
+  const choicesFiltered = useMemo(
+    () => choices?.filter((choice) => choice.meta?.name.includes(filterString)),
+    [choices, filterString],
+  );
 
-  const { topicAddress } = useParams();
-  const { choices } = useTopicChoiceData(topicAddress as Address | undefined);
-  const { metadata } = useTopic(topicAddress as Address | undefined);
-  // @ts-ignore
   return (
     <div className={'px-24 py-12'}>
+      <Header />
       <VoteChoiceModal
         closeModal={() => setSelectedChoiceToVote(undefined)}
         open={selectedChoiceToVote !== undefined}
         choice={selectedChoiceToVote}
       />
       <AddChoiceModal closeModal={closeAddChoiceModal} open={addChoiceModalOpen} />
-      <Modal
-        className={'absolute right-0 overflow-hidden bottom-44 w-64'}
-        title={`What do you want to add?`}
-        closeModal={closeMoreActionModal}
-        open={moreActionModalOpen}
-      >
-        <main className={'flex flex-wrap gap-6 flex-col items-start mt-4'}>
-          <div className="bg-neutral-200 rounded-xl flex w-full items-center px-3 gap-2">
-            <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M25.5 17.0695C25.5 20.1945 22.9609 22.6945 19.875 22.6945C16.75 22.6945 14.25 20.1945 14.25 17.0695C14.25 13.9835 16.75 11.4445 19.875 11.4445C22.9609 11.4445 25.5 13.9835 25.5 17.0695ZM19.25 14.5695V16.4445H17.375C17.0234 16.4445 16.75 16.757 16.75 17.0695C16.75 17.421 17.0234 17.6945 17.375 17.6945H19.25V19.5695C19.25 19.921 19.5234 20.1945 19.875 20.1945C20.1875 20.1945 20.5 19.921 20.5 19.5695V17.6945H22.375C22.6875 17.6945 23 17.421 23 17.0695C23 16.757 22.6875 16.4445 22.375 16.4445H20.5V14.5695C20.5 14.257 20.1875 13.9445 19.875 13.9445C19.5234 13.9445 19.25 14.257 19.25 14.5695Z"
-                fill="#353535"
-              />
-              <path
-                opacity="0.4"
-                d="M3 22.6945C1.59375 22.6945 0.5 21.6007 0.5 20.1945V11.4445C0.5 10.0773 1.59375 8.94446 3 8.94446H18C18.8984 8.94446 19.7188 9.45227 20.1484 10.2335C20.0703 10.2335 19.9531 10.1945 19.875 10.1945C16.0469 10.1945 13 13.2804 13 17.0695C13 19.4132 14.1328 21.4835 15.8906 22.6945H3ZM17.6875 7.69446H3.3125C2.76562 7.69446 2.375 7.30383 2.375 6.75696C2.375 6.24915 2.76562 5.81946 3.3125 5.81946H17.6875C18.1953 5.81946 18.625 6.24915 18.625 6.75696C18.625 7.30383 18.1953 7.69446 17.6875 7.69446ZM15.8125 4.56946H5.1875C4.64062 4.56946 4.25 4.17883 4.25 3.63196C4.25 3.12415 4.64062 2.69446 5.1875 2.69446H15.8125C16.3203 2.69446 16.75 3.12415 16.75 3.63196C16.75 4.17883 16.3203 4.56946 15.8125 4.56946Z"
-                fill="#EC2A64"
-              />
-            </svg>
-            <button className="py-3 text-start text-base font-semibold text-black">new category</button>
-          </div>
-          <div className="bg-neutral-200 rounded-xl flex w-full items-center px-3 gap-2">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M23.25 16.375C23.25 19.5 20.7109 22 17.625 22C14.5 22 12 19.5 12 16.375C12 13.2891 14.5 10.75 17.625 10.75C20.7109 10.75 23.25 13.2891 23.25 16.375ZM17 13.875V15.75H15.125C14.7734 15.75 14.5 16.0625 14.5 16.375C14.5 16.7266 14.7734 17 15.125 17H17V18.875C17 19.2266 17.2734 19.5 17.625 19.5C17.9375 19.5 18.25 19.2266 18.25 18.875V17H20.125C20.4375 17 20.75 16.7266 20.75 16.375C20.75 16.0625 20.4375 15.75 20.125 15.75H18.25V13.875C18.25 13.5625 17.9375 13.25 17.625 13.25C17.2734 13.25 17 13.5625 17 13.875Z"
-                fill="#353535"
-              />
-              <path
-                opacity="0.4"
-                d="M15.75 3.25C17.1172 3.25 18.25 4.38281 18.25 5.75V9.53906C18.0156 9.53906 17.8203 9.5 17.625 9.5C16.8047 9.5 16.0625 9.65625 15.3594 9.89062C14.5 7.46875 12.1953 5.75 9.46094 5.75C6.02344 5.75 3.21094 8.5625 3.21094 12C3.21094 15.4766 6.02344 18.25 9.46094 18.25C9.96875 18.25 10.4766 18.2109 10.9453 18.0938C11.1797 19.1094 11.6484 20.0078 12.3125 20.75H3.25C1.84375 20.75 0.75 19.6562 0.75 18.25V5.75C0.75 4.38281 1.84375 3.25 3.25 3.25H15.75ZM10.7109 12C10.7109 12.7031 10.1641 13.25 9.46094 13.25C8.79688 13.25 8.21094 12.7031 8.21094 12C8.21094 11.3359 8.79688 10.75 9.46094 10.75C10.1641 10.75 10.7109 11.3359 10.7109 12Z"
-                fill="#EC2A64"
-              />
-            </svg>
-            <button
-              className="py-3 text-start text-base font-semibold text-black"
-              onClick={openAddChoiceModal}
-              onClickCapture={closeMoreActionModal}
-            >
-              new Song-a-day song
-            </button>
-          </div>
-        </main>
-      </Modal>
 
-      <div className="flex justify-between pb-4">
-        <div className="flex items-center gap-2 relative">
-          <img src="/songDustLogo.png" alt="Logo" />
-          <p className="text-black font-semibold text-3xl z-10">SongDust</p>
-          <p className="text-primary-light font-semibold text-3xl absolute left-14 top-2">SongDust</p>
-        </div>
-        <ConnectButton />
-      </div>
       <header className={'bg-gradient-light w-full h-fit rounded-3xl flex px-8 py-6 mb-12 mt-16 relative'}>
         <div className="max-w-[80%]">
           <h1>{metadata?.title || '...'}</h1>
           <p className={'text-label py-3'}>{metadata?.description || '...'}</p>
         </div>
-        <img alt="header" src={'/topic-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
+        <img alt="header" src={'/category-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
@@ -140,12 +90,13 @@ const Topic = () => {
                   </svg>
                 }
                 placeholder={'Search songs in this category'}
-                onUserInput={() => {}}
+                value={filterString}
+                onUserInput={setFilterString}
               ></Input>
             </div>
           </header>
           <main className={'flex flex-wrap gap-6'}>
-            {choices?.map((choice) => (
+            {choicesFiltered?.map((choice, index) => (
               <RankedView key={choice.address} choice={choice} onVoteClick={() => setSelectedChoiceToVote(choice)} />
             ))}
           </main>
@@ -197,8 +148,10 @@ const Topic = () => {
                   />
                 </svg>
                 <div className={''}>
-                  <h1 className={'font-bold'}>2.25k</h1>
-                  <p className={'font-semibold relative -mt-2'}>SONG casted</p>
+                  <h1 className={'font-bold'}>
+                    {parsedTopicTokensAmount !== undefined ? toCompactFormat(Number(parsedTopicTokensAmount)) : '...'}
+                  </h1>
+                  <p className={'font-semibold relative -mt-2'}>{arenaTokenSymbol} casted</p>
                 </div>
               </div>
               <section className={'flex gap-4'}>
@@ -231,78 +184,14 @@ const Topic = () => {
                       fill="#193154"
                     />
                   </svg>
-                  <h2 className={'font-bold'}>32</h2>
+                  <h2 className={'font-bold'}>{String(currentCycleNumber) ?? '...'}</h2>
                   <p className={'font-normal text-sm'}>Cycles past</p>
                 </div>
               </section>
             </div>
-            <div className={'flex gap-3 flex-col'}>
-              <label className={'font-semibold'}>Your stats in this category</label>
-              <div className={'rounded-xl bg-g1 flex gap-4 py-4 px-5 justify-between items-center'}>
-                {/*<div><FontAwesomeIcon fontSize={42} icon={faCoins} style={monoStyle} /></div>*/}
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M30 18.75C30 20.1562 28.8281 21.4844 26.9531 22.5C24.2188 24.0625 19.8438 25 15 25C10.3125 25 6.17188 24.1406 3.35938 22.7344C3.20312 22.6562 3.125 22.5781 2.96875 22.5C1.09375 21.4844 0 20.1562 0 18.75C0 15.3125 6.64062 12.5 15 12.5C23.2812 12.5 30 15.3125 30 18.75ZM15 27.5C19.375 27.5 23.4375 26.7969 26.5625 25.5469C27.8125 25 28.9844 24.2969 30 23.5156V26.25C30 27.6562 28.8281 28.9844 26.9531 30C26.7969 30.0781 26.7188 30.1562 26.5625 30.2344C23.75 31.6406 19.6094 32.5 15 32.5C10.0781 32.5 5.70312 31.5625 2.96875 30C1.09375 28.9844 0 27.6562 0 26.25V23.5156C0.9375 24.2969 2.10938 25 3.35938 25.5469C6.48438 26.7969 10.5469 27.5 15 27.5ZM30 31.0156V33.75C30 37.2656 23.2812 40 15 40C6.64062 40 0 37.2656 0 33.75V31.0156C0.9375 31.7969 2.10938 32.5 3.35938 33.0469C6.48438 34.2969 10.5469 35 15 35C19.375 35 23.4375 34.2969 26.5625 33.0469C27.8125 32.5 28.9844 31.7969 30 31.0156Z"
-                    fill="#353535"
-                  />
-                  <path
-                    opacity="0.4"
-                    d="M40 6.25C40 7.73438 38.8281 8.98438 36.9531 10C34.6875 11.3281 31.3281 12.1875 27.4219 12.4219C27.1094 12.3438 26.7969 12.1875 26.5625 12.0312C23.4375 10.7812 19.375 10 15 10C14.2969 10 13.6719 10.0781 13.0469 10.0781C13.0469 10.0781 12.9688 10.0781 12.9688 10C11.0938 8.98438 10 7.73438 10 6.25C10 2.8125 16.6406 0 25 0C33.2812 0 40 2.8125 40 6.25ZM32.5 21.7969C33.9062 21.4062 35.3125 21.0156 36.5625 20.5469C37.8125 20 38.9844 19.2969 40 18.5156V21.25C40 23.5938 36.9531 25.625 32.5 26.7188V21.7969ZM32.5 18.75C32.5 17.1094 31.6406 15.7031 30.5469 14.6094C32.8125 14.2969 34.8438 13.75 36.5625 13.0469C37.8125 12.5 38.9844 11.7969 40 11.0156V13.75C40 15.1562 38.8281 16.4844 36.9531 17.5C36.7969 17.5781 36.7188 17.6562 36.5625 17.7344C35.3906 18.3594 33.9844 18.8281 32.5 19.2188V18.75Z"
-                    fill="#193154"
-                  />
-                </svg>
-                <div className={''}>
-                  <h1 className={'font-bold'}>2.73</h1>
-                  <p className={'font-semibold relative -mt-2'}>SONG earned</p>
-                </div>
-              </div>
-              <section className={'flex gap-4'}>
-                <div className={'rounded-xl bg-yellowC flex flex-col justify-center items-center w-24 h-24'}>
-                  {/*<FontAwesomeIcon fontSize={24} icon={faGuitars} style={monoStyle} />*/}
-                  <svg width="44" height="26" viewBox="0 0 44 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M7 16.5156C6.90625 16.4219 6.625 16.3281 6.4375 16.5156L5.92188 17.0312C5.82812 17.125 5.73438 17.3594 5.92188 17.5938L8.40625 20.0312C8.54688 20.1719 8.78125 20.1719 8.92188 20.0312L9.4375 19.5156C9.53125 19.4219 9.625 19.1875 9.4375 19L7 16.5156ZM24.9531 2.875C24.7656 1.98438 24.0625 1.28125 23.1719 1.09375C22.0938 0.90625 22.0938 1.04688 18.1562 3.57812C17.7344 3.85938 17.4531 4.32812 17.4531 4.84375V6.4375L12.3906 11.5L14.5 13.6094L22.6094 5.54688C22.6562 5.54688 22.7031 5.54688 22.7031 5.54688C23.4062 5.54688 24.0156 5.26562 24.4375 4.75C24.9062 4.23438 25.0469 3.53125 24.9531 2.875ZM10 13.5156C9.90625 13.4219 9.625 13.3281 9.4375 13.5156L8.96875 14.0312C8.875 14.125 8.78125 14.3594 8.96875 14.5469L11.4531 17.0312C11.5938 17.1719 11.8281 17.1719 11.9688 17.0312L12.4844 16.5156C12.5781 16.4219 12.6719 16.1875 12.4844 15.9531L10 13.5156Z"
-                      fill="#353535"
-                    />
-                    <path
-                      opacity="0.4"
-                      d="M12.3906 11.5C12.0625 10.9375 11.9688 10.2812 12.25 9.67188L13.0469 7.9375C13.2344 7.5625 13.1406 7.09375 12.7656 6.85938C12.4375 6.625 11.9219 6.625 11.6406 6.95312L9.85938 8.73438C9.4375 9.10938 9.15625 9.53125 8.96875 10.0938C8.64062 11.0312 7.98438 11.7812 7.09375 12.1562L3.48438 13.8438C0.8125 14.9219 0.109375 18.3906 2.17188 20.4062L5.59375 23.8281C7.65625 25.8906 11.0781 25.1875 12.1562 22.5156L13.8438 18.9062C14.2656 18.0625 15.0156 17.3594 15.9062 17.0312C16.4219 16.8438 16.8906 16.5625 17.2656 16.1406L18.2969 15.1562C18.5781 14.8281 18.625 14.3594 18.3906 13.9844C18.1562 13.6562 17.6875 13.4688 17.3125 13.6094L16.2344 13.9375C15.625 14.125 14.9688 14.0312 14.5 13.6094L12.3906 11.5ZM9.48438 19.5156L8.96875 20.0312C8.82812 20.1719 8.59375 20.1719 8.40625 20.0312L5.96875 17.5938C5.78125 17.3594 5.875 17.125 5.96875 17.0312L6.48438 16.5156C6.67188 16.3281 6.90625 16.4219 7 16.5156L9.48438 19C9.67188 19.1875 9.57812 19.4219 9.48438 19.5156ZM12.4844 16.5156L11.9688 17.0312C11.8281 17.1719 11.5938 17.1719 11.4062 17.0312L8.96875 14.5469C8.78125 14.3594 8.875 14.125 8.96875 14.0312L9.48438 13.5156C9.67188 13.3281 9.90625 13.4219 10.0469 13.5156L12.4844 15.9531C12.6719 16.1875 12.5781 16.4219 12.4844 16.5156Z"
-                      fill="#193154"
-                    />
-                    <path
-                      d="M36.8594 3.67188L39.0156 1.46875C39.625 0.859375 40.5625 0.859375 41.1719 1.46875L42.5312 2.875C43.1406 3.4375 43.1406 4.375 42.5312 4.98438L40.3281 7.14062C40.1875 7.32812 39.9531 7.46875 39.7188 7.5625L37.9844 8.125L32.8281 13.2812C32.5469 13.5625 32.0781 13.5625 31.75 13.2812L30.7188 12.25C30.3906 11.9219 30.3906 11.4531 30.7188 11.1719L35.875 5.96875L36.4375 4.28125C36.5312 4.04688 36.6719 3.8125 36.8594 3.67188Z"
-                      fill="#353535"
-                    />
-                    <path
-                      opacity="0.4"
-                      d="M35.3125 13.5625C35.1719 12.8594 34.8438 12.25 34.4219 11.6875L32.8281 13.2812C32.5469 13.5625 32.0781 13.5625 31.75 13.2812L30.7188 12.25C30.3906 11.9219 30.3906 11.4531 30.7188 11.1719L32.3125 9.57812C31.75 9.15625 31.1406 8.82812 30.4375 8.6875C28.8906 8.3125 27.2969 8.64062 26.2188 9.71875C25.7969 10.1406 25.4688 10.6562 25.2812 11.2656C25 12.1562 24.2031 12.8125 23.3125 12.8594C22.1875 13 21.1562 13.4219 20.3594 14.2188C18.2031 16.3281 18.625 20.1719 21.2031 22.7969C23.8281 25.375 27.6719 25.7969 29.7812 23.6406C30.5312 22.8438 31 21.8125 31.1406 20.6875C31.1875 19.8438 31.8438 19 32.7344 18.7188C33.3438 18.5312 33.8594 18.2031 34.2812 17.7812C35.3594 16.7031 35.6875 15.1094 35.3125 13.5625ZM28.75 17.5C27.4844 17.5469 26.5 16.5156 26.5 15.25C26.5 14.0312 27.4844 13 28.75 13C29.9688 13 31 14.0312 30.9531 15.25C31 16.5156 29.9688 17.5 28.75 17.5Z"
-                      fill="#193154"
-                    />
-                  </svg>
-                  <h2 className={'font-bold'}>3</h2>
-                  <p className={'font-normal text-sm'}>Song voted</p>
-                </div>
-                <div className={'rounded-xl bg-greenC flex-col flex justify-center items-center w-24 h-24'}>
-                  {/*<FontAwesomeIcon fontSize={24} icon={faCheckToSlot} style={monoStyle} />*/}
-                  <svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M25.25 13.5H23V17.25H23.75C24.125 17.25 24.5 17.625 24.5 18C24.5 18.4219 24.125 18.75 23.75 18.75H4.25C3.82812 18.75 3.5 18.4219 3.5 18C3.5 17.625 3.82812 17.25 4.25 17.25H5V13.5H2.75C1.48438 13.5 0.5 14.5312 0.5 15.75V20.25C0.5 21.5156 1.48438 22.5 2.75 22.5H25.25C26.4688 22.5 27.5 21.5156 27.5 20.25V15.75C27.5 14.5312 26.4688 13.5 25.25 13.5ZM12.5 13.2656C12.6875 13.4062 12.9688 13.5 13.2031 13.5C13.2031 13.5 13.25 13.5 13.2969 13.4531C13.625 13.4531 13.8594 13.3125 14.0938 13.0312L18.2188 7.78125C18.5938 7.3125 18.5 6.60938 17.9844 6.23438C17.5156 5.85938 16.8125 5.90625 16.4375 6.42188L13.0625 10.7812L11.3281 9.28125C10.8594 8.90625 10.1562 8.95312 9.73438 9.42188C9.35938 9.89062 9.40625 10.5938 9.875 11.0156L12.5 13.2656Z"
-                      fill="#353535"
-                    />
-                    <path
-                      opacity="0.4"
-                      d="M20.75 1.5H7.25C5.98438 1.5 5 2.53125 5 3.75V18.75H23V3.75C23 2.53125 21.9688 1.5 20.75 1.5ZM18.2188 7.82812L14.0938 13.0781C13.9062 13.3125 13.625 13.5 13.3438 13.5C13.2969 13.5 13.25 13.5 13.2031 13.5C12.9219 13.5 12.6406 13.4062 12.4531 13.2188L9.82812 10.9688C9.40625 10.5938 9.35938 9.89062 9.73438 9.42188C10.1562 8.95312 10.8594 8.90625 11.3281 9.28125L13.0625 10.7812L16.4844 6.46875C16.8594 5.95312 17.5625 5.85938 18.0312 6.28125C18.5469 6.65625 18.6406 7.35938 18.2188 7.82812Z"
-                      fill="#193154"
-                    />
-                  </svg>
-                  <h2 className={'font-bold'}>240</h2>
-                  <p className={'font-normal text-sm'}>SONG casted</p>
-                </div>
-              </section>
-            </div>
           </section>
-          <button onClick={openMoreActionModal} className={'btn-primary-inverted btn-large w-full'}>
-            More Actions
+          <button onClick={openAddChoiceModal} className={'btn-primary-inverted btn-large w-full'}>
+            Add Song
           </button>
           <section>
             <div className={'time-left'}></div>

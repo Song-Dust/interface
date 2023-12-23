@@ -1,12 +1,12 @@
 // import {faCheckToSlot, faCoins,faEye,faGuitars,faHourglassClock, faMagnifyingGlass,faPeopleGroup, faSpinnerThird} from '@fortawesome/pro-duotone-svg-icons';
 // import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Input from 'components/basic/input';
+import Header from 'components/Header';
 import Spinner from 'components/loadingSpinner';
 import AddTopicModal from 'components/modal/AddTopicModal';
 import TopicCard from 'components/TopicCard';
 import { useArenaTopicData } from 'hooks/useArena';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 // const style = {
 //   '--fa-primary-color': '#353535',
@@ -35,9 +35,15 @@ const Arena = () => {
 
   const { topics } = useArenaTopicData();
 
+  const [filterString, setFilterString] = useState('');
+  const topicsFiltered = useMemo(
+    () => topics?.filter((topic) => topic.meta?.title.includes(filterString)),
+    [topics, filterString],
+  );
+
   function renderList() {
-    return topics !== undefined ? (
-      topics.map((topic) => {
+    return topicsFiltered !== undefined ? (
+      topicsFiltered.map((topic) => {
         return topic.meta ? (
           <TopicCard key={topic.id} topic={topic} />
         ) : (
@@ -58,16 +64,8 @@ const Arena = () => {
   // @ts-ignore
   return (
     <div className={'px-24 py-12'}>
+      <Header />
       <AddTopicModal closeModal={closeAddTopicModal} open={addTopicModalOpen} />
-
-      <div className="flex justify-between pb-4">
-        <div className="flex items-center gap-2 relative">
-          <img src="/songDustLogo.png" alt="Logo" />
-          <p className="text-black font-semibold text-3xl z-10">SongDust</p>
-          <p className="text-primary-light font-semibold text-3xl absolute left-14 top-2">SongDust</p>
-        </div>
-        <ConnectButton />
-      </div>
       <header className={'bg-gradient-light w-full h-fit rounded-3xl flex px-8 py-6 mb-12 mt-16 relative'}>
         <div className="max-w-[80%]">
           <h1>SongADAO</h1>
@@ -77,7 +75,7 @@ const Arena = () => {
             Ranking songs
           </p>
         </div>
-        <img alt="header" src={'/topic-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
+        <img alt="header" src={'/category-header.png'} className="absolute bottom-0 right-0 max-w-[240px]" />
       </header>
       <main className={'flex gap-8'}>
         <section className={'flex-1'}>
@@ -99,14 +97,15 @@ const Arena = () => {
                   </svg>
                 }
                 placeholder={'Search categories'}
-                onUserInput={() => {}}
+                value={filterString}
+                onUserInput={setFilterString}
               ></Input>
               <button
                 className="btn-primary btn-large mb-2"
                 onClick={openAddTopicModal}
                 onClickCapture={closeAddTopicModal}
               >
-                New Category
+                Add Category
               </button>
             </div>
           </header>

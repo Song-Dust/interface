@@ -8,6 +8,7 @@ import { useArenaTokenData } from 'hooks/useArena';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Choice } from 'types';
 import { ApprovalState } from 'types/approval';
+import { toCompactFormat } from 'utils/number';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
@@ -129,7 +130,7 @@ const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: C
     }
     return (
       <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'} onClick={handleVote}>
-        Cast <span className={'font-bold'}>{Number(voteAmount).toLocaleString()}</span> {arenaTokenSymbol}
+        Cast <span className={'font-bold'}>{toCompactFormat(Number(voteAmount))}</span> {arenaTokenSymbol}
       </button>
     );
   }

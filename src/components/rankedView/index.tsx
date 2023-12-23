@@ -1,17 +1,26 @@
 import Spinner from 'components/loadingSpinner';
 import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import { useTopicContext } from 'contexts/TopicContext';
 import { useArenaTokenData } from 'hooks/useArena';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Choice } from 'types';
+import { toCompactFormat } from 'utils/number';
+import { formatUnits } from 'viem';
 
 const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick: () => void }) => {
-  const { arenaTokenSymbol } = useArenaTokenData();
+  const { topicTotalShares } = useTopicContext();
+  const { arenaTokenDecimals, arenaTokenSymbol } = useArenaTokenData();
+
+  const parsedChoiceTokensAmount = useMemo(() => {
+    return arenaTokenDecimals !== undefined ? formatUnits(choice.tokens, arenaTokenDecimals) : undefined;
+  }, [arenaTokenDecimals, choice.tokens]);
+
   return (
     <div className="flex max-h-fit w-full gap-4">
       {choice?.meta ? (
         <>
           <div className="bg-light-gray-2 rounded-xl w-24 flex flex-col justify-center items-center">
-            <p className="font-semibold text-[40px] leading-10">1</p>
+            <p className="font-semibold text-[40px] leading-10">{choice.rank}</p>
           </div>
           <div className="bg-light-gray-2 rounded-xl w-full flex px-5 py-3">
             <div className="flex flex-col grow">
@@ -27,8 +36,15 @@ const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick: () =
               </div>
               <div className="flex gap-2 items-center">
                 <p className="font-normal grow flex">
-                  <span className="text-3xl">20%</span>
-                  <span className="text-lg align-middle p-1">10k {arenaTokenSymbol}</span>
+                  <span className="text-3xl">
+                    {topicTotalShares !== undefined &&
+                      choice.totalShares !== undefined &&
+                      (choice.totalShares === 0n ? '0' : String((choice.totalShares * 100n) / topicTotalShares))}
+                    %
+                  </span>
+                  <span className="text-lg align-middle p-1">
+                    {toCompactFormat(Number(parsedChoiceTokensAmount))} {arenaTokenSymbol}
+                  </span>
                 </p>
                 <div className="flex items-center gap-1">
                   <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">

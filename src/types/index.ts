@@ -34,11 +34,13 @@ export type Topic = TopicRaw & {
 
 export type ChoiceRaw = {
   id: number;
-  metadataURI: string;
   address: Address;
 };
 export type Choice = ChoiceRaw & {
   meta?: ChoiceMetadata | null;
+  rank: number;
+  totalShares: bigint;
+  tokens: bigint;
 };
 
 export type AddressMap = {

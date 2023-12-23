@@ -77,7 +77,6 @@ const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
           BigInt(400),
           BigInt(500),
           address,
-          0,
           'ipfs://' + data.IpfsHash,
         ],
       });

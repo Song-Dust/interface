@@ -45,3 +45,6 @@ export function formatChainId(chainId: string) {
 }
 
 export const parseIpfsUri = (text: string) => text.replace('ipfs://', 'https://ipfs.io/ipfs/');
+
+export const parsePinataIpfsUri = (text: string) =>
+  text.replace('ipfs://', 'https://gray-liquid-boa-570.mypinata.cloud/ipfs/');

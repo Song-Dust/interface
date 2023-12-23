@@ -1,7 +1,6 @@
 import { multicall } from '@wagmi/core';
 import {
   arenaABI,
-  choiceABI,
   topicABI,
   useArenaChoiceCreationFee,
   useArenaGetTopicsLength,
@@ -10,17 +9,15 @@ import {
   useErc20BalanceOf,
   useErc20Decimals,
   useErc20Symbol,
-  useTopicChoicesLength,
-  useTopicMetadataUri,
 } from 'abis/types/generated';
 import axios from 'axios';
 import { ARENA_ADDRESS_MAP } from 'constants/addresses';
 import { useContractAddress } from 'hooks/useContractAddress';
 import { useEffect, useState } from 'react';
-import { parseIpfsUri } from 'utils';
-import { Address, useAccount } from 'wagmi';
+import { parsePinataIpfsUri } from 'utils';
+import { useAccount } from 'wagmi';
 
-import { Choice, ChoiceMetadata, ChoiceRaw, Topic, TopicMetadata, TopicRaw } from '../types';
+import { Topic, TopicMetadata, TopicRaw } from '../types';
 
 export function useArena() {
   const arenaAddress = useContractAddress(ARENA_ADDRESS_MAP);
@@ -120,7 +117,7 @@ export function useArenaTopicData() {
     const loadedTopics: Topic[] = [];
     for (const topicRaw of topicsRaw) {
       axios
-        .get<TopicMetadata>(parseIpfsUri(topicRaw.metadataURI))
+        .get<TopicMetadata>(parsePinataIpfsUri(topicRaw.metadataURI))
         .then((res) => {
           loadedTopics.push({
             ...topicRaw,
@@ -142,99 +139,4 @@ export function useArenaTopicData() {
   }, [topics, topicsRaw]);
 
   return { topicsLength, topics, loaded: topics !== undefined };
-}
-
-export function useTopic(topicAddress: Address | undefined) {
-  const { data: metaDataUri } = useTopicMetadataUri({
-    address: topicAddress,
-  });
-  const [metadata, setMetadata] = useState<TopicMetadata | undefined>(undefined);
-
-  useEffect(() => {
-    if (metaDataUri) {
-      axios.get<TopicMetadata>(parseIpfsUri(metaDataUri)).then((res) => {
-        setMetadata(res.data);
-      });
-    }
-  }, [metaDataUri]);
-
-  return {
-    metaDataUri,
-    metadata,
-  };
-}
-
-export function useTopicChoiceData(topicAddress: Address | undefined) {
-  const { data: choicesLength } = useTopicChoicesLength({
-    address: topicAddress,
-    watch: true,
-  });
-  const [choicesRaw, setChoicesRaw] = useState<ChoiceRaw[] | null>(null);
-
-  useEffect(() => {
-    async function loadData() {
-      if (!topicAddress || choicesLength === undefined) return;
-      if (choicesLength === 0n) {
-        setChoicesRaw([]);
-        return;
-      }
-      const indexes = Array.from(Array(Number(choicesLength)).keys());
-      const choiceAddresses = await multicall({
-        allowFailure: false,
-        contracts: indexes.map((item) => ({
-          address: topicAddress,
-          abi: topicABI,
-          functionName: 'choices',
-          args: [BigInt(item)],
-        })),
-      });
-      const metadataURIs = await multicall({
-        allowFailure: false,
-        contracts: choiceAddresses.map((address) => ({
-          address,
-          abi: choiceABI,
-          functionName: 'metadataURI',
-        })),
-      });
-      setChoicesRaw(
-        indexes.map((i) => ({
-          id: i,
-          metadataURI: metadataURIs[i],
-          address: choiceAddresses[i],
-        })),
-      );
-    }
-
-    loadData();
-  }, [choicesLength, topicAddress]);
-
-  const [choices, setChoices] = useState<Choice[] | undefined>(undefined);
-  useEffect(() => {
-    if (!choicesRaw || choices?.length === choicesRaw?.length) return;
-    setChoices(choicesRaw);
-    const loadedChoices: Choice[] = [];
-    for (const choiceRaw of choicesRaw) {
-      axios
-        .get<ChoiceMetadata>(parseIpfsUri(choiceRaw.metadataURI))
-        .then((res) => {
-          loadedChoices.push({
-            ...choiceRaw,
-            meta: res.data,
-          });
-        })
-        .catch((e) => {
-          console.log('load metadata error');
-          console.log(e);
-          loadedChoices.push(choiceRaw);
-        })
-        .finally(() => {
-          if (loadedChoices.length === choicesRaw.length) {
-            loadedChoices.sort((a, b) => a.id - b.id);
-            setChoices(loadedChoices);
-          }
-        });
-    }
-  }, [choices, choicesRaw]);
-
-  return { choices, loaded: choices !== undefined };
 }

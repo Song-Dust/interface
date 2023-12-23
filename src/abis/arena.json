@@ -131,11 +131,6 @@
         "type": "address"
       },
       {
-        "internalType": "uint32",
-        "name": "snapshotDuration",
-        "type": "uint32"
-      },
-      {
         "internalType": "string",
         "name": "_metadataURI",
         "type": "string"
