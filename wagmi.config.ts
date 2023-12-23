@@ -5,6 +5,7 @@ import { erc20ABI } from 'wagmi';
 
 import ArenaABI from './src/abis/arena.json';
 import ChoiceABI from './src/abis/choice.json';
+import CompetitionABI from './src/abis/competition.json';
 import SongADayABI from './src/abis/songaday.json';
 import TopicABI from './src/abis/topic.json';
 
@@ -30,6 +31,10 @@ export default defineConfig({
     {
       name: 'Choice',
       abi: ChoiceABI as Abi,
+    },
+    {
+      name: 'Competition',
+      abi: CompetitionABI as Abi,
     },
   ],
   plugins: [react()],

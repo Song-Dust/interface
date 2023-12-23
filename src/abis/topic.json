@@ -37,11 +37,6 @@
         "type": "address"
       },
       {
-        "internalType": "uint32",
-        "name": "_snapshotDuration",
-        "type": "uint32"
-      },
-      {
         "internalType": "string",
         "name": "_metadataURI",
         "type": "string"
@@ -195,6 +190,25 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "cycleNumberAt",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "_metadataURI",
         "type": "string"
@@ -219,13 +233,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "metadataURI",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isChoice",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "bool",
         "name": "",
-        "type": "string"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -233,12 +253,12 @@
   },
   {
     "inputs": [],
-    "name": "snapshotDuration",
+    "name": "metadataURI",
     "outputs": [
       {
-        "internalType": "uint32",
+        "internalType": "string",
         "name": "",
-        "type": "uint32"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
