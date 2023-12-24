@@ -40,7 +40,9 @@ export default function ChoiceMiniCard({
 
         <a
           href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${choiceMeta?.token_id}`}
+          target="_blank"
           className={'flex gap-1.5 mt-2'}
+          rel="noreferrer"
         >
           {/*<FontAwesomeIcon fontSize={24} icon={faCircleInfo} style={style} />*/}
           <div className="flex gap-2 items-center">

@@ -1,4 +1,3 @@
-import Spinner from 'components/loadingSpinner';
 import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
 import { useTopicContext } from 'contexts/TopicContext';
 import { useArenaTokenData } from 'hooks/useArena';
@@ -17,35 +16,35 @@ const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick: () =
 
   return (
     <div className="flex max-h-fit w-full gap-4">
-      {choice?.meta ? (
-        <>
-          <div className="bg-light-gray-2 rounded-xl w-24 flex flex-col justify-center items-center">
-            <p className="font-semibold text-[40px] leading-10">{choice.rank}</p>
+      <div className="bg-light-gray-2 rounded-xl w-24 flex flex-col justify-center items-center">
+        <p className="font-semibold text-[40px] leading-10">{choice.rank}</p>
+      </div>
+      <div className="bg-light-gray-2 rounded-xl w-full flex px-5 py-3">
+        <div className="flex flex-col grow">
+          <div className="flex">
+            <p className="grow font-semibold text-xl">{choice?.meta?.name || `Could not load name from ipfs`}</p>
+            <button
+              onClick={onVoteClick}
+              className={'btn-primary font-semibold px-4 py-2'}
+              data-testid="open-vote-modal"
+            >
+              Vote
+            </button>
           </div>
-          <div className="bg-light-gray-2 rounded-xl w-full flex px-5 py-3">
-            <div className="flex flex-col grow">
-              <div className="flex">
-                <p className="grow font-semibold text-xl">{choice?.meta.name}</p>
-                <button
-                  onClick={onVoteClick}
-                  className={'btn-primary font-semibold px-4 py-2'}
-                  data-testid="open-vote-modal"
-                >
-                  Vote
-                </button>
-              </div>
-              <div className="flex gap-2 items-center">
-                <p className="font-normal grow flex">
-                  <span className="text-3xl">
-                    {topicTotalShares !== undefined &&
-                      choice.totalShares !== undefined &&
-                      (choice.totalShares === 0n ? '0' : String((choice.totalShares * 100n) / topicTotalShares))}
-                    %
-                  </span>
-                  <span className="text-lg align-middle p-1">
-                    {toCompactFormat(Number(parsedChoiceTokensAmount))} {arenaTokenSymbol}
-                  </span>
-                </p>
+          <div className="flex gap-2 items-center">
+            <p className="font-normal grow flex">
+              <span className="text-3xl">
+                {topicTotalShares !== undefined &&
+                  choice.totalShares !== undefined &&
+                  (choice.totalShares === 0n ? '0' : String((choice.totalShares * 100n) / topicTotalShares))}
+                %
+              </span>
+              <span className="text-lg align-middle p-1">
+                {toCompactFormat(Number(parsedChoiceTokensAmount))} {arenaTokenSymbol}
+              </span>
+            </p>
+            {choice.meta && (
+              <>
                 <div className="flex items-center gap-1">
                   <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -77,13 +76,11 @@ const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick: () =
                     Watch on Youtube
                   </a>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
-        </>
-      ) : (
-        <Spinner classes="h-full items-center" />
-      )}
+        </div>
+      </div>
     </div>
   );
 };

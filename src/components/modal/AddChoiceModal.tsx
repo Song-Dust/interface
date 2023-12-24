@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { mainnet } from '@wagmi/core';
-import { usePrepareTopicDeployChoice, useSongADayTokenUri, useTopicWrite } from 'abis/types/generated';
+import { mainnet, prepareWriteContract, waitForTransaction, writeContract } from '@wagmi/core';
+import { topicABI, useSongADayTokenUri } from 'abis/types/generated';
 import algoliasearch from 'algoliasearch/lite';
 import ChoiceMiniCard from 'components/choice/ChoiceMiniCard';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
@@ -13,6 +13,7 @@ import { InstantSearch, SearchBox, useHits } from 'react-instantsearch-hooks-web
 import { useParams } from 'react-router-dom';
 import { ChoiceMetadata } from 'types';
 import { ApprovalState } from 'types/approval';
+import { TransactionState } from 'types/transaction';
 import { formatUnits } from 'viem';
 import { Address, useAccount } from 'wagmi';
 
@@ -69,12 +70,7 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
     args: selectedChoice?.token_id ? [BigInt(selectedChoice?.token_id)] : undefined,
   });
 
-  const { config } = usePrepareTopicDeployChoice({
-    address: topicAddress as Address | undefined,
-    args: tokenURI ? [tokenURI] : undefined,
-  });
-  const { write: deployChoice } = useTopicWrite(config);
-  const [loading, setLoading] = useState(false);
+  const [txState, setTxState] = useState(TransactionState.INITIAL);
 
   const mounted = useRef(false);
 
@@ -86,16 +82,29 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
   }, []);
 
   const handleAddChoice = async () => {
-    if (loading) return;
-    setLoading(true);
+    if (txState !== TransactionState.INITIAL || !topicAddress || !tokenURI) return;
     try {
-      await deployChoice?.();
+      setTxState(TransactionState.PREPARING_TRANSACTION);
+      const { request } = await prepareWriteContract({
+        address: topicAddress as Address,
+        abi: topicABI,
+        functionName: 'deployChoice',
+        args: [tokenURI],
+      });
+      setTxState(TransactionState.AWAITING_USER_CONFIRMATION);
+      const { hash } = await writeContract(request);
+      setTxState(TransactionState.AWAITING_TRANSACTION);
+      await waitForTransaction({
+        hash,
+      });
+      alert('Song added successfully!');
+      closeModal();
     } catch (e) {
       console.log('add choice failed');
       console.log(e);
     }
     if (mounted.current) {
-      setLoading(false);
+      setTxState(TransactionState.INITIAL);
     }
   };
 
@@ -153,7 +162,7 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
     }
     if (approvalStateArenaToken === ApprovalState.AWAITING_TRANSACTION) {
       return (
-        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-96'}>
           Sending Approval Transaction...
         </button>
       );
@@ -165,14 +174,21 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
         </button>
       );
     }
-    if (!deployChoice) {
+    if (choiceCreationFee === undefined) {
       return (
         <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Loading...
         </button>
       );
     }
-    if (loading) {
+    if (txState === TransactionState.AWAITING_USER_CONFIRMATION) {
+      return (
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-96'}>
+          Waiting for user confirmation...
+        </button>
+      );
+    }
+    if (txState === TransactionState.AWAITING_TRANSACTION) {
       return (
         <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Sending Transaction...

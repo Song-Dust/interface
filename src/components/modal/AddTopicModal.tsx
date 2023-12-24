@@ -45,7 +45,7 @@ const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const { address } = useAccount();
-  const handleAddChoice = useCallback(async () => {
+  const handleAddTopic = useCallback(async () => {
     if (txState !== TransactionState.INITIAL || !address) return;
     try {
       setTxState(TransactionState.UPLOADING_METADATA);
@@ -150,7 +150,7 @@ const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
     }
     if (approvalStateArenaToken === ApprovalState.AWAITING_TRANSACTION) {
       return (
-        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-96'}>
           Sending Approval Transaction...
         </button>
       );
@@ -171,7 +171,7 @@ const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
     }
     if (txState === TransactionState.AWAITING_USER_CONFIRMATION) {
       return (
-        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-96'}>
           Waiting for user confirmation...
         </button>
       );
@@ -184,7 +184,7 @@ const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
       );
     }
     return (
-      <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'} onClick={handleAddChoice}>
+      <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'} onClick={handleAddTopic}>
         Add category
       </button>
     );

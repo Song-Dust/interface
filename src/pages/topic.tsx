@@ -49,7 +49,7 @@ const Topic = () => {
 
   const [filterString, setFilterString] = useState('');
   const choicesFiltered = useMemo(
-    () => choices?.filter((choice) => choice.meta?.name.includes(filterString)),
+    () => (filterString ? choices?.filter((choice) => choice.meta?.name.includes(filterString)) : choices),
     [choices, filterString],
   );
 
