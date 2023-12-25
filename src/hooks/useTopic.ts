@@ -3,10 +3,12 @@ import {
   choiceABI,
   topicABI,
   useTopicChoicesLength,
-  useTopicCurrentCycleNumber,
+  useTopicCycleDuration,
   useTopicMetadataUri,
+  useTopicStartTime,
 } from 'abis/types/generated';
 import axios from 'axios';
+import useNow from 'hooks/useNow';
 import { useEffect, useMemo, useState } from 'react';
 import { Choice, ChoiceMetadata, ChoiceRaw, TopicMetadata } from 'types';
 import { parseIpfsUri, parsePinataIpfsUri } from 'utils';
@@ -18,9 +20,19 @@ export function useTopic(topicAddress: Address | undefined) {
   });
   const [metadata, setMetadata] = useState<TopicMetadata | undefined>(undefined);
 
-  const { data: currentCycleNumber } = useTopicCurrentCycleNumber({
+  const { data: cycleDuration } = useTopicCycleDuration({
     address: topicAddress,
   });
+
+  const { data: startTime } = useTopicStartTime({
+    address: topicAddress,
+  });
+
+  const now = useNow();
+  const currentCycleNumber = useMemo(() => {
+    if (startTime === undefined || cycleDuration === undefined) return undefined;
+    return Math.floor((now - Number(startTime)) / Number(cycleDuration));
+  }, [cycleDuration, startTime, now]);
 
   useEffect(() => {
     if (metaDataUri) {
@@ -31,6 +43,8 @@ export function useTopic(topicAddress: Address | undefined) {
   }, [metaDataUri]);
 
   return {
+    startTime,
+    cycleDuration,
     currentCycleNumber,
     metaDataUri,
     metadata,

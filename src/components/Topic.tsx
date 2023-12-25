@@ -7,6 +7,7 @@ import VoteChoiceModal from 'components/modal/VoteChoiceModal';
 import RankedView from 'components/rankedView';
 import { useTopicContext } from 'contexts/TopicContext';
 import { useArenaTokenData } from 'hooks/useArena';
+import useTimer from 'hooks/useTimer';
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Choice } from 'types';
@@ -26,6 +27,42 @@ import { formatUnits } from 'viem';
 //   '--fa-primary-opacity': 1,
 //   '--fa-secondary-opacity': 0.4
 // } as React.CSSProperties;
+
+const SnapshotTimer = () => {
+  const { startTime, cycleDuration, snapshotCycle } = useTopicContext();
+  const snapshotTimestamp = useMemo(() => {
+    if (startTime === undefined || cycleDuration === undefined || snapshotCycle === undefined) return undefined;
+    return Number(startTime + cycleDuration * snapshotCycle);
+  }, [cycleDuration, snapshotCycle, startTime]);
+
+  const { days, hours, minutes, seconds } = useTimer(snapshotTimestamp);
+  return (
+    <section
+      className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}
+    >
+      {/*<div><FontAwesomeIcon fontSize={36} icon={faHourglassClock} style={style} /></div>*/}
+      <svg width="36" height="33" viewBox="0 0 36 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M18 23.5938C18 18.6562 22 14.5938 27 14.5938C31.9375 14.5938 36 18.6562 36 23.5938C36 28.5938 31.9375 32.5938 27 32.5938C22 32.5938 18 28.5938 18 23.5938ZM27.9375 19.5938C27.9375 19.0938 27.5 18.5938 26.9375 18.5938C26.4375 18.5938 25.9375 19.0938 25.9375 19.5938V23.5938C25.9375 24.1562 26.4375 24.5938 26.9375 24.5938H30C30.5 24.5938 31 24.1562 31 23.5938C31 23.0938 30.5 22.5938 30 22.5938H27.9375V19.5938Z"
+          fill="#565656"
+        />
+        <path
+          opacity="0.5"
+          d="M0 2.59375C0 1.53125 0.875 0.59375 2 0.59375H22C23.0625 0.59375 24 1.53125 24 2.59375C24 3.71875 23.0625 4.59375 22 4.59375V5.28125C22 7.96875 20.9375 10.5312 19.0625 12.4062L14.8125 16.5938L17.0625 18.8438C16.375 20.2812 16 21.9062 16 23.5938C16 27.3438 17.8125 30.6562 20.625 32.5938H2C0.875 32.5938 0 31.7188 0 30.5938C0 29.5312 0.875 28.5938 2 28.5938V27.9062C2 25.2812 3 22.7188 4.875 20.8438L9.125 16.5938L4.875 12.4062C3 10.5312 2 7.96875 2 5.28125V4.59375C0.875 4.59375 0 3.71875 0 2.59375ZM6 4.59375V5.28125C6 6.46875 6.3125 7.65625 6.9375 8.59375H17C17.625 7.65625 18 6.46875 18 5.28125V4.59375H6Z"
+          fill="#EC2A64"
+        />
+      </svg>
+      <div>
+        <div className="flex gap-2 items-center">
+          <h2 className="tracking-wider font-bold">
+            {days}:{hours}:{minutes}:{seconds}
+          </h2>
+        </div>
+        <p className={'font-semibold'}>Left untill the snapshot</p>
+      </div>
+    </section>
+  );
+};
 
 const Topic = () => {
   const { competitionAddress } = useParams();
@@ -52,7 +89,7 @@ const Topic = () => {
   const [filterString, setFilterString] = useState('');
   const choicesFilteredAndSorted = useMemo(() => {
     const choicesFiltered = filterString
-      ? choices?.filter((choice) => choice.meta?.name.includes(filterString))
+      ? choices?.filter((choice) => choice.meta?.name.toLowerCase().includes(filterString.toLowerCase()))
       : choices;
     if (!choicesFiltered || choicesFiltered.some((choice) => choice.totalShares === undefined)) return undefined;
     return choicesFiltered?.sort((a, b) => Number(b.totalShares - a.totalShares));
@@ -113,58 +150,10 @@ const Topic = () => {
           </main>
         </section>
         <aside className={'w-64'}>
-          <section
-            className={'days-left rounded-2xl bg-primary-light-2 flex gap-4 py-3 justify-center items-center mt-6 mb-4'}
-          >
-            {/*<div><FontAwesomeIcon fontSize={36} icon={faHourglassClock} style={style} /></div>*/}
-            <svg width="36" height="33" viewBox="0 0 36 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M18 23.5938C18 18.6562 22 14.5938 27 14.5938C31.9375 14.5938 36 18.6562 36 23.5938C36 28.5938 31.9375 32.5938 27 32.5938C22 32.5938 18 28.5938 18 23.5938ZM27.9375 19.5938C27.9375 19.0938 27.5 18.5938 26.9375 18.5938C26.4375 18.5938 25.9375 19.0938 25.9375 19.5938V23.5938C25.9375 24.1562 26.4375 24.5938 26.9375 24.5938H30C30.5 24.5938 31 24.1562 31 23.5938C31 23.0938 30.5 22.5938 30 22.5938H27.9375V19.5938Z"
-                fill="#565656"
-              />
-              <path
-                opacity="0.5"
-                d="M0 2.59375C0 1.53125 0.875 0.59375 2 0.59375H22C23.0625 0.59375 24 1.53125 24 2.59375C24 3.71875 23.0625 4.59375 22 4.59375V5.28125C22 7.96875 20.9375 10.5312 19.0625 12.4062L14.8125 16.5938L17.0625 18.8438C16.375 20.2812 16 21.9062 16 23.5938C16 27.3438 17.8125 30.6562 20.625 32.5938H2C0.875 32.5938 0 31.7188 0 30.5938C0 29.5312 0.875 28.5938 2 28.5938V27.9062C2 25.2812 3 22.7188 4.875 20.8438L9.125 16.5938L4.875 12.4062C3 10.5312 2 7.96875 2 5.28125V4.59375C0.875 4.59375 0 3.71875 0 2.59375ZM6 4.59375V5.28125C6 6.46875 6.3125 7.65625 6.9375 8.59375H17C17.625 7.65625 18 6.46875 18 5.28125V4.59375H6Z"
-                fill="#EC2A64"
-              />
-            </svg>
-            <div>
-              <div className="flex gap-2 items-center">
-                <h2 className={'font-bold'}>24 Days</h2>
-                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    opacity="0.4"
-                    d="M8 0.5C3.5625 0.5 0 4.09375 0 8.5C0 12.9375 3.5625 16.5 8 16.5C12.4062 16.5 16 12.9375 16 8.5C16 4.09375 12.4062 0.5 8 0.5ZM8 13C7.4375 13 7 12.5625 7 12C7 11.4375 7.40625 11 8 11C8.53125 11 9 11.4375 9 12C9 12.5625 8.53125 13 8 13ZM10.1562 8.5625L8.75 9.4375V9.5C8.75 9.90625 8.40625 10.25 8 10.25C7.59375 10.25 7.25 9.90625 7.25 9.5V9C7.25 8.75 7.375 8.5 7.625 8.34375L9.40625 7.28125C9.625 7.15625 9.75 6.9375 9.75 6.6875C9.75 6.3125 9.40625 6 9.03125 6H7.4375C7.03125 6 6.75 6.3125 6.75 6.6875C6.75 7.09375 6.40625 7.4375 6 7.4375C5.59375 7.4375 5.25 7.09375 5.25 6.6875C5.25 5.46875 6.21875 4.5 7.40625 4.5H9C10.2812 4.5 11.25 5.46875 11.25 6.6875C11.25 7.4375 10.8438 8.15625 10.1562 8.5625Z"
-                    fill="#193154"
-                  />
-                </svg>
-              </div>
-              <p className={'font-semibold'}>Left untill the snapshot</p>
-            </div>
-          </section>
+          {competitionAddress && <SnapshotTimer />}
           <section className={'topic-info rounded-2xl bg-primary-light-2 flex flex-col gap-6 px-6 pt-6 mb-4 pb-7'}>
             <div className={'flex gap-3 flex-col'}>
               <label className={'font-semibold'}>Category&apos;s General Stats</label>
-              <div className={'rounded-xl bg-g1 flex gap-4 py-4 px-5 justify-between items-center'}>
-                {/*<div><FontAwesomeIcon fontSize={42} icon={faCheckToSlot} style={monoStyle} /></div>*/}
-                <svg width="46" height="40" viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M41.75 22.5H38V28.75H39.25C39.875 28.75 40.5 29.375 40.5 30C40.5 30.7031 39.875 31.25 39.25 31.25H6.75C6.04688 31.25 5.5 30.7031 5.5 30C5.5 29.375 6.04688 28.75 6.75 28.75H8V22.5H4.25C2.14062 22.5 0.5 24.2188 0.5 26.25V33.75C0.5 35.8594 2.14062 37.5 4.25 37.5H41.75C43.7812 37.5 45.5 35.8594 45.5 33.75V26.25C45.5 24.2188 43.7812 22.5 41.75 22.5ZM20.5 22.1094C20.8125 22.3438 21.2812 22.5 21.6719 22.5C21.6719 22.5 21.75 22.5 21.8281 22.4219C22.375 22.4219 22.7656 22.1875 23.1562 21.7188L30.0312 12.9688C30.6562 12.1875 30.5 11.0156 29.6406 10.3906C28.8594 9.76562 27.6875 9.84375 27.0625 10.7031L21.4375 17.9688L18.5469 15.4688C17.7656 14.8438 16.5938 14.9219 15.8906 15.7031C15.2656 16.4844 15.3438 17.6562 16.125 18.3594L20.5 22.1094Z"
-                    fill="#353535"
-                  />
-                  <path
-                    opacity="0.4"
-                    d="M34.25 2.5H11.75C9.64062 2.5 8 4.21875 8 6.25V31.25H38V6.25C38 4.21875 36.2812 2.5 34.25 2.5ZM30.0312 13.0469L23.1562 21.7969C22.8438 22.1875 22.375 22.5 21.9062 22.5C21.8281 22.5 21.75 22.5 21.6719 22.5C21.2031 22.5 20.7344 22.3438 20.4219 22.0312L16.0469 18.2812C15.3438 17.6562 15.2656 16.4844 15.8906 15.7031C16.5938 14.9219 17.7656 14.8438 18.5469 15.4688L21.4375 17.9688L27.1406 10.7812C27.7656 9.92188 28.9375 9.76562 29.7188 10.4688C30.5781 11.0938 30.7344 12.2656 30.0312 13.0469Z"
-                    fill="#193154"
-                  />
-                </svg>
-                <div className={''}>
-                  <h1 className={'font-bold'}>
-                    {parsedTopicTokensAmount !== undefined ? toCompactFormat(Number(parsedTopicTokensAmount)) : '...'}
-                  </h1>
-                  <p className={'font-semibold relative -mt-2'}>{arenaTokenSymbol} casted</p>
-                </div>
-              </div>
               <section className={'flex gap-4'}>
                 <div className={'rounded-xl bg-yellowC flex flex-col justify-center items-center w-24 h-24'}>
                   {/*<FontAwesomeIcon fontSize={24} icon={faPeopleGroup} style={monoStyle} />*/}
@@ -179,8 +168,10 @@ const Topic = () => {
                       fill="#193154"
                     />
                   </svg>
-                  <h2 className={'font-bold'}>3</h2>
-                  <p className={'font-normal text-sm'}>Participants</p>
+                  <h2 className={'font-bold'}>
+                    {parsedTopicTokensAmount !== undefined ? toCompactFormat(Number(parsedTopicTokensAmount)) : '...'}
+                  </h2>
+                  <p className={'font-normal text-sm'}>{arenaTokenSymbol} casted</p>
                 </div>
                 <div className={'rounded-xl bg-greenC flex-col flex justify-center items-center w-24 h-24'}>
                   {/*<FontAwesomeIcon fontSize={24} icon={faSpinnerThird} style={monoStyle} />*/}

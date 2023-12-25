@@ -6,11 +6,11 @@ import algoliasearch from 'algoliasearch/lite';
 import ChoiceMiniCard from 'components/choice/ChoiceMiniCard';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import { SONGADAY_CONTRACT_ADDRESS } from 'constants/addresses';
+import { useTopicContext } from 'contexts/TopicContext';
 import { useApproval } from 'hooks/useApproval';
 import { useArena, useArenaTokenData } from 'hooks/useArena';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { InstantSearch, SearchBox, useHits } from 'react-instantsearch-hooks-web';
-import { useParams } from 'react-router-dom';
 import { ChoiceMetadata } from 'types';
 import { ApprovalState } from 'types/approval';
 import { TransactionState } from 'types/transaction';
@@ -19,7 +19,7 @@ import { Address, useAccount } from 'wagmi';
 
 const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
   const { address: account } = useAccount();
-  const { topicAddress } = useParams();
+  const { topicAddress } = useTopicContext();
 
   const active = useMemo(() => !!account, [account]);
   const { choiceCreationFee } = useArena();
@@ -169,7 +169,7 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
     }
     if (approvalStateArenaToken === ApprovalState.UNKNOWN) {
       return (
-        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-72'}>
           Loading Approval State...
         </button>
       );

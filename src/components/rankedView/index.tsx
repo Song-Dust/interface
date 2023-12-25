@@ -62,6 +62,8 @@ const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick?: () 
                   <a
                     className="underline text-sm font-semibold"
                     href={`https://opensea.io/assets/${SONGADAY_CONTRACT_ADDRESS}/${choice.meta.token_id}`}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     View on Opensea
                   </a>
@@ -74,7 +76,12 @@ const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick?: () 
                       fillOpacity="0.5"
                     />
                   </svg>
-                  <a className="underline text-sm font-semibold" href={choice.meta.youtube_url}>
+                  <a
+                    className="underline text-sm font-semibold"
+                    href={choice.meta.youtube_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Watch on Youtube
                   </a>
                 </div>

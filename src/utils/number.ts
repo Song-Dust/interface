@@ -2,6 +2,6 @@ export function toCompactFormat(num: number | undefined, maximumSignificantDigit
   if (num === undefined) return undefined;
   if (num > 0 && num < 0.001) return '<0.001';
   return num.toLocaleString(undefined, {
-    maximumSignificantDigits: 18,
+    maximumSignificantDigits: num < 0.01 ? 2 : 3,
   });
 }

@@ -72,7 +72,7 @@ const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
         functionName: 'deployTopic',
         args: [
           BigInt(Math.floor(Date.now() / 1000)),
-          BigInt(1800),
+          BigInt(300),
           BigInt(300),
           BigInt(400),
           BigInt(500),
@@ -157,7 +157,7 @@ const AddTopicModal = ({ open, closeModal }: ModalPropsInterface) => {
     }
     if (approvalStateArenaToken === ApprovalState.UNKNOWN) {
       return (
-        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-72'}>
           Loading Approval State...
         </button>
       );

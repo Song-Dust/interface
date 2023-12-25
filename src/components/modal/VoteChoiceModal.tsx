@@ -129,7 +129,7 @@ const VoteChoiceModal = ({ choice, open, closeModal }: ModalPropsInterface & { c
     }
     if (approvalStateArenaToken === ApprovalState.UNKNOWN) {
       return (
-        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-72'}>
           Loading Approval State...
         </button>
       );
