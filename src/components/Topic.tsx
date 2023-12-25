@@ -50,10 +50,13 @@ const Topic = () => {
   }, [arenaTokenDecimals, topicTokens]);
 
   const [filterString, setFilterString] = useState('');
-  const choicesFiltered = useMemo(
-    () => (filterString ? choices?.filter((choice) => choice.meta?.name.includes(filterString)) : choices),
-    [choices, filterString],
-  );
+  const choicesFilteredAndSorted = useMemo(() => {
+    const choicesFiltered = filterString
+      ? choices?.filter((choice) => choice.meta?.name.includes(filterString))
+      : choices;
+    if (!choicesFiltered || choicesFiltered.some((choice) => choice.totalShares === undefined)) return undefined;
+    return choicesFiltered?.sort((a, b) => Number(b.totalShares - a.totalShares));
+  }, [choices, filterString]);
 
   return (
     <div className={'px-24 py-12'}>
@@ -100,7 +103,7 @@ const Topic = () => {
             </div>
           </header>
           <main className={'flex flex-wrap gap-6'}>
-            {choicesFiltered?.map((choice, index) => (
+            {choicesFilteredAndSorted?.map((choice, index) => (
               <RankedView
                 key={choice.address}
                 choice={choice}

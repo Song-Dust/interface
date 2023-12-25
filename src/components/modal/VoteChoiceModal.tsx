@@ -1,18 +1,21 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useChoiceWrite, usePrepareChoiceContribute } from 'abis/types/generated';
+import { prepareWriteContract, waitForTransaction, writeContract } from '@wagmi/core';
+import { competitionABI } from 'abis/types/generated';
 import Input from 'components/basic/input';
 import ChoiceTile from 'components/choice/ChoiceTile';
 import Modal, { ModalPropsInterface } from 'components/modal/index';
 import { useApproval } from 'hooks/useApproval';
 import { useArenaTokenData } from 'hooks/useArena';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Choice } from 'types';
 import { ApprovalState } from 'types/approval';
+import { TransactionState } from 'types/transaction';
 import { toCompactFormat } from 'utils/number';
 import { parseUnits } from 'viem';
-import { useAccount } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 
-const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: Choice | undefined }) => {
+const VoteChoiceModal = ({ choice, open, closeModal }: ModalPropsInterface & { choice: Choice | undefined }) => {
   const { address: account } = useAccount();
   // const chainId = chain?.id;
   const active = useMemo(() => !!account, [account]);
@@ -27,18 +30,12 @@ const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: C
     return arenaTokenDecimals !== undefined ? parseUnits(voteAmount, arenaTokenDecimals) : undefined;
   }, [arenaTokenDecimals, voteAmount]);
 
+  const { competitionAddress } = useParams();
   const { approvalState: approvalStateArenaToken, approve: approveArenaToken } = useApproval({
     tokenAddress: arenaTokenAddress,
     amount: parsedAmount,
-    spender: choice?.address,
+    spender: competitionAddress as Address | undefined,
   });
-  const { config } = usePrepareChoiceContribute({
-    address: choice?.address,
-    args: parsedAmount ? [parsedAmount] : undefined,
-  });
-  const { write: voteCallback } = useChoiceWrite(config);
-
-  const [loading, setLoading] = useState(false);
 
   const mounted = useRef(false);
 
@@ -48,18 +45,34 @@ const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: C
       mounted.current = false;
     };
   }, []);
+  const [txState, setTxState] = useState(TransactionState.INITIAL);
 
+  const { address } = useAccount();
   const handleVote = async () => {
-    if (loading) return;
-    setLoading(true);
+    if (txState !== TransactionState.INITIAL || !competitionAddress || !choice?.address || !address || !parsedAmount)
+      return;
     try {
-      await voteCallback?.();
+      setTxState(TransactionState.PREPARING_TRANSACTION);
+      const { request } = await prepareWriteContract({
+        address: competitionAddress as Address,
+        abi: competitionABI,
+        functionName: 'contribute',
+        args: [choice.address, parsedAmount, address],
+      });
+      setTxState(TransactionState.AWAITING_USER_CONFIRMATION);
+      const { hash } = await writeContract(request);
+      setTxState(TransactionState.AWAITING_TRANSACTION);
+      await waitForTransaction({
+        hash,
+      });
+      alert('Vote casted successfully!');
+      closeModal();
     } catch (e) {
-      console.log('vote failed');
+      console.log('add choice failed');
       console.log(e);
     }
     if (mounted.current) {
-      setLoading(false);
+      setTxState(TransactionState.INITIAL);
     }
   };
 
@@ -102,14 +115,14 @@ const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: C
       approvalStateArenaToken === ApprovalState.AWAITING_USER_CONFIRMATION
     ) {
       return (
-        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-64'}>
           Waiting for Approve...
         </button>
       );
     }
     if (approvalStateArenaToken === ApprovalState.AWAITING_TRANSACTION) {
       return (
-        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-96'}>
           Sending Approval Transaction...
         </button>
       );
@@ -121,9 +134,16 @@ const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: C
         </button>
       );
     }
-    if (loading) {
+    if (txState === TransactionState.AWAITING_USER_CONFIRMATION) {
       return (
-        <button data-testid="cast-vote-btn" className={'btn-primary btn-large w-56'}>
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-96'}>
+          Waiting for user confirmation...
+        </button>
+      );
+    }
+    if (txState === TransactionState.AWAITING_TRANSACTION) {
+      return (
+        <button data-testid="add-choice-btn" className={'btn-primary btn-large w-64'}>
           Sending Transaction...
         </button>
       );
@@ -138,7 +158,8 @@ const VoteChoiceModal = ({ choice, ...props }: ModalPropsInterface & { choice: C
   return (
     <Modal
       className={'!max-w-2xl relative overflow-hidden h-2/3'}
-      {...props}
+      closeModal={closeModal}
+      open={open}
       title={`Contributing to ${choice?.meta?.name}`}
     >
       <main className={'flex flex-wrap gap-6'}>
