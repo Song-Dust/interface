@@ -157,7 +157,7 @@ const VoteChoiceModal = ({ choice, open, closeModal }: ModalPropsInterface & { c
 
   return (
     <Modal
-      className={'!max-w-2xl relative overflow-hidden h-2/3'}
+      className={'!max-w-2xl relative overflow-hidden h-2/3 w-full'}
       closeModal={closeModal}
       open={open}
       title={`Contributing to ${choice?.meta?.name}`}
@@ -165,7 +165,7 @@ const VoteChoiceModal = ({ choice, open, closeModal }: ModalPropsInterface & { c
       <main className={'flex flex-wrap gap-6'}>
         {choice && <ChoiceTile className={`opacity-100`} id={choice.id} choiceMeta={choice.meta} />}
       </main>
-      <footer className={'absolute left-0 right-0 bottom-0 rounded-xl bg-white border-gray border-t py-4 px-2'}>
+      <footer className={'absolute left-0 right-0 bottom-0 rounded-xl bg-white border-gray border-t p-4'}>
         <section className={'flex'}>
           <div className={'flex-1'}>
             <p className={'font-semibold text-xl'}>
