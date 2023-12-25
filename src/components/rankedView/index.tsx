@@ -6,7 +6,7 @@ import { Choice } from 'types';
 import { toCompactFormat } from 'utils/number';
 import { formatUnits } from 'viem';
 
-const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick: () => void }) => {
+const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick?: () => void }) => {
   const { topicTotalShares } = useTopicContext();
   const { arenaTokenDecimals, arenaTokenSymbol } = useArenaTokenData();
 
@@ -23,13 +23,15 @@ const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick: () =
         <div className="flex flex-col grow">
           <div className="flex">
             <p className="grow font-semibold text-xl">{choice?.meta?.name || `Could not load name from ipfs`}</p>
-            <button
-              onClick={onVoteClick}
-              className={'btn-primary font-semibold px-4 py-2'}
-              data-testid="open-vote-modal"
-            >
-              Vote
-            </button>
+            {onVoteClick && (
+              <button
+                onClick={onVoteClick}
+                className={'btn-primary font-semibold px-4 py-2'}
+                data-testid="open-vote-modal"
+              >
+                Vote
+              </button>
+            )}
           </div>
           <div className="flex gap-2 items-center">
             <p className="font-normal grow flex">
