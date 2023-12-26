@@ -38,7 +38,9 @@ const RankedView = ({ choice, onVoteClick }: { choice: Choice; onVoteClick?: () 
               <span className="text-3xl">
                 {topicTotalShares !== undefined &&
                   choice.totalShares !== undefined &&
-                  (choice.totalShares === 0n ? '0' : String((choice.totalShares * 100n) / topicTotalShares))}
+                  (choice.totalShares === 0n
+                    ? '0'
+                    : toCompactFormat(Number(choice.totalShares * 100n) / Number(topicTotalShares)))}
                 %
               </span>
               <span className="text-lg align-middle p-1">
