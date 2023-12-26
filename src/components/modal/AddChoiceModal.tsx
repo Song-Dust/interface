@@ -17,6 +17,35 @@ import { TransactionState } from 'types/transaction';
 import { formatUnits } from 'viem';
 import { Address, useAccount } from 'wagmi';
 
+const Stats = () => {
+  const { results } = useHits();
+  return <div className="pb-2">Showing {results?.nbHits.toLocaleString() || 0} songs from the catalog</div>;
+};
+
+const CustomHits = ({
+  selectedChoice,
+  setSelectedChoice,
+}: {
+  selectedChoice: ChoiceMetadata | null;
+  setSelectedChoice: (value: ChoiceMetadata) => void;
+}) => {
+  const { hits } = useHits<ChoiceMetadata & Record<string, unknown>>();
+  return (
+    <main className={'flex flex-wrap gap-6 pt-4 justify-center overflow-auto'} style={{ maxHeight: '70%' }}>
+      {hits.map((choice) => {
+        return (
+          <ChoiceMiniCard
+            className={`${choice.token_id === selectedChoice?.token_id ? `bg-primary-light` : `bg-light-gray-2`}`}
+            onClick={() => setSelectedChoice(choice)}
+            key={choice.token_id}
+            id={choice.token_id}
+            choiceMeta={choice}
+          />
+        );
+      })}
+    </main>
+  );
+};
 const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
   const { address: account } = useAccount();
   const { topicAddress } = useTopicContext();
@@ -33,29 +62,6 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
   const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID || '';
   const ALGOLIA_SEARCH_KEY = process.env.REACT_APP_ALGOLIA_SEARCH_KEY || '';
   const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
-  const Stats = () => {
-    const { results } = useHits();
-    return <div className="pb-2">Showing {results?.nbHits.toLocaleString() || 0} songs from the catalog</div>;
-  };
-
-  const CustomHits = () => {
-    const { hits } = useHits<ChoiceMetadata & Record<string, unknown>>();
-    return (
-      <main className={'flex flex-wrap gap-6 pt-4 justify-center overflow-auto'} style={{ maxHeight: '70%' }}>
-        {hits.map((choice) => {
-          return (
-            <ChoiceMiniCard
-              className={`${choice.token_id === selectedChoice?.token_id ? `bg-primary-light` : `bg-light-gray-2`}`}
-              onClick={() => setSelectedChoice(choice)}
-              key={choice.token_id}
-              id={choice.token_id}
-              choiceMeta={choice}
-            />
-          );
-        })}
-      </main>
-    );
-  };
 
   const parsedAmount = useMemo(() => {
     if (choiceCreationFee === undefined) return undefined;
@@ -221,6 +227,7 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
               submitIcon: 'absolute top-4 left-0 bottom-0 w-8',
               resetIcon: 'hidden',
             }}
+            loadingIconComponent={() => <></>}
           />
           <div className="flex items-center gap-2">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -240,7 +247,7 @@ const AddChoiceModal = ({ open, closeModal }: ModalPropsInterface) => {
           </div>
         </div>
         <Stats />
-        <CustomHits />
+        <CustomHits selectedChoice={selectedChoice} setSelectedChoice={setSelectedChoice} />
       </InstantSearch>
       <Transition
         as={Fragment}
